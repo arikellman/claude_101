@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Claude Code 101 — Workshop Setup Guide</title>
+  <style>
+    :root {
+      --orange: #E8632A;
+      --orange-light: #FDF0E8;
+      --dark: #1A1A1A;
+      --mid: #555;
+      --border: #E0E0E0;
+      --bg: #FAFAFA;
+      --white: #FFFFFF;
+      --green: #2D7D46;
+      --green-light: #EAF6EE;
+      --blue: #1A5FAD;
+      --blue-light: #EAF1FB;
+      --yellow: #F5A623;
+      --yellow-light: #FEF8EC;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--dark);
+      line-height: 1.6;
+    }
+
+    /* HEADER */
+    header {
+      background: var(--dark);
+      color: white;
+      padding: 48px 24px 40px;
+      text-align: center;
+    }
+    header .badge {
+      display: inline-block;
+      background: var(--orange);
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 100px;
+      margin-bottom: 16px;
+    }
+    header h1 {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    header h1 span { color: var(--orange); }
+    header p {
+      font-size: 16px;
+      color: #AAA;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    /* PROGRESS BAR */
+    .progress-bar {
+      background: white;
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      overflow-x: auto;
+    }
+    .progress-bar a {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 18px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--mid);
+      text-decoration: none;
+      border-bottom: 3px solid transparent;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .progress-bar a:hover { color: var(--orange); border-bottom-color: var(--orange); }
+    .progress-bar .num {
+      background: var(--border);
+      color: var(--mid);
+      border-radius: 50%;
+      width: 22px; height: 22px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* MAIN LAYOUT */
+    main {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    /* INTRO BOX */
+    .intro-box {
+      background: var(--blue-light);
+      border: 1px solid #C0D8F5;
+      border-radius: 12px;
+      padding: 24px 28px;
+      margin-bottom: 48px;
+    }
+    .intro-box h2 { font-size: 16px; color: var(--blue); margin-bottom: 8px; }
+    .intro-box p { font-size: 15px; color: #2A4A70; margin-bottom: 12px; }
+    .intro-box ul { padding-left: 20px; }
+    .intro-box ul li { font-size: 14px; color: #2A4A70; margin-bottom: 4px; }
+    .time-estimate {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: white;
+      border: 1px solid #C0D8F5;
+      border-radius: 100px;
+      padding: 4px 12px;
+      font-size: 13px;
+      color: var(--blue);
+      font-weight: 600;
+      margin-top: 8px;
+    }
+
+    /* STEP SECTION */
+    .step-section {
+      margin-bottom: 64px;
+      scroll-margin-top: 80px;
+    }
+    .step-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+    .step-number {
+      background: var(--orange);
+      color: white;
+      font-size: 18px;
+      font-weight: 800;
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .step-title h2 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .step-title p { font-size: 14px; color: var(--mid); }
+
+    /* INSTRUCTION CARDS */
+    .instruction-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    .instruction-card .card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      background: #F7F7F7;
+      border-bottom: 1px solid var(--border);
+    }
+    .card-num {
+      background: var(--dark);
+      color: white;
+      border-radius: 50%;
+      width: 24px; height: 24px;
+      font-size: 12px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .card-header span { font-size: 15px; font-weight: 600; }
+    .card-body { padding: 20px; }
+    .card-body p { font-size: 15px; color: var(--mid); margin-bottom: 12px; }
+    .card-body p:last-child { margin-bottom: 0; }
+    .card-body strong { color: var(--dark); }
+
+    /* SCREENSHOT PLACEHOLDER */
+    .screenshot-placeholder {
+      background: #F0F4F8;
+      border: 2px dashed #C5D5E8;
+      border-radius: 10px;
+      padding: 32px 20px;
+      text-align: center;
+      margin-top: 14px;
+      margin-bottom: 4px;
+    }
+    .screenshot-placeholder .icon { font-size: 28px; margin-bottom: 8px; }
+    .screenshot-placeholder .label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--blue);
+      margin-bottom: 4px;
+    }
+    .screenshot-placeholder .caption {
+      font-size: 12px;
+      color: #888;
+    }
+
+    /* CODE BLOCK */
+    .code-block {
+      background: #1E1E1E;
+      color: #D4D4D4;
+      border-radius: 8px;
+      padding: 14px 18px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      margin: 12px 0;
+      position: relative;
+      overflow-x: auto;
+    }
+    .code-block .comment { color: #6A9955; }
+    .code-block .cmd { color: #9CDCFE; }
+
+    /* CALLOUT BOXES */
+    .callout {
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin: 16px 0;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .callout .icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .callout p { font-size: 14px; margin: 0; }
+    .callout.tip { background: var(--green-light); border: 1px solid #AEDFC0; }
+    .callout.tip p { color: #1D5C31; }
+    .callout.warn { background: var(--yellow-light); border: 1px solid #F0D080; }
+    .callout.warn p { color: #7A5000; }
+    .callout.info { background: var(--blue-light); border: 1px solid #C0D8F5; }
+    .callout.info p { color: #1A3D6E; }
+
+    /* MCP GRID */
+    .mcp-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 16px 0;
+    }
+    @media (max-width: 520px) { .mcp-grid { grid-template-columns: 1fr; } }
+    .mcp-card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      background: white;
+    }
+    .mcp-card .mcp-name {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .mcp-card .mcp-name .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--orange);
+    }
+    .mcp-card p { font-size: 13px; color: var(--mid); margin: 0; }
+    .mcp-card .required {
+      display: inline-block;
+      background: var(--orange-light);
+      color: var(--orange);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 100px;
+      margin-bottom: 6px;
+    }
+    .mcp-card .optional {
+      display: inline-block;
+      background: #F0F0F0;
+      color: #888;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 100px;
+      margin-bottom: 6px;
+    }
+
+    /* DIVIDER */
+    hr { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
+
+    /* DONE BOX */
+    .done-box {
+      background: var(--green-light);
+      border: 1px solid #AEDFC0;
+      border-radius: 12px;
+      padding: 32px;
+      text-align: center;
+      margin-top: 48px;
+    }
+    .done-box .check { font-size: 40px; margin-bottom: 12px; }
+    .done-box h2 { font-size: 20px; font-weight: 700; color: var(--green); margin-bottom: 8px; }
+    .done-box p { font-size: 15px; color: #2D6040; }
+
+    /* PREREQ */
+    .prereq-section {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px 28px;
+      margin-bottom: 48px;
+    }
+    .prereq-section h3 { font-size: 16px; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+    .prereq-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .prereq-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .prereq-item .prereq-icon { font-size: 22px; flex-shrink: 0; }
+    .prereq-item h4 { font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+    .prereq-item p { font-size: 13px; color: var(--mid); }
+    .prereq-item a { color: var(--orange); text-decoration: none; font-weight: 600; }
+    .prereq-item a:hover { text-decoration: underline; }
+
+    /* PROMPT BOX */
+    .prompt-box {
+      background: #F5F3FF;
+      border: 1px solid #D0C8F5;
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin: 14px 0;
+    }
+    .prompt-box .label { font-size: 11px; font-weight: 700; color: #6B52C8; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+    .prompt-box p { font-size: 14px; color: #3B2D7A; font-style: italic; margin: 0; }
+
+    footer {
+      text-align: center;
+      padding: 32px 24px;
+      font-size: 13px;
+      color: #AAA;
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="badge">Pre-Workshop Setup</div>
+  <h1>Claude Code <span>101</span></h1>
+  <p>Complete these steps before the workshop. Takes about 15–20 minutes.</p>
+</header>
+
+<nav class="progress-bar">
+  <a href="#prereqs"><span class="num">0</span> Prerequisites</a>
+  <a href="#step1"><span class="num">1</span> Create Folder</a>
+  <a href="#step2"><span class="num">2</span> Init Git</a>
+  <a href="#step3"><span class="num">3</span> CLAUDE.md</a>
+  <a href="#step4"><span class="num">4</span> Co-work</a>
+  <a href="#step5"><span class="num">5</span> Connect MCPs</a>
+</nav>
+
+<main>
+
+  <!-- INTRO -->
+  <div class="intro-box">
+    <h2>Why do this before the workshop?</h2>
+    <p>The workshop is hands-on from minute one. If your environment isn't set up, you'll spend the first hour watching instead of building. This guide walks you through everything step by step — no technical experience needed.</p>
+    <ul>
+      <li>Follow the steps in order — each one builds on the last</li>
+      <li>If you get stuck, note where and we'll sort it at the start of the workshop</li>
+    </ul>
+    <div class="time-estimate">⏱ Estimated time: 15–20 minutes</div>
+  </div>
+
+  <!-- PREREQUISITES -->
+  <section class="prereq-section" id="prereqs">
+    <h3>⚙️ Before you start — install Claude Code</h3>
+    <div class="prereq-item">
+      <div class="prereq-icon">💻</div>
+      <div>
+        <h4>Download Claude Code Desktop App</h4>
+        <p>Go to <a href="https://claude.ai/download" target="_blank">claude.ai/download</a> and download the app for your operating system (Windows or Mac). Install it like any other app.</p>
+        <div class="screenshot-placeholder">
+          <div class="icon">🖼️</div>
+          <div class="label">Screenshot: Claude Code download page</div>
+          <div class="caption">claude.ai/download — select your OS and click Download</div>
+        </div>
+      </div>
+    </div>
+    <div class="prereq-item">
+      <div class="prereq-icon">🔑</div>
+      <div>
+        <h4>Sign in with your Anthropic / Claude account</h4>
+        <p>Open the app and sign in. Use the same account you use at claude.ai. If you don't have one, create a free account first.</p>
+        <div class="screenshot-placeholder">
+          <div class="icon">🖼️</div>
+          <div class="label">Screenshot: Claude Code sign-in screen</div>
+          <div class="caption">Click "Sign in" and use your claude.ai credentials</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 1 -->
+  <section class="step-section" id="step1">
+    <div class="step-header">
+      <div class="step-number">1</div>
+      <div class="step-title">
+        <h2>Create your Claude folder</h2>
+        <p>A dedicated folder keeps all your Claude files, skills, and configs in one place</p>
+      </div>
+    </div>
+
+    <div class="instruction-card">
+      <div class="card-header">
+        <div class="card-num">A</div>
+        <span>Create a new folder on your Desktop</span>
+      </div>
+      <div class="card-body">
+        <p><strong>Windows:</strong> Right-click anywhere on your Desktop → <strong>New → Folder</strong>. Name it <strong>my-agent</strong>.</p>
+        <p><strong>Mac:</strong> Right-click on your Desktop → <strong>New Folder</strong>. Name it <strong>my-agent</strong>.</p>
+        <div class="screenshot-placeholder">
+          <div class="icon">🖼️</div>
+          <div class="label">Screenshot: Creating a new folder on the Desktop</div>
+          <div class="caption">Right-click → New Folder → name it "my-agent"</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="instruction-card">
+      <div class="card-header">
+        <div class="card-num">B</div>
+        <span>Open that folder in Claude Code</span>
+      </div>
+      <div class="card-body">
+        <p>In Claude Code, click the <strong>folder icon</strong> in the top-left corner (or go to <strong>File → Open Folder</strong>). Navigate to your Desktop and select the <strong>my-agent</strong> folder.</p>
+        <div class="callout tip">
+          <span class="icon">💡</span>
+          <p>This tells Claude Code "this is your workspace." Everything you build lives here, and Claude will always know where to look.</p>
+        </div>
+        <div class="screenshot-placeholder">
+          <div class="icon">🖼️</div>
+          <div class="label">Screenshot: Claude Code — Open Folder dialog</div>
+          <div class="caption">File → Open Folder → select "my-agent" on your Desktop</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 2 -->
+  <section class="step-section" id="step2">
+    <div class="step-header">
+      <div class="step-number">2</div>
+      <div class="step-title">
+        <h2>Initialize Git</h2>
+        <p>Git is like a "save history" for your folder — it tracks every change so you can always go back</p>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <span class="icon">ℹ️</span>
+      <p><strong>Not technical?</strong> Don't worry — you only need to do this once, and you can just copy-paste the command below. Think of it as turning on autosave.</p>
+    </div>
+
+    <div class="instruction-card">
+      <div class="card-header">
+        <div class="card-num">A</div>
+        <span>Open the terminal inside Claude Code</span>
+      </div>
+      <div class="card-body">
+        <p>In Claude Code, look for a <strong>Terminal</strong> tab at the bottom of the screen (or go to <strong>View → Terminal</strong>). Click it to open a command window.</p>
+        <div class="screenshot-placeholder">
+          <div class="icon">🖼️</div>
+          <div class="label">Screenshot: Opening the Terminal in Claude Code</div>
+          <div class="caption">View → Terminal — a panel opens at the bottom of the screen</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="instruction-card">
+      <div class="card-header">
+        <div class="card-num">B</div>
+        <span>Run the git init command</span>
+      </div>
+      <div class="card-body">
+        <p>Click in the terminal area, then type exactly this and press <strong>Enter</strong>:</p>
+        <div class="code-block"><span class="cmd">git init</span></div>
+        <p>You should see a message like: <em>"Initialized empty Git repository in..."</em> — that means it worked.</p>
+        <div class="screenshot-placeholder">
+          <div class="icon">🖼️</div>
+          <div class="label">Screenshot: Terminal showing "git init" success message</div>
+          <div class="caption">You should see "Initialized empty Git repository in C:/Users/.../my-agent/.git/"</div>
+        </div>
+        <div class="callout warn">
+          <span class="icon">⚠️</span>
+          <p>If you see "git is not recognized" — Git might not be installed. Download it from <strong>git-scm.com</strong> and try again, or flag it for the workshop.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 3 -->
+  <section class="step-section" id="step3">
+    <div class="step-header">
+      <div class="step-number">3</div>
+      <div class="step-title">
+        <h2>Create your CLAUDE.md file</h2>
+        <p>This is Claude's memory — it tells Claude who you are, what you do, and how you like to work</p>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <span class="icon">ℹ️</span>
+      <p>CLAUDE.md is a text file that Claude reads at the start of every session. It's the difference between Claude acting like a blank slate every time vs. knowing your name, role, and preferences.</p>
+    </div>
+
+    <div class="instruction-card">
+      <div class="card-header">
+        <div class="card-num">A</div>
+        <span>Use an AI chatbot to generate your CLAUDE.md</span>
+      </div>
+      <div class="card-body">
+        <p>Open <strong>claude.ai</strong> or <strong>Gemini</strong> in your browser and paste in this prompt. Answer its questions naturally — the more detail, the better.</p>
+        <div class="prompt-box">
+          <div class="label">Copy this prompt</div>
+          <p>"I am setting up a personal AI agent. Ask me a series of questions about who I am, my job, my responsibilities, and how I prefer to communicate. Then use my answers to generate a CLAUDE.md file — a configuration file that will tell the AI agent everything it needs to know about me to be genuinely useful."</p>
+        </div>
+        <p>Once it generates the file, <strong>copy the full output.</strong></p>
+        <div class="screenshot-placeholder">
+          <div class="icon">🖼️</div>
+          <div class="label">Screenshot: Claude.ai generating CLAUDE.md content</div>
+          <div class="caption">The chatbot will ask you questions, then produce a ready-to-use CLAUDE.md file</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="instruction-card">
+      <div class="card-header">
+        <div class="card-num">B</div>
+        <span>Save it as CLAUDE.md in your folder</span>
+      </div>
+      <div class="card-body">
+        <p>In Claude Code, go to <strong>File → New File</strong>. Paste the content from the chatbot. Then save it as <strong>CLAUDE.md</strong> (all caps, exactly) inside your <strong>my-agent</strong> folder.</p>
+        <div class="screenshot-placeholder">
+          <div class="icon">🖼️</div>
+          <div class="label">Screenshot: Saving CLAUDE.md in Claude Code</div>
+          <div class="caption">File → New File → paste content → Save As "CLAUDE.md" in the my-agent folder</div>
+        </div>
+        <div class="callout tip">
+          <span class="icon">💡</span>
+          <p>The file name must be exactly <strong>CLAUDE.md</strong> — capital letters, no spaces. That's how Claude Code knows to auto-load it.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 4 -->
+  <section class="step-section" id="step4">
+    <div class="step-header">
+      <div class="step-number">4</div>
+      <div class="step-title">
+        <h2>Enable Co-work &amp; restart</h2>
+        <p>Co-work unlocks collaborative features — it needs to be on before you start building</p>
+      </div>
+    </div>
+
+    <div class="instruction-card">
+      <div class="card-header">
+        <div class="card-num">A</div>
+        <span>Enable Co-work in settings</span>
+      </div>
+      <div class="card-body">
+        <p>In Claude Code, open <strong>Settings</strong> (gear icon or <strong>Claude Code → Settings</strong> in the menu bar). Look for <strong>Co-work</strong> or <strong>Cowork</strong> and toggle it <strong>on</strong>.</p>
+        <div class="screenshot-placeholder">
+          <div class="icon">🖼️</div>
+          <div class="label">Screenshot: Settings panel with Co-work toggle</div>
+          <div class="caption">Settings → find "Co-work" → toggle on</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="instruction-card">
+      <div class="card-header">
+        <div class="card-num">B</div>
+        <span>Restart Claude Code</span>
+      </div>
+      <div class="card-body">
+        <p>Fully close and reopen Claude Code. This makes sure Co-work is active before your first session.</p>
+        <div class="callout warn">
+          <span class="icon">⚠️</span>
+          <p>Don't just close the window — make sure the app is fully quit (right-click the taskbar icon → Quit, or Cmd+Q on Mac).</p>
+        </div>
+        <div class="screenshot-placeholder">
+          <div class="icon">🖼️</div>
+          <div class="label">Screenshot: Fully quitting Claude Code</div>
+          <div class="caption">Right-click the Claude Code icon in taskbar/dock → Quit</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 5 -->
+  <section class="step-section" id="step5">
+    <div class="step-header">
+      <div class="step-number">5</div>
+      <div class="step-title">
+        <h2>Connect your apps (MCPs)</h2>
+        <p>MCPs are connectors that let Claude read and interact with your real tools — Gmail, Drive, Calendar, Slack</p>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <span class="icon">ℹ️</span>
+      <p><strong>What is an MCP?</strong> Think of it as a plug adapter. Claude Code can't access Gmail by default — but when you install the Gmail MCP, you give Claude permission to search and read your emails on your behalf. You stay in control: Claude asks before doing anything.</p>
+    </div>
+
+    <p style="font-size: 15px; color: var(--mid); margin-bottom: 16px;">Connect these four — the first three are required, Slack is optional but recommended:</p>
+
+    <div class="mcp-grid">
+      <div class="mcp-card">
+        <div class="mcp-name"><div class="dot"></div>Google Drive</div>
+        <div class="required">Required</div>
+        <p>Find and read documents, meeting notes, and decks from your Drive</p>
+      </div>
+      <div class="mcp-card">
+        <div class="mcp-name"><div class="dot"></div>Gmail</div>
+        <div class="required">Required</div>
+        <p>Search and read emails; draft replies without leaving Claude</p>
+      </div>
+      <div class="mcp-card">
+        <div class="mcp-name"><div class="dot"></div>Google Calendar</div>
+        <div class="required">Required</div>
+        <p>Read your schedule; use it in meeting prep and briefing skills</p>
+      </div>
+      <div class="mcp-card">
+        <div class="mcp-name"><div class="dot"></div>Slack</div>
+        <div class="optional">Optional</div>
+        <p>Read channels and DMs; surface context for meeting prep</p>
+      </div>
+    </div>
+
+    <div class="instruction-card" style="margin-top: 24px;">
+      <div class="card-header">
+        <div class="card-num">A</div>
+        <span>Open MCP settings in Claude Code</span>
+      </div>
+      <div class="card-body">
+        <p>In Claude Code, click the <strong>plug/connector icon</strong> in the left sidebar, or go to <strong>Settings → MCP Servers</strong>. This is where you manage all your app connections.</p>
+        <div class="screenshot-placeholder">
+          <div class="icon">🖼️</div>
+          <div class="label">Screenshot: MCP Servers panel in Claude Code</div>
+          <div class="caption">Settings → MCP Servers — you'll see a list of connected apps (empty to start)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="instruction-card">
+      <div class="card-header">
+        <div class="card-num">B</div>
+        <span>Add Google Drive MCP</span>
+      </div>
+      <div class="card-body">
+        <p>Click <strong>Add MCP Server</strong> (or the + button). Search for <strong>Google Drive</strong> and select it. Click <strong>Connect</strong> and sign in with your Google account when prompted. Grant the requested permissions.</p>
+        <div class="screenshot-placeholder">
+          <div class="icon">🖼️</div>
+          <div class="label">Screenshot: Adding Google Drive MCP</div>
+          <div class="caption">Search "Google Drive" → Connect → sign in with Google → Allow</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="instruction-card">
+      <div class="card-header">
+        <div class="card-num">C</div>
+        <span>Add Gmail MCP</span>
+      </div>
+      <div class="card-body">
+        <p>Repeat the same process: click <strong>Add MCP Server</strong>, search <strong>Gmail</strong>, connect, and sign in. Use the same Google account.</p>
+        <div class="screenshot-placeholder">
+          <div class="icon">🖼️</div>
+          <div class="label">Screenshot: Adding Gmail MCP</div>
+          <div class="caption">Add MCP Server → search "Gmail" → Connect → sign in</div>
+        </div>
+        <div class="callout warn">
+          <span class="icon">⚠️</span>
+          <p>You'll see a Google permissions screen. Read it and click <strong>Allow</strong> — Claude needs this to be able to search your emails during the workshop.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="instruction-card">
+      <div class="card-header">
+        <div class="card-num">D</div>
+        <span>Add Google Calendar MCP</span>
+      </div>
+      <div class="card-body">
+        <p>Same again: <strong>Add MCP Server → Google Calendar → Connect → Allow</strong>. Same Google account.</p>
+        <div class="screenshot-placeholder">
+          <div class="icon">🖼️</div>
+          <div class="label">Screenshot: Adding Google Calendar MCP</div>
+          <div class="caption">Add MCP Server → search "Google Calendar" → Connect → Allow</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="instruction-card">
+      <div class="card-header">
+        <div class="card-num">E</div>
+        <span>Add Slack MCP (optional but recommended)</span>
+      </div>
+      <div class="card-body">
+        <p>Click <strong>Add MCP Server → Slack → Connect</strong>. You'll be asked to sign in to your Slack workspace. Choose <strong>GetFabricTalk.slack.com</strong>.</p>
+        <div class="screenshot-placeholder">
+          <div class="icon">🖼️</div>
+          <div class="label">Screenshot: Adding Slack MCP</div>
+          <div class="caption">Add MCP Server → Slack → Connect → sign in to GetFabricTalk workspace</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="instruction-card">
+      <div class="card-header">
+        <div class="card-num">F</div>
+        <span>Set permissions to "Ask before acting"</span>
+      </div>
+      <div class="card-body">
+        <p>For each MCP you connected, click the <strong>gear/settings icon</strong> next to it and make sure the permission mode is set to <strong>"Ask"</strong> or <strong>"Ask before sending"</strong>. This means Claude will always ask you before sending any email or posting any message.</p>
+        <div class="screenshot-placeholder">
+          <div class="icon">🖼️</div>
+          <div class="label">Screenshot: MCP permission settings</div>
+          <div class="caption">Click the gear next to each MCP → set to "Ask" mode</div>
+        </div>
+        <div class="callout tip">
+          <span class="icon">💡</span>
+          <p>This is important — it means Claude drafts and plans, but you always have the final say before anything gets sent or changed.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DONE -->
+  <div class="done-box">
+    <div class="check">✅</div>
+    <h2>You're all set for the workshop!</h2>
+    <p>If anything didn't work, make a note of where you got stuck — we'll go through it together at the start of the session. Even partially set up is fine.</p>
+  </div>
+
+</main>
+
+<footer>
+  Claude Code 101 · AI Champions Workshop · Questions? Reach out before the workshop.
+</footer>
+
+</body>
+</html>
