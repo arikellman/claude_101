@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Claude Code 101 — Workshop Setup Guide</title>
+  <title>Claude 101 — Workshop Setup Guide</title>
   <style>
     :root {
       --orange: #E8632A;
@@ -202,6 +202,15 @@
     .card-body p:last-child { margin-bottom: 0; }
     .card-body strong { color: var(--dark); }
 
+    /* SCREENSHOT IMAGE */
+    .screenshot-img {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      margin-top: 14px;
+      display: block;
+    }
+
     /* SCREENSHOT PLACEHOLDER */
     .screenshot-placeholder {
       background: #F0F4F8;
@@ -369,25 +378,24 @@
 
 <header>
   <div class="badge">Pre-Workshop Setup</div>
-  <h1>Claude Code <span>101</span></h1>
+  <h1>Claude <span>101</span></h1>
   <p>Complete these steps before the workshop. Takes about 15–20 minutes.</p>
 </header>
 
 <nav class="progress-bar">
   <a href="#prereqs"><span class="num">0</span> Prerequisites</a>
-  <a href="#step1"><span class="num">1</span> Create Folder</a>
-  <a href="#step2"><span class="num">2</span> Init Git</a>
-  <a href="#step3"><span class="num">3</span> CLAUDE.md</a>
-  <a href="#step4"><span class="num">4</span> Co-work</a>
-  <a href="#step5"><span class="num">5</span> Connect MCPs</a>
+  <a href="#step1"><span class="num">1</span> Create Project</a>
+  <a href="#step2"><span class="num">2</span> Connect Apps</a>
+  <a href="#step3"><span class="num">3</span> Project Ideas</a>
 </nav>
 
 <main>
 
   <!-- INTRO -->
   <div class="intro-box">
-    <h2>Why do this before the workshop?</h2>
-    <p>The workshop is hands-on from minute one. If your environment isn't set up, you'll spend the first hour watching instead of building. This guide walks you through everything step by step — no technical experience needed.</p>
+    <h2>Claude has three modes — today we're setting up Co-work</h2>
+    <p><strong>Chat</strong> is the AI assistant you already know — great for questions, drafting, and thinking through problems. <strong>Co-work</strong> connects Claude to your real tools — email, calendar, Drive, Slack — so it can do actual work alongside you. <strong>Code</strong> is purpose-built for technical and coding tasks.</p>
+    <p>This workshop focuses on <strong>Co-work</strong>. The setup below gets you ready to use it from day one.</p>
     <ul>
       <li>Follow the steps in order — each one builds on the last</li>
       <li>If you get stuck, note where and we'll sort it at the start of the workshop</li>
@@ -397,28 +405,23 @@
 
   <!-- PREREQUISITES -->
   <section class="prereq-section" id="prereqs">
-    <h3>⚙️ Before you start — install Claude Code <span class="step-time">⏱ ~5 min</span></h3>
+    <h3>⚙️ Before you start — install Claude <span class="step-time">⏱ ~5 min</span></h3>
     <div class="prereq-item">
       <div class="prereq-icon">💻</div>
       <div>
-        <h4>Download Claude Code Desktop App</h4>
+        <h4>Download the Claude Desktop App</h4>
         <p>Go to <a href="https://claude.ai/download" target="_blank">claude.ai/download</a> and download the app for your operating system (Windows or Mac). Install it like any other app.</p>
-        <div class="screenshot-placeholder">
-          <div class="icon">🖼️</div>
-          <div class="label">Screenshot: Claude Code download page</div>
-          <div class="caption">claude.ai/download — select your OS and click Download</div>
-        </div>
+        <img src="images/01-download.png" alt="Claude download page showing Download for Windows button" class="screenshot-img" />
       </div>
     </div>
     <div class="prereq-item">
       <div class="prereq-icon">🔑</div>
       <div>
-        <h4>Sign in with your Anthropic / Claude account</h4>
-        <p>Open the app and sign in. Use the same account you use at claude.ai. If you don't have one, create a free account first.</p>
-        <div class="screenshot-placeholder">
-          <div class="icon">🖼️</div>
-          <div class="label">Screenshot: Claude Code sign-in screen</div>
-          <div class="caption">Click "Sign in" and use your claude.ai credentials</div>
+        <h4>Sign in with your Fabric account</h4>
+        <p>Open the app and sign in using your <strong>@getfabric.com</strong> email address. This connects you to the Fabric team plan — do not use a personal email or you'll be on a free account without the full feature set.</p>
+        <div class="callout warn" style="margin-top: 10px;">
+          <span class="icon">⚠️</span>
+          <p>If you don't yet have a Claude account under your Fabric email, create one at <strong>claude.ai</strong> using your <strong>@getfabric.com</strong> address first, then sign in to the app.</p>
         </div>
       </div>
     </div>
@@ -429,8 +432,8 @@
     <div class="step-header">
       <div class="step-number">1</div>
       <div class="step-title">
-        <h2>Create your Claude folder</h2>
-        <p>A dedicated folder keeps all your Claude files, skills, and configs in one place</p>
+        <h2>Create a Co-work project</h2>
+        <p>A project is your persistent workspace — Claude remembers your context and connected tools across every session</p>
         <div class="step-time">⏱ ~2 min</div>
       </div>
     </div>
@@ -438,15 +441,14 @@
     <div class="instruction-card">
       <div class="card-header">
         <div class="card-num">A</div>
-        <span>Create a new folder on your Desktop</span>
+        <span>Start a new project</span>
       </div>
       <div class="card-body">
-        <p><strong>Windows:</strong> Right-click anywhere on your Desktop → <strong>New → Folder</strong>. Name it <strong>my-agent</strong>.</p>
-        <p><strong>Mac:</strong> Right-click on your Desktop → <strong>New Folder</strong>. Name it <strong>my-agent</strong>.</p>
-        <div class="screenshot-placeholder">
-          <div class="icon">🖼️</div>
-          <div class="label">Screenshot: Creating a new folder on the Desktop</div>
-          <div class="caption">Right-click → New Folder → name it "my-agent"</div>
+        <p>In the Claude desktop app, click <strong>Work in a project</strong> at the bottom of the prompt box, then click <strong>+ Create new project</strong>. Choose <strong>Start from scratch</strong>.</p>
+        <img src="images/02-Create new project.png" alt="Create a new project dialog showing Start from scratch, Import a project, and Use an existing folder options" class="screenshot-img" />
+        <div class="callout tip">
+          <span class="icon">💡</span>
+          <p><strong>Start from scratch</strong> creates a fresh project folder on your computer. <strong>Import a project</strong> brings over a project you already started in Chat. <strong>Use an existing folder</strong> is for if you already have a folder set up.</p>
         </div>
       </div>
     </div>
@@ -454,19 +456,29 @@
     <div class="instruction-card">
       <div class="card-header">
         <div class="card-num">B</div>
-        <span>Open that folder in Claude Code</span>
+        <span>Fill in your project details</span>
       </div>
       <div class="card-body">
-        <p>In Claude Code, click the <strong>folder icon</strong> in the top-left corner (or go to <strong>File → Open Folder</strong>). Navigate to your Desktop and select the <strong>my-agent</strong> folder.</p>
-        <div class="callout tip">
-          <span class="icon">💡</span>
-          <p>This tells Claude Code "this is your workspace." Everything you build lives here, and Claude will always know where to look.</p>
-        </div>
-        <div class="screenshot-placeholder">
-          <div class="icon">🖼️</div>
-          <div class="label">Screenshot: Claude Code — Open Folder dialog</div>
-          <div class="caption">File → Open Folder → select "my-agent" on your Desktop</div>
-        </div>
+        <p>You'll see a form with a few fields. Fill them in as follows:</p>
+        <img src="images/03-start new project.png" alt="Start a new project form with Name, Instructions, Add files, and project location fields" class="screenshot-img" />
+        <ul style="margin-top: 14px; padding-left: 20px;">
+          <li style="font-size: 14px; color: var(--mid); margin-bottom: 8px;"><strong>Name</strong> (required) — call it <strong>my-agent</strong></li>
+          <li style="font-size: 14px; color: var(--mid); margin-bottom: 8px;"><strong>Instructions</strong> — this is Claude's memory for the project. Skip it for now — you'll fill it in during Step 2.</li>
+          <li style="font-size: 14px; color: var(--mid); margin-bottom: 8px;"><strong>Add files</strong> — leave blank for now</li>
+          <li style="font-size: 14px; color: var(--mid); margin-bottom: 8px;"><strong>Choose project location</strong> — leave as the default</li>
+        </ul>
+        <p>Click <strong>Create</strong> when done.</p>
+      </div>
+    </div>
+
+    <div class="instruction-card">
+      <div class="card-header">
+        <div class="card-num">C</div>
+        <span>Your project is ready</span>
+      </div>
+      <div class="card-body">
+        <p>You'll land in your new project. Notice the project name badge at the bottom of the prompt — that confirms you're working inside <strong>my-agent</strong>, not in a general chat.</p>
+        <img src="images/04-New project chosen.png" alt="Project view showing the project name badge at the bottom of the prompt area" class="screenshot-img" />
       </div>
     </div>
   </section>
@@ -476,170 +488,15 @@
     <div class="step-header">
       <div class="step-number">2</div>
       <div class="step-title">
-        <h2>Initialize Git</h2>
-        <p>Git is like a "save history" for your folder — it tracks every change so you can always go back</p>
-        <div class="step-time">⏱ ~2 min</div>
-      </div>
-    </div>
-
-    <div class="callout info">
-      <span class="icon">ℹ️</span>
-      <p><strong>Not technical?</strong> Don't worry — you only need to do this once, and you can just copy-paste the command below. Think of it as turning on autosave.</p>
-    </div>
-
-    <div class="instruction-card">
-      <div class="card-header">
-        <div class="card-num">A</div>
-        <span>Open the terminal inside Claude Code</span>
-      </div>
-      <div class="card-body">
-        <p>In Claude Code, look for a <strong>Terminal</strong> tab at the bottom of the screen (or go to <strong>View → Terminal</strong>). Click it to open a command window.</p>
-        <div class="screenshot-placeholder">
-          <div class="icon">🖼️</div>
-          <div class="label">Screenshot: Opening the Terminal in Claude Code</div>
-          <div class="caption">View → Terminal — a panel opens at the bottom of the screen</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="instruction-card">
-      <div class="card-header">
-        <div class="card-num">B</div>
-        <span>Run the git init command</span>
-      </div>
-      <div class="card-body">
-        <p>Click in the terminal area, then type exactly this and press <strong>Enter</strong>:</p>
-        <div class="code-block"><span class="cmd">git init</span></div>
-        <p>You should see a message like: <em>"Initialized empty Git repository in..."</em> — that means it worked.</p>
-        <div class="screenshot-placeholder">
-          <div class="icon">🖼️</div>
-          <div class="label">Screenshot: Terminal showing "git init" success message</div>
-          <div class="caption">You should see "Initialized empty Git repository in C:/Users/.../my-agent/.git/"</div>
-        </div>
-        <div class="callout warn">
-          <span class="icon">⚠️</span>
-          <p>If you see "git is not recognized" — Git might not be installed. Download it from <strong>git-scm.com</strong> and try again, or flag it for the workshop.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- STEP 3 -->
-  <section class="step-section" id="step3">
-    <div class="step-header">
-      <div class="step-number">3</div>
-      <div class="step-title">
-        <h2>Create your CLAUDE.md file</h2>
-        <p>This is Claude's memory — it tells Claude who you are, what you do, and how you like to work</p>
+        <h2>Connect your apps</h2>
+        <p>Connectors let Claude read and interact with your real tools — Gmail, Drive, Calendar, Slack</p>
         <div class="step-time">⏱ ~5 min</div>
       </div>
     </div>
 
     <div class="callout info">
       <span class="icon">ℹ️</span>
-      <p>CLAUDE.md is a text file that Claude reads at the start of every session. It's the difference between Claude acting like a blank slate every time vs. knowing your name, role, and preferences.</p>
-    </div>
-
-    <div class="instruction-card">
-      <div class="card-header">
-        <div class="card-num">A</div>
-        <span>Use an AI chatbot to generate your CLAUDE.md</span>
-      </div>
-      <div class="card-body">
-        <p>Open <strong>claude.ai</strong> or <strong>Gemini</strong> in your browser and paste in this prompt. Answer its questions naturally — the more detail, the better.</p>
-        <div class="prompt-box">
-          <div class="label">Copy this prompt</div>
-          <p>"I am setting up a personal AI agent. Ask me a series of questions about who I am, my job, my responsibilities, and how I prefer to communicate. Then use my answers to generate a CLAUDE.md file — a configuration file that will tell the AI agent everything it needs to know about me to be genuinely useful."</p>
-        </div>
-        <p>Once it generates the file, <strong>copy the full output.</strong></p>
-        <div class="screenshot-placeholder">
-          <div class="icon">🖼️</div>
-          <div class="label">Screenshot: Claude.ai generating CLAUDE.md content</div>
-          <div class="caption">The chatbot will ask you questions, then produce a ready-to-use CLAUDE.md file</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="instruction-card">
-      <div class="card-header">
-        <div class="card-num">B</div>
-        <span>Save it as CLAUDE.md in your folder</span>
-      </div>
-      <div class="card-body">
-        <p>In Claude Code, go to <strong>File → New File</strong>. Paste the content from the chatbot. Then save it as <strong>CLAUDE.md</strong> (all caps, exactly) inside your <strong>my-agent</strong> folder.</p>
-        <div class="screenshot-placeholder">
-          <div class="icon">🖼️</div>
-          <div class="label">Screenshot: Saving CLAUDE.md in Claude Code</div>
-          <div class="caption">File → New File → paste content → Save As "CLAUDE.md" in the my-agent folder</div>
-        </div>
-        <div class="callout tip">
-          <span class="icon">💡</span>
-          <p>The file name must be exactly <strong>CLAUDE.md</strong> — capital letters, no spaces. That's how Claude Code knows to auto-load it.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- STEP 4 -->
-  <section class="step-section" id="step4">
-    <div class="step-header">
-      <div class="step-number">4</div>
-      <div class="step-title">
-        <h2>Enable Co-work &amp; restart</h2>
-        <p>Co-work unlocks collaborative features — it needs to be on before you start building</p>
-        <div class="step-time">⏱ ~1 min</div>
-      </div>
-    </div>
-
-    <div class="instruction-card">
-      <div class="card-header">
-        <div class="card-num">A</div>
-        <span>Enable Co-work in settings</span>
-      </div>
-      <div class="card-body">
-        <p>In Claude Code, open <strong>Settings</strong> (gear icon or <strong>Claude Code → Settings</strong> in the menu bar). Look for <strong>Co-work</strong> or <strong>Cowork</strong> and toggle it <strong>on</strong>.</p>
-        <div class="screenshot-placeholder">
-          <div class="icon">🖼️</div>
-          <div class="label">Screenshot: Settings panel with Co-work toggle</div>
-          <div class="caption">Settings → find "Co-work" → toggle on</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="instruction-card">
-      <div class="card-header">
-        <div class="card-num">B</div>
-        <span>Restart Claude Code</span>
-      </div>
-      <div class="card-body">
-        <p>Fully close and reopen Claude Code. This makes sure Co-work is active before your first session.</p>
-        <div class="callout warn">
-          <span class="icon">⚠️</span>
-          <p>Don't just close the window — make sure the app is fully quit (right-click the taskbar icon → Quit, or Cmd+Q on Mac).</p>
-        </div>
-        <div class="screenshot-placeholder">
-          <div class="icon">🖼️</div>
-          <div class="label">Screenshot: Fully quitting Claude Code</div>
-          <div class="caption">Right-click the Claude Code icon in taskbar/dock → Quit</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- STEP 5 -->
-  <section class="step-section" id="step5">
-    <div class="step-header">
-      <div class="step-number">5</div>
-      <div class="step-title">
-        <h2>Connect your apps (MCPs)</h2>
-        <p>MCPs are connectors that let Claude read and interact with your real tools — Gmail, Drive, Calendar, Slack</p>
-        <div class="step-time">⏱ ~5 min</div>
-      </div>
-    </div>
-
-    <div class="callout info">
-      <span class="icon">ℹ️</span>
-      <p><strong>What is an MCP?</strong> Think of it as a plug adapter. Claude Code can't access Gmail by default — but when you install the Gmail MCP, you give Claude permission to search and read your emails on your behalf. You stay in control: Claude asks before doing anything.</p>
+      <p><strong>What is a connector?</strong> Think of it as a plug adapter. Claude can't access Gmail by default — but when you connect Gmail, you give Claude permission to search and read your emails on your behalf. You stay in control: Claude asks before doing anything.</p>
     </div>
 
     <p style="font-size: 15px; color: var(--mid); margin-bottom: 16px;">Connect these four — the first three are required, Slack is optional but recommended:</p>
@@ -670,48 +527,36 @@
     <div class="instruction-card" style="margin-top: 24px;">
       <div class="card-header">
         <div class="card-num">A</div>
-        <span>Open MCP settings in Claude Code</span>
+        <span>Open Customize</span>
       </div>
       <div class="card-body">
-        <p>In Claude Code, click the <strong>plug/connector icon</strong> in the left sidebar, or go to <strong>Settings → MCP Servers</strong>. This is where you manage all your app connections.</p>
-        <div class="screenshot-placeholder">
-          <div class="icon">🖼️</div>
-          <div class="label">Screenshot: MCP Servers panel in Claude Code</div>
-          <div class="caption">Settings → MCP Servers — you'll see a list of connected apps (empty to start)</div>
-        </div>
+        <p>In the left sidebar, click <strong>Customize</strong>. This is where skills, connectors, and plugins live.</p>
+        <img src="images/06-customize.png" alt="Left sidebar showing the Customize option highlighted under the Cowork tab" class="screenshot-img" />
+        <p style="margin-top: 14px;">On the Customize screen, click <strong>Connect your apps</strong> — this opens the connectors panel where you can link Claude to your tools.</p>
+        <img src="images/05-connections.png" alt="Customize Claude panel showing Connect your apps, Create new skills, and Browse plugins options" class="screenshot-img" />
       </div>
     </div>
 
     <div class="instruction-card">
       <div class="card-header">
         <div class="card-num">B</div>
-        <span>Add Google Drive MCP</span>
+        <span>Connect Google Drive</span>
       </div>
       <div class="card-body">
-        <p>Click <strong>Add MCP Server</strong> (or the + button). Search for <strong>Google Drive</strong> and select it. Click <strong>Connect</strong> and sign in with your Google account when prompted. Grant the requested permissions.</p>
-        <div class="screenshot-placeholder">
-          <div class="icon">🖼️</div>
-          <div class="label">Screenshot: Adding Google Drive MCP</div>
-          <div class="caption">Search "Google Drive" → Connect → sign in with Google → Allow</div>
-        </div>
+        <p>In the connectors list, find <strong>Google Drive</strong> and click <strong>Connect</strong>. Sign in with your Google account when prompted and grant the requested permissions.</p>
       </div>
     </div>
 
     <div class="instruction-card">
       <div class="card-header">
         <div class="card-num">C</div>
-        <span>Add Gmail MCP</span>
+        <span>Connect Gmail</span>
       </div>
       <div class="card-body">
-        <p>Repeat the same process: click <strong>Add MCP Server</strong>, search <strong>Gmail</strong>, connect, and sign in. Use the same Google account.</p>
-        <div class="screenshot-placeholder">
-          <div class="icon">🖼️</div>
-          <div class="label">Screenshot: Adding Gmail MCP</div>
-          <div class="caption">Add MCP Server → search "Gmail" → Connect → sign in</div>
-        </div>
+        <p>Find <strong>Gmail</strong> in the connectors list and click <strong>Connect</strong>. Use the same Google account as Drive.</p>
         <div class="callout warn">
           <span class="icon">⚠️</span>
-          <p>You'll see a Google permissions screen. Read it and click <strong>Allow</strong> — Claude needs this to be able to search your emails during the workshop.</p>
+          <p>You'll see a Google permissions screen — read it and click <strong>Allow</strong>. Claude needs this access to search your emails during the workshop.</p>
         </div>
       </div>
     </div>
@@ -719,48 +564,85 @@
     <div class="instruction-card">
       <div class="card-header">
         <div class="card-num">D</div>
-        <span>Add Google Calendar MCP</span>
+        <span>Connect Google Calendar</span>
       </div>
       <div class="card-body">
-        <p>Same again: <strong>Add MCP Server → Google Calendar → Connect → Allow</strong>. Same Google account.</p>
-        <div class="screenshot-placeholder">
-          <div class="icon">🖼️</div>
-          <div class="label">Screenshot: Adding Google Calendar MCP</div>
-          <div class="caption">Add MCP Server → search "Google Calendar" → Connect → Allow</div>
-        </div>
+        <p>Find <strong>Google Calendar</strong> in the connectors list and click <strong>Connect</strong>. Same Google account, same process.</p>
       </div>
     </div>
 
     <div class="instruction-card">
       <div class="card-header">
         <div class="card-num">E</div>
-        <span>Add Slack MCP (optional but recommended)</span>
+        <span>Connect Slack (optional but recommended)</span>
       </div>
       <div class="card-body">
-        <p>Click <strong>Add MCP Server → Slack → Connect</strong>. You'll be asked to sign in to your Slack workspace. Choose <strong>GetFabricTalk.slack.com</strong>.</p>
-        <div class="screenshot-placeholder">
-          <div class="icon">🖼️</div>
-          <div class="label">Screenshot: Adding Slack MCP</div>
-          <div class="caption">Add MCP Server → Slack → Connect → sign in to GetFabricTalk workspace</div>
-        </div>
+        <p>Find <strong>Slack</strong> in the connectors list and click <strong>Connect</strong>. Sign in to your company Slack workspace when prompted.</p>
       </div>
     </div>
 
     <div class="instruction-card">
       <div class="card-header">
         <div class="card-num">F</div>
-        <span>Set permissions to "Ask before acting"</span>
+        <span>Confirm your permission settings</span>
       </div>
       <div class="card-body">
-        <p>For each MCP you connected, click the <strong>gear/settings icon</strong> next to it and make sure the permission mode is set to <strong>"Ask"</strong> or <strong>"Ask before sending"</strong>. This means Claude will always ask you before sending any email or posting any message.</p>
-        <div class="screenshot-placeholder">
-          <div class="icon">🖼️</div>
-          <div class="label">Screenshot: MCP permission settings</div>
-          <div class="caption">Click the gear next to each MCP → set to "Ask" mode</div>
+        <p>For each connector, permissions should already be set to <strong>"Ask before acting"</strong> by default in our org — meaning Claude will always confirm with you before sending an email, posting a message, or making any change.</p>
+        <div class="callout tip">
+          <span class="icon">💡</span>
+          <p>Take a moment to verify this is the case for each connector you've added. If anything looks different, flag it at the start of the workshop and we'll sort it together.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 3 -->
+  <section class="step-section" id="step3">
+    <div class="step-header">
+      <div class="step-number">3</div>
+      <div class="step-title">
+        <h2>Come with a project in mind</h2>
+        <p>The workshop is hands-on — you'll build something real. Spend a few minutes thinking about what that could be.</p>
+        <div class="step-time">⏱ ~5 min</div>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <span class="icon">ℹ️</span>
+      <p>During the workshop we'll set up your project together — including instructions, context, and your first prompt. The more specific your idea, the more you'll get out of the session.</p>
+    </div>
+
+    <div class="instruction-card">
+      <div class="card-header">
+        <div class="card-num">A</div>
+        <span>Think about a recurring task you'd like to automate or speed up</span>
+      </div>
+      <div class="card-body">
+        <p>Good Co-work projects are usually things you do repeatedly that require pulling context from multiple places — emails, docs, calendar, Slack. Some examples to get you thinking:</p>
+        <ul style="padding-left: 20px; margin-top: 8px;">
+          <li style="font-size: 14px; color: var(--mid); margin-bottom: 8px;">A daily or weekly briefing that summarizes what's on your plate</li>
+          <li style="font-size: 14px; color: var(--mid); margin-bottom: 8px;">Meeting prep — pulling relevant emails, docs, and context before a call</li>
+          <li style="font-size: 14px; color: var(--mid); margin-bottom: 8px;">A first-draft generator for recurring reports, updates, or outreach</li>
+          <li style="font-size: 14px; color: var(--mid); margin-bottom: 8px;">A tracker or digest for a specific workstream (deals, projects, customers)</li>
+          <li style="font-size: 14px; color: var(--mid); margin-bottom: 8px;">Anything where you currently spend time hunting for context before you can do the real work</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="instruction-card">
+      <div class="card-header">
+        <div class="card-num">B</div>
+        <span>Be ready to describe it in one sentence</span>
+      </div>
+      <div class="card-body">
+        <p>You don't need a detailed spec — just a clear enough idea that we can build it together in the room. Something like:</p>
+        <div class="prompt-box">
+          <div class="label">Example</div>
+          <p>"Every Monday morning I want a summary of my open deals, what's changed since last week, and what I need to follow up on — pulled from my email and calendar."</p>
         </div>
         <div class="callout tip">
           <span class="icon">💡</span>
-          <p>This is important — it means Claude drafts and plans, but you always have the final say before anything gets sent or changed.</p>
+          <p>The best projects are ones that would genuinely save you time if they existed. Don't aim for impressive — aim for useful.</p>
         </div>
       </div>
     </div>
@@ -776,7 +658,7 @@
 </main>
 
 <footer>
-  Claude Code 101 · AI Champions Workshop · Questions? Reach out before the workshop.
+  Claude 101 · AI Champions Workshop · Questions? Reach out before the workshop.
 </footer>
 
 </body>
