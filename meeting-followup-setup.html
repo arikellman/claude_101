@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Meeting Follow-Up Drafter — Setup Guide</title>
+  <style>
+    :root {
+      --orange: #E8632A;
+      --orange-light: #FDF0E8;
+      --dark: #1A1A1A;
+      --mid: #555;
+      --border: #E0E0E0;
+      --bg: #FAFAFA;
+      --white: #FFFFFF;
+      --green: #2D7D46;
+      --green-light: #EAF6EE;
+      --blue: #1A5FAD;
+      --blue-light: #EAF1FB;
+      --yellow: #F5A623;
+      --yellow-light: #FEF8EC;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--dark);
+      line-height: 1.6;
+    }
+
+    header {
+      background: var(--dark);
+      color: white;
+      padding: 48px 24px 40px;
+      text-align: center;
+    }
+    header .badge {
+      display: inline-block;
+      background: var(--orange);
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 100px;
+      margin-bottom: 16px;
+    }
+    header h1 { font-size: 32px; font-weight: 700; margin-bottom: 10px; }
+    header h1 span { color: var(--orange); }
+    header p { font-size: 16px; color: #AAA; max-width: 520px; margin: 0 auto; }
+
+    main {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    /* HOW IT WORKS */
+    .how-it-works {
+      background: var(--blue-light);
+      border: 1px solid #C0D8F5;
+      border-radius: 12px;
+      padding: 24px 28px;
+      margin-bottom: 48px;
+    }
+    .how-it-works h2 { font-size: 15px; font-weight: 700; color: var(--blue); margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .flow {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .flow-step {
+      background: white;
+      border: 1px solid #C0D8F5;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 14px;
+      color: #2A4A70;
+      font-weight: 500;
+      flex: 1;
+      min-width: 160px;
+      text-align: center;
+    }
+    .flow-step strong { display: block; font-size: 13px; color: var(--blue); margin-bottom: 2px; }
+    .flow-arrow { color: #7AABDF; font-size: 20px; flex-shrink: 0; }
+    .time-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: white;
+      border: 1px solid #C0D8F5;
+      border-radius: 100px;
+      padding: 4px 12px;
+      font-size: 13px;
+      color: var(--blue);
+      font-weight: 600;
+      margin-top: 16px;
+    }
+
+    /* STEP SECTIONS */
+    .step-section { margin-bottom: 56px; scroll-margin-top: 80px; }
+    .step-header { display: flex; align-items: flex-start; gap: 18px; margin-bottom: 24px; }
+    .step-number {
+      background: var(--orange);
+      color: white;
+      font-size: 18px;
+      font-weight: 800;
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .step-title h2 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+    .step-title p { font-size: 14px; color: var(--mid); }
+
+    .instruction-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    .card-header {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-header .dot {
+      width: 8px; height: 8px;
+      background: var(--orange);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .card-body { padding: 16px 20px; font-size: 14px; color: var(--mid); }
+    .card-body p { margin-bottom: 10px; }
+    .card-body p:last-child { margin-bottom: 0; }
+    .card-body ol, .card-body ul { padding-left: 20px; }
+    .card-body li { margin-bottom: 6px; }
+
+    code {
+      background: #F3F3F3;
+      border: 1px solid #E0E0E0;
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-family: 'SF Mono', 'Consolas', monospace;
+      font-size: 13px;
+      color: var(--dark);
+    }
+    pre {
+      background: #1A1A1A;
+      color: #E8E8E8;
+      border-radius: 8px;
+      padding: 16px 18px;
+      margin: 12px 0;
+      overflow-x: auto;
+      font-family: 'SF Mono', 'Consolas', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      position: relative;
+    }
+    .copy-btn {
+      position: absolute;
+      top: 10px; right: 10px;
+      background: #333;
+      color: #AAA;
+      border: 1px solid #444;
+      border-radius: 5px;
+      padding: 3px 10px;
+      font-size: 11px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s;
+    }
+    .copy-btn:hover { background: #444; color: white; }
+
+    .note {
+      background: var(--yellow-light);
+      border: 1px solid #F0D090;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: #7A5500;
+      margin-top: 12px;
+    }
+    .note strong { color: #5A3E00; }
+
+    /* DAILY USE SECTION */
+    .daily-use { background: var(--green-light); border: 1px solid #B0DFC0; border-radius: 12px; padding: 24px 28px; margin-bottom: 48px; }
+    .daily-use h2 { font-size: 15px; font-weight: 700; color: var(--green); margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    .email-mock {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+    .email-mock-header {
+      background: #F5F5F5;
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
+    }
+    .email-mock-header .field { display: flex; gap: 8px; margin-bottom: 4px; }
+    .email-mock-header .field:last-child { margin-bottom: 0; }
+    .email-mock-header .label { color: var(--mid); font-weight: 600; min-width: 48px; }
+    .email-mock-header .value { color: var(--dark); }
+    .email-mock-body { padding: 14px 16px; color: var(--mid); line-height: 1.7; }
+
+    .reply-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-top: 4px;
+    }
+    .reply-option {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+    .reply-option .cmd {
+      display: inline-block;
+      background: var(--dark);
+      color: white;
+      font-family: monospace;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-bottom: 6px;
+    }
+    .reply-option p { font-size: 13px; color: var(--mid); }
+
+    /* LINK BUTTON */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--orange);
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: opacity 0.15s;
+    }
+    .btn:hover { opacity: 0.88; }
+    .btn-ghost {
+      background: transparent;
+      border: 1.5px solid var(--border);
+      color: var(--dark);
+    }
+    .btn-ghost:hover { border-color: var(--orange); color: var(--orange); opacity: 1; }
+
+    .btn-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="badge">Fabric AI Tools</div>
+  <h1>Meeting <span>Follow-Up</span> Drafter</h1>
+  <p>Send a quick email after a meeting. Get a ready-to-send draft back within 30 minutes.</p>
+</header>
+
+<main>
+
+  <!-- HOW IT WORKS -->
+  <div class="how-it-works">
+    <h2>How it works</h2>
+    <div class="flow">
+      <div class="flow-step">
+        <strong>During / after meeting</strong>
+        Email yourself with subject<br><code>MTG: Meeting Name</code>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <strong>Within 30 min</strong>
+        You get a draft follow-up in your inbox — summary, decisions, action items
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <strong>One reply</strong>
+        Reply <code>SEND</code> and it goes to all attendees. Or send edits.
+      </div>
+    </div>
+    <div class="time-badge">⏱ Setup takes about 10 minutes</div>
+  </div>
+
+  <!-- PREREQUISITE NOTE -->
+  <div class="note" style="margin-bottom: 40px;">
+    <strong>Before you start:</strong> You need the <code>my-agent</code> folder on your machine with the morning briefing already working. If you haven't done that yet, do that first.
+  </div>
+
+  <!-- STEP 1: GET FILES -->
+  <div class="step-section" id="step1">
+    <div class="step-header">
+      <div class="step-number">1</div>
+      <div class="step-title">
+        <h2>Get the latest files</h2>
+        <p>Pull the new meeting follow-up scripts into your existing setup</p>
+      </div>
+    </div>
+    <div class="instruction-card">
+      <div class="card-header"><div class="dot"></div>Open a terminal in your my-agent folder and run:</div>
+      <div class="card-body">
+        <pre><code>git pull</code><button class="copy-btn" onclick="copy(this,'git pull')">Copy</button></pre>
+        <p>This downloads the new <code>meeting_followup/</code> folder and all its scripts.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: INSTALL PACKAGE -->
+  <div class="step-section" id="step2">
+    <div class="step-header">
+      <div class="step-number">2</div>
+      <div class="step-title">
+        <h2>Install one new package</h2>
+        <p>The AI drafting uses the Anthropic SDK</p>
+      </div>
+    </div>
+    <div class="instruction-card">
+      <div class="card-header"><div class="dot"></div>In the same terminal:</div>
+      <div class="card-body">
+        <pre><code>pip install anthropic</code><button class="copy-btn" onclick="copy(this,'pip install anthropic')">Copy</button></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: API KEY -->
+  <div class="step-section" id="step3">
+    <div class="step-header">
+      <div class="step-number">3</div>
+      <div class="step-title">
+        <h2>Add your Anthropic API key</h2>
+        <p>The drafter calls Claude to write the follow-up email</p>
+      </div>
+    </div>
+    <div class="instruction-card">
+      <div class="card-header"><div class="dot"></div>Get your key</div>
+      <div class="card-body">
+        <p>Go to <a href="https://console.anthropic.com" target="_blank" style="color:var(--blue)">console.anthropic.com</a> → API Keys → Create Key. Copy the key (starts with <code>sk-ant-</code>).</p>
+      </div>
+    </div>
+    <div class="instruction-card">
+      <div class="card-header"><div class="dot"></div>Set it as an environment variable (run in terminal, replace with your key):</div>
+      <div class="card-body">
+        <pre><code>setx ANTHROPIC_API_KEY "sk-ant-YOUR-KEY-HERE"</code><button class="copy-btn" onclick="copy(this,'setx ANTHROPIC_API_KEY \"sk-ant-YOUR-KEY-HERE\"')">Copy</button></pre>
+        <p>Close and reopen your terminal after running this — the variable won't be active until you do.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4: REAUTH -->
+  <div class="step-section" id="step4">
+    <div class="step-header">
+      <div class="step-number">4</div>
+      <div class="step-title">
+        <h2>Re-authenticate Google</h2>
+        <p>The tool now needs access to your Google Calendar — takes 30 seconds</p>
+      </div>
+    </div>
+    <div class="instruction-card">
+      <div class="card-header"><div class="dot"></div>Delete the old token and re-auth:</div>
+      <div class="card-body">
+        <pre><code>del google_token.json
+python run_auth.py</code><button class="copy-btn" onclick="copy(this,'del google_token.json\npython run_auth.py')">Copy</button></pre>
+        <p>A browser window opens. Sign in with your Fabric Google account and click <strong>Allow</strong> on all permissions. Come back here when done.</p>
+        <div class="note"><strong>Why?</strong> Calendar access was added so the tool can look up who was in each meeting automatically — you don't have to list attendees yourself.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 5: STYLE PROFILE -->
+  <div class="step-section" id="step5">
+    <div class="step-header">
+      <div class="step-number">5</div>
+      <div class="step-title">
+        <h2>Build your style profile</h2>
+        <p>Scans your sent mail once so drafts sound like you — never runs again</p>
+      </div>
+    </div>
+    <div class="instruction-card">
+      <div class="card-header"><div class="dot"></div>Run from your my-agent folder:</div>
+      <div class="card-body">
+        <pre><code>python -m meeting_followup.style_init</code><button class="copy-btn" onclick="copy(this,'python -m meeting_followup.style_init')">Copy</button></pre>
+        <p>Takes about 15 seconds. Creates a <code>meeting_followup/jack_style_profile.md</code> file that the drafter uses every time. You can edit this file manually if you want to tweak the style.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 6: SCHEDULE -->
+  <div class="step-section" id="step6">
+    <div class="step-header">
+      <div class="step-number">6</div>
+      <div class="step-title">
+        <h2>Schedule the agent</h2>
+        <p>Set it to run every 30 minutes — just like your morning briefing</p>
+      </div>
+    </div>
+    <div class="instruction-card">
+      <div class="card-header"><div class="dot"></div>In Claude Code, run:</div>
+      <div class="card-body">
+        <pre><code>/schedule</code><button class="copy-btn" onclick="copy(this,'/schedule')">Copy</button></pre>
+        <p>When Claude asks what the task should do, paste this prompt:</p>
+        <pre style="white-space:pre-wrap">Run the meeting follow-up processor for Avi Jacoby.
+
+Working directory: C:\Users\[YOUR-USERNAME]\Desktop\my-agent
+(Replace [YOUR-USERNAME] with your actual Windows username)
+
+Run:
+python -m meeting_followup.process_meeting
+
+Report the output. If there are errors, report them clearly but do not fix code automatically.</pre>
+        <p>Tell it to run <strong>every 30 minutes</strong>.</p>
+        <div class="note"><strong>Replace <code>[YOUR-USERNAME]</code></strong> with your actual Windows username (e.g., <code>avi.jacoby</code>). You can confirm it by running <code>echo %USERNAME%</code> in a terminal.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAILY USE -->
+  <div class="daily-use" id="howto">
+    <h2>How to use it every day</h2>
+
+    <p style="font-size:15px; color:#1A4A2A; margin-bottom:16px;">
+      Email yourself during or after any meeting. The subject line is the only thing that matters.
+    </p>
+
+    <div class="email-mock">
+      <div class="email-mock-header">
+        <div class="field"><span class="label">To:</span><span class="value">avi.jacoby@getfabric.com</span></div>
+        <div class="field"><span class="label">Subject:</span><span class="value" style="font-weight:600; color:#1A1A1A">MTG: Budget Review with Finance</span></div>
+      </div>
+      <div class="email-mock-body">
+        Discussed Q3 forecast variance.<br>
+        Agreed to move $200k from opex to capex.<br>
+        Sarah to update the model by Friday.<br>
+        Need to revisit headcount assumptions next week.
+        <br><br>
+        <span style="color:#AAA">CC: sarah.chen@getfabric.com</span>
+        <span style="font-size:12px; color:#CCC"> ← optional: add anyone not on the invite</span>
+      </div>
+    </div>
+
+    <p style="font-size:14px; color:#2D5A3A; margin-bottom:16px;"><strong>Within 30 minutes</strong>, you'll get a draft follow-up in your inbox. Reply with one of:</p>
+
+    <div class="reply-options">
+      <div class="reply-option">
+        <div class="cmd">SEND</div>
+        <p>Sends to all meeting attendees exactly as drafted</p>
+      </div>
+      <div class="reply-option">
+        <div class="cmd">CANCEL</div>
+        <p>Drops it — no follow-up sent</p>
+      </div>
+      <div class="reply-option">
+        <div class="cmd">Any edits</div>
+        <p>Just type your changes — the agent applies them and sends automatically</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXCLUSIONS NOTE -->
+  <div class="note" style="margin-bottom: 40px;">
+    <strong>Auto-skipped meetings:</strong> Fabric IL Weekly and any calendar events with no other participants (solo blocks, focus time, etc.) are ignored automatically. No follow-up will be drafted for those.
+  </div>
+
+  <!-- FILES -->
+  <div class="step-section">
+    <div class="step-header">
+      <div class="step-number" style="background:var(--mid)">📁</div>
+      <div class="step-title">
+        <h2>Files reference</h2>
+        <p>What was installed and what each file does</p>
+      </div>
+    </div>
+    <div class="instruction-card">
+      <div class="card-body">
+        <table style="width:100%; border-collapse:collapse; font-size:13px;">
+          <thead>
+            <tr style="border-bottom:1px solid var(--border)">
+              <th style="text-align:left; padding:8px 0; color:var(--mid); font-weight:600">File</th>
+              <th style="text-align:left; padding:8px 12px; color:var(--mid); font-weight:600">Purpose</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid #F0F0F0">
+              <td style="padding:10px 0"><code>meeting_followup/process_meeting.py</code></td>
+              <td style="padding:10px 12px; color:var(--mid)">Main processor — runs every 30 min, handles everything</td>
+            </tr>
+            <tr style="border-bottom:1px solid #F0F0F0">
+              <td style="padding:10px 0"><code>meeting_followup/style_init.py</code></td>
+              <td style="padding:10px 12px; color:var(--mid)">One-time style scanner — run once during setup</td>
+            </tr>
+            <tr style="border-bottom:1px solid #F0F0F0">
+              <td style="padding:10px 0"><code>meeting_followup/jack_style_profile.md</code></td>
+              <td style="padding:10px 12px; color:var(--mid)">Your style guide — edit this to adjust tone and format</td>
+            </tr>
+            <tr style="border-bottom:1px solid #F0F0F0">
+              <td style="padding:10px 0"><code>meeting_followup/calendar_utils.py</code></td>
+              <td style="padding:10px 12px; color:var(--mid)">Looks up meeting attendees from Google Calendar</td>
+            </tr>
+            <tr>
+              <td style="padding:10px 0"><code>meeting_followup/state.json</code></td>
+              <td style="padding:10px 12px; color:var(--mid)">Tracks which emails have been processed — don't edit manually</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="btn-row">
+      <a class="btn btn-ghost" href="https://github.com/arikellman/claude_101/tree/main/meeting_followup" target="_blank">View files on GitHub</a>
+    </div>
+  </div>
+
+</main>
+
+<script>
+function copy(btn, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied!';
+    btn.style.background = '#2D7D46';
+    btn.style.color = 'white';
+    setTimeout(() => {
+      btn.textContent = 'Copy';
+      btn.style.background = '#333';
+      btn.style.color = '#AAA';
+    }, 1500);
+  });
+}
+</script>
+
+</body>
+</html>
