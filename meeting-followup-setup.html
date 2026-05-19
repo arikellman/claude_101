@@ -297,51 +297,10 @@
     </div>
   </div>
 
-  <!-- STEP 2: INSTALL PACKAGE -->
+  <!-- STEP 2: REAUTH -->
   <div class="step-section" id="step2">
     <div class="step-header">
       <div class="step-number">2</div>
-      <div class="step-title">
-        <h2>Install one new package</h2>
-        <p>The AI drafting uses the Anthropic SDK</p>
-      </div>
-    </div>
-    <div class="instruction-card">
-      <div class="card-header"><div class="dot"></div>In the same terminal:</div>
-      <div class="card-body">
-        <pre><code>pip install anthropic</code><button class="copy-btn" onclick="copy(this,'pip install anthropic')">Copy</button></pre>
-      </div>
-    </div>
-  </div>
-
-  <!-- STEP 3: API KEY -->
-  <div class="step-section" id="step3">
-    <div class="step-header">
-      <div class="step-number">3</div>
-      <div class="step-title">
-        <h2>Add your Anthropic API key</h2>
-        <p>The drafter calls Claude to write the follow-up email</p>
-      </div>
-    </div>
-    <div class="instruction-card">
-      <div class="card-header"><div class="dot"></div>Get your key</div>
-      <div class="card-body">
-        <p>Go to <a href="https://console.anthropic.com" target="_blank" style="color:var(--blue)">console.anthropic.com</a> → API Keys → Create Key. Copy the key (starts with <code>sk-ant-</code>).</p>
-      </div>
-    </div>
-    <div class="instruction-card">
-      <div class="card-header"><div class="dot"></div>Set it as an environment variable (run in terminal, replace with your key):</div>
-      <div class="card-body">
-        <pre><code>setx ANTHROPIC_API_KEY "sk-ant-YOUR-KEY-HERE"</code><button class="copy-btn" onclick="copy(this,'setx ANTHROPIC_API_KEY \"sk-ant-YOUR-KEY-HERE\"')">Copy</button></pre>
-        <p>Close and reopen your terminal after running this — the variable won't be active until you do.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- STEP 4: REAUTH -->
-  <div class="step-section" id="step4">
-    <div class="step-header">
-      <div class="step-number">4</div>
       <div class="step-title">
         <h2>Re-authenticate Google</h2>
         <p>The tool now needs access to your Google Calendar — takes 30 seconds</p>
@@ -358,10 +317,10 @@ python run_auth.py</code><button class="copy-btn" onclick="copy(this,'del google
     </div>
   </div>
 
-  <!-- STEP 5: STYLE PROFILE -->
-  <div class="step-section" id="step5">
+  <!-- STEP 3: STYLE PROFILE -->
+  <div class="step-section" id="step3">
     <div class="step-header">
-      <div class="step-number">5</div>
+      <div class="step-number">3</div>
       <div class="step-title">
         <h2>Build your style profile</h2>
         <p>Scans your sent mail once so drafts sound like you — never runs again</p>
@@ -376,10 +335,10 @@ python run_auth.py</code><button class="copy-btn" onclick="copy(this,'del google
     </div>
   </div>
 
-  <!-- STEP 6: SCHEDULE -->
-  <div class="step-section" id="step6">
+  <!-- STEP 4: SCHEDULE -->
+  <div class="step-section" id="step4">
     <div class="step-header">
-      <div class="step-number">6</div>
+      <div class="step-number">4</div>
       <div class="step-title">
         <h2>Schedule the agent</h2>
         <p>Set it to run every 30 minutes — just like your morning briefing</p>
@@ -389,18 +348,8 @@ python run_auth.py</code><button class="copy-btn" onclick="copy(this,'del google
       <div class="card-header"><div class="dot"></div>In Claude Code, run:</div>
       <div class="card-body">
         <pre><code>/schedule</code><button class="copy-btn" onclick="copy(this,'/schedule')">Copy</button></pre>
-        <p>When Claude asks what the task should do, paste this prompt:</p>
-        <pre style="white-space:pre-wrap">Run the meeting follow-up processor for Avi Jacoby.
-
-Working directory: C:\Users\[YOUR-USERNAME]\Desktop\my-agent
-(Replace [YOUR-USERNAME] with your actual Windows username)
-
-Run:
-python -m meeting_followup.process_meeting
-
-Report the output. If there are errors, report them clearly but do not fix code automatically.</pre>
-        <p>Tell it to run <strong>every 30 minutes</strong>.</p>
-        <div class="note"><strong>Replace <code>[YOUR-USERNAME]</code></strong> with your actual Windows username (e.g., <code>avi.jacoby</code>). You can confirm it by running <code>echo %USERNAME%</code> in a terminal.</div>
+        <p>When Claude asks what the task should do, open <code>meeting_followup/scheduled_prompt.md</code> and paste its contents. Tell it to run <strong>every 30 minutes</strong>.</p>
+        <div class="note"><strong>One edit required:</strong> Replace <code>[YOUR-USERNAME]</code> in the prompt with your actual Windows username (e.g., <code>avi.jacoby</code>). Run <code>echo %USERNAME%</code> in a terminal if you're not sure.</div>
       </div>
     </div>
   </div>

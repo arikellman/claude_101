@@ -1,10 +1,14 @@
-"""Meeting follow-up processor. Runs every 30 min via scheduled agent.
+"""Meeting follow-up mechanics — Gmail, Calendar, state management.
 
-Flow:
-  1. Detect new "MTG: <name>" emails from Jack to himself
-  2. Look up calendar attendees, skip excluded meetings
-  3. Draft follow-up in Jack's style
-  4. Save as a Gmail Draft addressed to attendees — Jack reviews and sends
+No AI here. Claude (the scheduled agent) handles drafting.
+This script is called as a CLI tool by the scheduled agent prompt.
+
+Commands:
+  fetch                         Print JSON list of new unprocessed MTG: emails
+  get-attendees <meeting_name>  Print JSON attendee list from Google Calendar
+  create-draft <meeting_name> <attendees_csv> <subject> <html_file>
+                                Save a Gmail Draft and mark the email processed
+  mark-processed <email_id>     Mark an MTG trigger email as processed
 """
 import base64
 import json
@@ -17,24 +21,18 @@ from email.mime.text import MIMEText
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-import anthropic
 from googleapiclient.discovery import build
 from google_auth import get_credentials
 from meeting_followup.calendar_utils import find_meeting_attendees, should_skip_meeting
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATE_FILE = os.path.join(BASE_DIR, "state.json")
-STYLE_FILE = os.path.join(BASE_DIR, "jack_style_profile.md")
 JACK_EMAIL = "avi.jacoby@getfabric.com"
 
 
 # ---------------------------------------------------------------------------
-# Helpers
+# State
 # ---------------------------------------------------------------------------
-
-def _gmail():
-    return build("gmail", "v1", credentials=get_credentials())
-
 
 def _load_state() -> dict:
     if os.path.exists(STATE_FILE):
@@ -48,11 +46,12 @@ def _save_state(state: dict):
         json.dump(state, f, indent=2)
 
 
-def _load_style() -> str:
-    if os.path.exists(STYLE_FILE):
-        with open(STYLE_FILE, "r", encoding="utf-8") as f:
-            return f.read()
-    return "Professional, direct tone. Bullet points. Clear action items with owners."
+# ---------------------------------------------------------------------------
+# Gmail helpers
+# ---------------------------------------------------------------------------
+
+def _gmail():
+    return build("gmail", "v1", credentials=get_credentials())
 
 
 def _get_header(headers: list, name: str) -> str:
@@ -76,137 +75,101 @@ def _decode_body(payload: dict) -> str:
 
 
 # ---------------------------------------------------------------------------
-# Step 1 — detect new MTG emails
+# Commands
 # ---------------------------------------------------------------------------
 
-def _fetch_new_mtg_emails(service, processed_ids: set) -> list[dict]:
+def cmd_fetch():
+    """Print JSON list of new unprocessed MTG: emails."""
+    service = _gmail()
+    state = _load_state()
+    processed_ids = set(state["processed_mtg_emails"])
+
     query = f'from:{JACK_EMAIL} to:{JACK_EMAIL} subject:"MTG:" newer_than:3d'
-    resp = service.users().messages().list(
-        userId="me", q=query, maxResults=20
-    ).execute()
+    resp = service.users().messages().list(userId="me", q=query, maxResults=20).execute()
 
     results = []
     for ref in resp.get("messages", []):
         if ref["id"] in processed_ids:
             continue
-        msg = service.users().messages().get(
-            userId="me", id=ref["id"], format="full"
-        ).execute()
+        msg = service.users().messages().get(userId="me", id=ref["id"], format="full").execute()
         headers = msg["payload"]["headers"]
+        subject = _get_header(headers, "Subject")
+        name_match = re.match(r"MTG:\s*(.+)", subject, re.IGNORECASE)
         results.append({
             "id": ref["id"],
-            "subject": _get_header(headers, "Subject"),
+            "subject": subject,
+            "meeting_name": name_match.group(1).strip() if name_match else subject,
             "body": _decode_body(msg["payload"]) or msg.get("snippet", ""),
         })
-    return results
+
+    print(json.dumps(results, indent=2))
 
 
-def _parse_meeting_name(subject: str) -> str:
-    m = re.match(r"MTG:\s*(.+)", subject, re.IGNORECASE)
-    return m.group(1).strip() if m else subject
+def cmd_get_attendees(meeting_name: str):
+    """Print JSON with attendees and skip flag for a given meeting name."""
+    attendees = find_meeting_attendees(meeting_name)
+    skip, reason = should_skip_meeting(meeting_name, attendees)
+    print(json.dumps({"attendees": attendees, "skip": skip, "reason": reason}, indent=2))
 
 
-def _parse_extra_cc(notes: str) -> list[str]:
-    """Extract 'CC: email, email' lines from Jack's notes."""
-    cc_emails = []
-    for line in notes.splitlines():
-        m = re.match(r"CC:\s*(.+)", line.strip(), re.IGNORECASE)
-        if m:
-            cc_emails.extend(e.strip() for e in m.group(1).split(",") if e.strip())
-    return cc_emails
+def cmd_create_draft(meeting_name: str, attendees_csv: str, subject: str, html_file: str):
+    """Create a Gmail Draft pre-addressed to attendees."""
+    with open(html_file, "r", encoding="utf-8") as f:
+        html_body = f.read()
 
+    recipients = [e.strip() for e in attendees_csv.split(",") if e.strip()]
 
-# ---------------------------------------------------------------------------
-# Step 2 — draft generation
-# ---------------------------------------------------------------------------
-
-def _draft_follow_up(meeting_name: str, notes: str, attendees: list[str], style: str) -> str:
-    client = anthropic.Anthropic()
-    resp = client.messages.create(
-        model="claude-sonnet-4-6",
-        max_tokens=2000,
-        system=f"""You draft meeting follow-up emails on behalf of Jack (avi.jacoby@getfabric.com).
-
-Style guide — follow this exactly:
-{style}
-
-Always include: meeting summary bullets, decisions (if any), action items with owners.
-Write in HTML suitable for email (no <html>/<body> tags, just the inner content).""",
-        messages=[{
-            "role": "user",
-            "content": (
-                f'Draft a follow-up for the meeting "{meeting_name}".\n\n'
-                f"Attendees: {', '.join(attendees)}\n\n"
-                f"Jack's notes:\n{notes}\n\n"
-                "Return only the HTML email body."
-            ),
-        }],
-    )
-    return resp.content[0].text
-
-
-# ---------------------------------------------------------------------------
-# Step 3 — create Gmail draft
-# ---------------------------------------------------------------------------
-
-def _create_gmail_draft(service, to: list[str], subject: str, html_body: str) -> str:
-    """Create a draft in Jack's Gmail Drafts folder, pre-addressed and ready to send."""
     msg = MIMEMultipart("alternative")
-    msg["To"] = ", ".join(to)
+    msg["To"] = ", ".join(recipients)
     msg["Subject"] = subject
     msg.attach(MIMEText(html_body, "html"))
 
     raw = base64.urlsafe_b64encode(msg.as_bytes()).decode()
+    service = _gmail()
     draft = service.users().drafts().create(
-        userId="me",
-        body={"message": {"raw": raw}}
+        userId="me", body={"message": {"raw": raw}}
     ).execute()
-    return draft["id"]
+
+    print(f"Draft created (id: {draft['id']}) for: {meeting_name}")
+
+
+def cmd_mark_processed(email_id: str):
+    """Mark an MTG trigger email as processed so it isn't picked up again."""
+    state = _load_state()
+    if email_id not in state["processed_mtg_emails"]:
+        state["processed_mtg_emails"].append(email_id)
+        _save_state(state)
+    print(f"Marked processed: {email_id}")
 
 
 # ---------------------------------------------------------------------------
-# Main
+# Entry point
 # ---------------------------------------------------------------------------
 
 def main():
-    print(f"[{datetime.now(timezone.utc).isoformat()}] Meeting follow-up processor starting...")
-    state = _load_state()
-    style = _load_style()
-    service = _gmail()
+    args = sys.argv[1:]
+    if not args:
+        print(__doc__)
+        sys.exit(1)
 
-    processed_ids = set(state["processed_mtg_emails"])
-    new_emails = _fetch_new_mtg_emails(service, processed_ids)
-    print(f"New MTG emails: {len(new_emails)}")
+    cmd = args[0]
 
-    for email in new_emails:
-        meeting_name = _parse_meeting_name(email["subject"])
-        print(f"  Processing: {meeting_name}")
+    if cmd == "fetch":
+        cmd_fetch()
 
-        attendees = find_meeting_attendees(meeting_name)
-        skip, reason = should_skip_meeting(meeting_name, attendees)
+    elif cmd == "get-attendees" and len(args) >= 2:
+        cmd_get_attendees(args[1])
 
-        if skip:
-            print(f"  Skipping ({reason})")
-            state["processed_mtg_emails"].append(email["id"])
-            _save_state(state)
-            continue
+    elif cmd == "create-draft" and len(args) >= 5:
+        cmd_create_draft(args[1], args[2], args[3], args[4])
 
-        extra_cc = _parse_extra_cc(email["body"])
-        all_recipients = attendees + extra_cc
+    elif cmd == "mark-processed" and len(args) >= 2:
+        cmd_mark_processed(args[1])
 
-        draft_html = _draft_follow_up(meeting_name, email["body"], all_recipients, style)
-        draft_id = _create_gmail_draft(
-            service,
-            to=all_recipients,
-            subject=f"Follow-up: {meeting_name}",
-            html_body=draft_html,
-        )
-
-        state["processed_mtg_emails"].append(email["id"])
-        _save_state(state)
-        print(f"  Gmail draft created (id: {draft_id}): {meeting_name}")
-
-    print("Done.")
+    else:
+        print(f"Unknown command or missing arguments: {' '.join(args)}")
+        print(__doc__)
+        sys.exit(1)
 
 
 if __name__ == "__main__":
