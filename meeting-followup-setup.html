@@ -271,7 +271,7 @@
         Open Drafts, tweak anything you like, hit Send
       </div>
     </div>
-    <div class="time-badge">⏱ Setup takes about 10 minutes</div>
+    <div class="time-badge">⏱ Setup takes about 5 minutes</div>
   </div>
 
   <!-- PREREQUISITE NOTE -->
@@ -297,40 +297,29 @@
     </div>
   </div>
 
-  <!-- STEP 2: REAUTH -->
+  <!-- STEP 2+3: REAUTH + STYLE -->
   <div class="step-section" id="step2">
     <div class="step-header">
       <div class="step-number">2</div>
       <div class="step-title">
-        <h2>Re-authenticate Google</h2>
-        <p>The tool now needs access to your Google Calendar — takes 30 seconds</p>
+        <h2>Re-authenticate Google &amp; build style profile</h2>
+        <p>One click handles both — takes about a minute</p>
       </div>
     </div>
     <div class="instruction-card">
-      <div class="card-header"><div class="dot"></div>Delete the old token and re-auth:</div>
+      <div class="card-header"><div class="dot"></div>Easiest: double-click this file in your my-agent folder</div>
+      <div class="card-body">
+        <p><code>meeting-followup-setup.bat</code></p>
+        <p>It will: re-authenticate Google (browser opens, click Allow), then scan your sent mail to build a style profile so drafts sound like you.</p>
+      </div>
+    </div>
+    <div class="instruction-card">
+      <div class="card-header"><div class="dot"></div>Or run manually in your terminal:</div>
       <div class="card-body">
         <pre><code>del google_token.json
-python run_auth.py</code><button class="copy-btn" onclick="copy(this,'del google_token.json\npython run_auth.py')">Copy</button></pre>
-        <p>A browser window opens. Sign in with your Fabric Google account and click <strong>Allow</strong> on all permissions. Come back here when done.</p>
-        <div class="note"><strong>Why?</strong> Calendar access was added so the tool can look up who was in each meeting automatically — you don't have to list attendees yourself.</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- STEP 3: STYLE PROFILE -->
-  <div class="step-section" id="step3">
-    <div class="step-header">
-      <div class="step-number">3</div>
-      <div class="step-title">
-        <h2>Build your style profile</h2>
-        <p>Scans your sent mail once so drafts sound like you — never runs again</p>
-      </div>
-    </div>
-    <div class="instruction-card">
-      <div class="card-header"><div class="dot"></div>Run from your my-agent folder:</div>
-      <div class="card-body">
-        <pre><code>python -m meeting_followup.style_init</code><button class="copy-btn" onclick="copy(this,'python -m meeting_followup.style_init')">Copy</button></pre>
-        <p>Takes about 15 seconds. Creates a <code>meeting_followup/jack_style_profile.md</code> file that the drafter uses every time. You can edit this file manually if you want to tweak the style.</p>
+python run_auth.py
+python -m meeting_followup.style_init</code><button class="copy-btn" onclick="copy(this,'del google_token.json\npython run_auth.py\npython -m meeting_followup.style_init')">Copy</button></pre>
+        <div class="note"><strong>Why re-auth?</strong> Calendar access was added so the tool can pull attendees automatically — you never have to list them yourself.</div>
       </div>
     </div>
   </div>
@@ -348,8 +337,13 @@ python run_auth.py</code><button class="copy-btn" onclick="copy(this,'del google
       <div class="card-header"><div class="dot"></div>In Claude Code, run:</div>
       <div class="card-body">
         <pre><code>/schedule</code><button class="copy-btn" onclick="copy(this,'/schedule')">Copy</button></pre>
-        <p>When Claude asks what the task should do, open <code>meeting_followup/scheduled_prompt.md</code> and paste its contents. Tell it to run <strong>every 30 minutes</strong>.</p>
-        <div class="note"><strong>One edit required:</strong> Replace <code>[YOUR-USERNAME]</code> in the prompt with your actual Windows username (e.g., <code>avi.jacoby</code>). Run <code>echo %USERNAME%</code> in a terminal if you're not sure.</div>
+        <p>When Claude asks what the task should do, paste this prompt and tell it to run <strong>every 30 minutes</strong>:</p>
+        <pre style="white-space:pre-wrap">Run the meeting follow-up processor for Avi Jacoby.
+
+cd /d "%USERPROFILE%\Desktop\my-agent"
+python -m meeting_followup.process_meeting fetch
+
+Follow the steps in meeting_followup\scheduled_prompt.md to process any new meetings found. Report a summary when done.</pre><button class="copy-btn" style="position:static;display:block;margin-top:8px;width:fit-content" onclick="copy(this,'Run the meeting follow-up processor for Avi Jacoby.\n\ncd /d \"%USERPROFILE%\\Desktop\\my-agent\"\npython -m meeting_followup.process_meeting fetch\n\nFollow the steps in meeting_followup\\scheduled_prompt.md to process any new meetings found. Report a summary when done.')">Copy prompt</button>
       </div>
     </div>
   </div>
@@ -406,24 +400,28 @@ python run_auth.py</code><button class="copy-btn" onclick="copy(this,'del google
           </thead>
           <tbody>
             <tr style="border-bottom:1px solid #F0F0F0">
-              <td style="padding:10px 0"><code>meeting_followup/process_meeting.py</code></td>
-              <td style="padding:10px 12px; color:var(--mid)">Main processor — runs every 30 min, handles everything</td>
+              <td style="padding:10px 0"><code>meeting_followup/scheduled_prompt.md</code></td>
+              <td style="padding:10px 12px; color:var(--mid)">Claude's instructions — what the agent reads and follows every 30 min</td>
             </tr>
             <tr style="border-bottom:1px solid #F0F0F0">
-              <td style="padding:10px 0"><code>meeting_followup/style_init.py</code></td>
-              <td style="padding:10px 12px; color:var(--mid)">One-time style scanner — run once during setup</td>
+              <td style="padding:10px 0"><code>meeting_followup/process_meeting.py</code></td>
+              <td style="padding:10px 12px; color:var(--mid)">Mechanics helper — fetches emails, looks up calendar, creates Gmail drafts, tracks state</td>
             </tr>
             <tr style="border-bottom:1px solid #F0F0F0">
               <td style="padding:10px 0"><code>meeting_followup/jack_style_profile.md</code></td>
-              <td style="padding:10px 12px; color:var(--mid)">Your style guide — edit this to adjust tone and format</td>
+              <td style="padding:10px 12px; color:var(--mid)">Your writing style — edit this any time to adjust tone and format</td>
+            </tr>
+            <tr style="border-bottom:1px solid #F0F0F0">
+              <td style="padding:10px 0"><code>meeting_followup/style_init.py</code></td>
+              <td style="padding:10px 12px; color:var(--mid)">One-time style scanner — already run during setup, re-run if you want a fresh style read</td>
             </tr>
             <tr style="border-bottom:1px solid #F0F0F0">
               <td style="padding:10px 0"><code>meeting_followup/calendar_utils.py</code></td>
-              <td style="padding:10px 12px; color:var(--mid)">Looks up meeting attendees from Google Calendar</td>
+              <td style="padding:10px 12px; color:var(--mid)">Looks up meeting attendees from Google Calendar automatically</td>
             </tr>
             <tr>
               <td style="padding:10px 0"><code>meeting_followup/state.json</code></td>
-              <td style="padding:10px 12px; color:var(--mid)">Tracks which emails have been processed — don't edit manually</td>
+              <td style="padding:10px 12px; color:var(--mid)">Tracks processed emails so nothing runs twice — don't edit manually</td>
             </tr>
           </tbody>
         </table>

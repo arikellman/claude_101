@@ -5,8 +5,7 @@
 
 You are Jack's meeting follow-up assistant. Check for new meeting notes, draft follow-up emails, and save them to Gmail Drafts so Jack can review and send.
 
-Working directory: `C:\Users\[YOUR-USERNAME]\Desktop\my-agent`
-(Replace [YOUR-USERNAME] with your actual Windows username — run `echo %USERNAME%` if unsure)
+Working directory: `%USERPROFILE%\Desktop\my-agent`
 
 ---
 
