@@ -19,6 +19,7 @@
       --blue-light: #EAF1FB;
       --yellow: #F5A623;
       --yellow-light: #FEF8EC;
+      --red-light: #FEF0EE;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -64,15 +65,10 @@
       border: 1px solid #C0D8F5;
       border-radius: 12px;
       padding: 24px 28px;
-      margin-bottom: 48px;
+      margin-bottom: 40px;
     }
     .how-it-works h2 { font-size: 15px; font-weight: 700; color: var(--blue); margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.5px; }
-    .flow {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
+    .flow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
     .flow-step {
       background: white;
       border: 1px solid #C0D8F5;
@@ -100,6 +96,32 @@
       font-weight: 600;
       margin-top: 16px;
     }
+
+    /* PREREQS */
+    .prereqs {
+      background: var(--yellow-light);
+      border: 1px solid #F0D090;
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 40px;
+    }
+    .prereqs h2 { font-size: 14px; font-weight: 700; color: #7A5500; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .prereq-list { display: flex; flex-direction: column; gap: 8px; }
+    .prereq-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 14px;
+      color: #5A3E00;
+    }
+    .prereq-item .check {
+      width: 20px; height: 20px;
+      border: 2px solid #D4A040;
+      border-radius: 4px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .prereq-item a { color: var(--blue); }
 
     /* STEP SECTIONS */
     .step-section { margin-bottom: 56px; scroll-margin-top: 80px; }
@@ -135,12 +157,7 @@
       align-items: center;
       gap: 8px;
     }
-    .card-header .dot {
-      width: 8px; height: 8px;
-      background: var(--orange);
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
+    .card-header .dot { width: 8px; height: 8px; background: var(--orange); border-radius: 50%; flex-shrink: 0; }
     .card-body { padding: 16px 20px; font-size: 14px; color: var(--mid); }
     .card-body p { margin-bottom: 10px; }
     .card-body p:last-child { margin-bottom: 0; }
@@ -194,8 +211,25 @@
     }
     .note strong { color: #5A3E00; }
 
+    .download-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--dark);
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 12px 22px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: opacity 0.15s;
+      margin-top: 4px;
+    }
+    .download-btn:hover { opacity: 0.82; }
+    .download-btn svg { flex-shrink: 0; }
+
     /* DAILY USE SECTION */
-    .daily-use { background: var(--green-light); border: 1px solid #B0DFC0; border-radius: 12px; padding: 24px 28px; margin-bottom: 48px; }
+    .daily-use { background: var(--green-light); border: 1px solid #B0DFC0; border-radius: 12px; padding: 24px 28px; margin-bottom: 40px; }
     .daily-use h2 { font-size: 15px; font-weight: 700; color: var(--green); margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.5px; }
 
     .email-mock {
@@ -206,40 +240,29 @@
       margin-bottom: 20px;
       font-size: 14px;
     }
-    .email-mock-header {
-      background: #F5F5F5;
-      border-bottom: 1px solid var(--border);
-      padding: 12px 16px;
-    }
+    .email-mock-header { background: #F5F5F5; border-bottom: 1px solid var(--border); padding: 12px 16px; }
     .email-mock-header .field { display: flex; gap: 8px; margin-bottom: 4px; }
     .email-mock-header .field:last-child { margin-bottom: 0; }
     .email-mock-header .label { color: var(--mid); font-weight: 600; min-width: 48px; }
     .email-mock-header .value { color: var(--dark); }
     .email-mock-body { padding: 14px 16px; color: var(--mid); line-height: 1.7; }
 
-    /* LINK BUTTON */
-    .btn {
+    .btn-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+    .btn-ghost {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: var(--orange);
-      color: white;
+      background: transparent;
+      border: 1.5px solid var(--border);
+      color: var(--dark);
       font-size: 14px;
       font-weight: 600;
       padding: 10px 20px;
       border-radius: 8px;
       text-decoration: none;
-      transition: opacity 0.15s;
+      transition: all 0.15s;
     }
-    .btn:hover { opacity: 0.88; }
-    .btn-ghost {
-      background: transparent;
-      border: 1.5px solid var(--border);
-      color: var(--dark);
-    }
-    .btn-ghost:hover { border-color: var(--orange); color: var(--orange); opacity: 1; }
-
-    .btn-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+    .btn-ghost:hover { border-color: var(--orange); color: var(--orange); }
   </style>
 </head>
 <body>
@@ -247,7 +270,7 @@
 <header>
   <div class="badge">Fabric AI Tools</div>
   <h1>Meeting <span>Follow-Up</span> Drafter</h1>
-  <p>Send a quick email after a meeting. Get a ready-to-send draft back within 30 minutes.</p>
+  <p>Jot a few notes after a meeting. Get a ready-to-send follow-up in your Gmail Drafts within 30 minutes.</p>
 </header>
 
 <main>
@@ -263,63 +286,103 @@
       <div class="flow-arrow">→</div>
       <div class="flow-step">
         <strong>Within 30 min</strong>
-        A draft follow-up appears in your Gmail Drafts — summary, decisions, action items, pre-addressed to all attendees
+        A draft appears in Gmail Drafts — summary, decisions, action items, pre-addressed to all attendees
       </div>
       <div class="flow-arrow">→</div>
       <div class="flow-step">
         <strong>Review &amp; send</strong>
-        Open Drafts, tweak anything you like, hit Send
+        Open Drafts, tweak anything, hit Send
       </div>
     </div>
     <div class="time-badge">⏱ Setup takes about 5 minutes</div>
   </div>
 
-  <!-- PREREQUISITE NOTE -->
-  <div class="note" style="margin-bottom: 40px;">
-    <strong>Before you start:</strong> You need the <code>my-agent</code> folder on your machine with the morning briefing already working. If you haven't done that yet, do that first.
+  <!-- PREREQUISITES -->
+  <div class="prereqs">
+    <h2>Before you start — you'll need</h2>
+    <div class="prereq-list">
+      <div class="prereq-item">
+        <div class="check"></div>
+        <div><strong>Python 3.10+</strong> — <a href="https://www.python.org/downloads/" target="_blank">python.org/downloads</a>. During install, check <em>"Add Python to PATH"</em>.</div>
+      </div>
+      <div class="prereq-item">
+        <div class="check"></div>
+        <div><strong>Claude Code</strong> — <a href="https://claude.ai/download" target="_blank">claude.ai/download</a>. Sign in with your Anthropic account.</div>
+      </div>
+      <div class="prereq-item">
+        <div class="check"></div>
+        <div><strong>Google credentials file</strong> — a file named <code>client_secret_*.json</code>. Ari will send this to you — don't skip this, the tool won't run without it.</div>
+      </div>
+    </div>
   </div>
 
-  <!-- STEP 1: GET FILES -->
+  <!-- STEP 1: DOWNLOAD -->
   <div class="step-section" id="step1">
     <div class="step-header">
       <div class="step-number">1</div>
       <div class="step-title">
-        <h2>Get the latest files</h2>
-        <p>Pull the new meeting follow-up scripts into your existing setup</p>
+        <h2>Download the files</h2>
+        <p>Get all the scripts onto your machine</p>
       </div>
     </div>
     <div class="instruction-card">
-      <div class="card-header"><div class="dot"></div>Open a terminal in your my-agent folder and run:</div>
+      <div class="card-header"><div class="dot"></div>Option A — Download ZIP (simplest, no git required)</div>
       <div class="card-body">
-        <pre><code>git pull</code><button class="copy-btn" onclick="copy(this,'git pull')">Copy</button></pre>
-        <p>This downloads the new <code>meeting_followup/</code> folder and all its scripts.</p>
+        <a class="download-btn" href="https://github.com/arikellman/claude_101/archive/refs/heads/main.zip">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M7.47 10.78a.75.75 0 0 0 1.06 0l3.75-3.75a.75.75 0 0 0-1.06-1.06L8.75 8.44V1.75a.75.75 0 0 0-1.5 0v6.69L4.78 5.97a.75.75 0 0 0-1.06 1.06l3.75 3.75ZM3.75 13a.75.75 0 0 0 0 1.5h8.5a.75.75 0 0 0 0-1.5h-8.5Z"/></svg>
+          Download ZIP from GitHub
+        </a>
+        <p style="margin-top:12px">Unzip and move the <code>claude_101-main</code> folder to your Desktop. Rename it <code>my-agent</code>.</p>
+      </div>
+    </div>
+    <div class="instruction-card">
+      <div class="card-header"><div class="dot"></div>Option B — Clone with git (if you have git installed)</div>
+      <div class="card-body">
+        <pre><code>cd %USERPROFILE%\Desktop
+git clone https://github.com/arikellman/claude_101.git my-agent</code><button class="copy-btn" onclick="copy(this,'cd %USERPROFILE%\\Desktop\ngit clone https://github.com/arikellman/claude_101.git my-agent')">Copy</button></pre>
       </div>
     </div>
   </div>
 
-  <!-- STEP 2+3: REAUTH + STYLE -->
+  <!-- STEP 2: CREDENTIALS -->
   <div class="step-section" id="step2">
     <div class="step-header">
       <div class="step-number">2</div>
       <div class="step-title">
-        <h2>Re-authenticate Google &amp; build style profile</h2>
-        <p>One click handles both — takes about a minute</p>
+        <h2>Add the credentials file</h2>
+        <p>Drop the file Ari sent you into the my-agent folder</p>
       </div>
     </div>
     <div class="instruction-card">
-      <div class="card-header"><div class="dot"></div>Easiest: double-click this file in your my-agent folder</div>
+      <div class="card-header"><div class="dot"></div>Place the file here:</div>
       <div class="card-body">
-        <p><code>meeting-followup-setup.bat</code></p>
-        <p>It will: re-authenticate Google (browser opens, click Allow), then scan your sent mail to build a style profile so drafts sound like you.</p>
+        <p><code>C:\Users\[your username]\Desktop\my-agent\client_secret_*.json</code></p>
+        <p>It should sit alongside <code>google_auth.py</code>, <code>run_auth.py</code>, etc. The filename starts with <code>client_secret_</code> — don't rename it.</p>
+        <div class="note"><strong>Don't have this file?</strong> Ask Ari — he'll send it directly. It can't be shared via GitHub for security reasons.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: SETUP BAT -->
+  <div class="step-section" id="step3">
+    <div class="step-header">
+      <div class="step-number">3</div>
+      <div class="step-title">
+        <h2>Run the setup</h2>
+        <p>One double-click installs everything and authenticates your Google account</p>
       </div>
     </div>
     <div class="instruction-card">
-      <div class="card-header"><div class="dot"></div>Or run manually in your terminal:</div>
+      <div class="card-header"><div class="dot"></div>Double-click this file inside my-agent:</div>
       <div class="card-body">
-        <pre><code>del google_token.json
-python run_auth.py
-python -m meeting_followup.style_init</code><button class="copy-btn" onclick="copy(this,'del google_token.json\npython run_auth.py\npython -m meeting_followup.style_init')">Copy</button></pre>
-        <div class="note"><strong>Why re-auth?</strong> Calendar access was added so the tool can pull attendees automatically — you never have to list them yourself.</div>
+        <p style="font-size:15px; font-weight:600; color:var(--dark);">📄 <code>meeting-followup-setup.bat</code></p>
+        <p>It will automatically:</p>
+        <ol>
+          <li>Install required Python packages</li>
+          <li>Open a browser — sign in with your <strong>Fabric Google account</strong> and click <strong>Allow</strong></li>
+          <li>Scan your sent mail once to learn your writing style</li>
+        </ol>
+        <div class="note"><strong>Browser didn't open?</strong> Check your terminal — the auth URL will be printed there. Copy and paste it into your browser manually.</div>
       </div>
     </div>
   </div>
@@ -330,22 +393,24 @@ python -m meeting_followup.style_init</code><button class="copy-btn" onclick="co
       <div class="step-number">4</div>
       <div class="step-title">
         <h2>Schedule the agent</h2>
-        <p>Set it to run every 30 minutes — just like your morning briefing</p>
+        <p>Tell Claude Code to check for new meeting notes every 30 minutes</p>
       </div>
     </div>
     <div class="instruction-card">
-      <div class="card-header"><div class="dot"></div>In Claude Code, run:</div>
+      <div class="card-header"><div class="dot"></div>Open Claude Code, then run:</div>
       <div class="card-body">
         <pre><code>/schedule</code><button class="copy-btn" onclick="copy(this,'/schedule')">Copy</button></pre>
-        <p>When Claude asks what the task should do, paste this prompt and tell it to run <strong>every 30 minutes</strong>:</p>
+        <p>When asked what the task should do, paste this prompt and tell it to run <strong>every 30 minutes</strong>:</p>
         <pre style="white-space:pre-wrap">Run the meeting follow-up processor for Avi Jacoby.
 
 cd /d "%USERPROFILE%\Desktop\my-agent"
 python -m meeting_followup.process_meeting fetch
 
-Follow the steps in meeting_followup\scheduled_prompt.md to process any new meetings found. Report a summary when done.</pre><button class="copy-btn" style="position:static;display:block;margin-top:8px;width:fit-content" onclick="copy(this,'Run the meeting follow-up processor for Avi Jacoby.\n\ncd /d \"%USERPROFILE%\\Desktop\\my-agent\"\npython -m meeting_followup.process_meeting fetch\n\nFollow the steps in meeting_followup\\scheduled_prompt.md to process any new meetings found. Report a summary when done.')">Copy prompt</button>
+Follow the steps in meeting_followup\scheduled_prompt.md to process any new meetings found. Report a summary when done.</pre>
+        <button class="copy-btn" style="position:static;display:inline-block;margin-top:8px" onclick="copy(this,'Run the meeting follow-up processor for Avi Jacoby.\n\ncd /d \"%USERPROFILE%\\Desktop\\my-agent\"\npython -m meeting_followup.process_meeting fetch\n\nFollow the steps in meeting_followup\\scheduled_prompt.md to process any new meetings found. Report a summary when done.')">Copy prompt</button>
       </div>
     </div>
+    <div class="note"><strong>Claude Code needs to be running</strong> for the scheduled agent to fire. It works the same way as your morning briefing agent.</div>
   </div>
 
   <!-- DAILY USE -->
@@ -353,7 +418,7 @@ Follow the steps in meeting_followup\scheduled_prompt.md to process any new meet
     <h2>How to use it every day</h2>
 
     <p style="font-size:15px; color:#1A4A2A; margin-bottom:16px;">
-      Email yourself during or after any meeting. The subject line is the only thing that matters.
+      During or after any meeting, email yourself. The subject line is the trigger.
     </p>
 
     <div class="email-mock">
@@ -368,25 +433,25 @@ Follow the steps in meeting_followup\scheduled_prompt.md to process any new meet
         Need to revisit headcount assumptions next week.
         <br><br>
         <span style="color:#AAA">CC: sarah.chen@getfabric.com</span>
-        <span style="font-size:12px; color:#CCC"> ← optional: add anyone not on the invite</span>
+        <span style="font-size:12px; color:#CCC"> ← optional: CC someone not on the calendar invite</span>
       </div>
     </div>
 
-    <p style="font-size:14px; color:#2D5A3A; margin-bottom:16px;"><strong>Within 30 minutes</strong>, a draft appears in your <strong>Gmail Drafts</strong>, pre-addressed to all meeting attendees. Open it, make any edits you want, and hit Send. If you don't need a follow-up, just delete the draft.</p>
+    <p style="font-size:14px; color:#2D5A3A; margin-bottom:0;"><strong>Within 30 minutes</strong>, a draft appears in your <strong>Gmail Drafts</strong>, pre-addressed to all meeting attendees. Open it, make any edits, and hit Send. If you don't need a follow-up for a given meeting, just delete the draft.</p>
   </div>
 
   <!-- EXCLUSIONS NOTE -->
   <div class="note" style="margin-bottom: 40px;">
-    <strong>Auto-skipped meetings:</strong> Fabric IL Weekly and any calendar events with no other participants (solo blocks, focus time, etc.) are ignored automatically. No follow-up will be drafted for those.
+    <strong>Auto-skipped:</strong> Fabric IL Weekly and any calendar events with no other participants (solo blocks, focus time, etc.) are ignored automatically.
   </div>
 
-  <!-- FILES -->
+  <!-- FILES REFERENCE -->
   <div class="step-section">
     <div class="step-header">
-      <div class="step-number" style="background:var(--mid)">📁</div>
+      <div class="step-number" style="background:var(--mid); font-size:20px;">📁</div>
       <div class="step-title">
         <h2>Files reference</h2>
-        <p>What was installed and what each file does</p>
+        <p>What's in the my-agent folder and what each file does</p>
       </div>
     </div>
     <div class="instruction-card">
@@ -405,19 +470,19 @@ Follow the steps in meeting_followup\scheduled_prompt.md to process any new meet
             </tr>
             <tr style="border-bottom:1px solid #F0F0F0">
               <td style="padding:10px 0"><code>meeting_followup/process_meeting.py</code></td>
-              <td style="padding:10px 12px; color:var(--mid)">Mechanics helper — fetches emails, looks up calendar, creates Gmail drafts, tracks state</td>
+              <td style="padding:10px 12px; color:var(--mid)">Mechanics — fetches emails, looks up calendar, creates Gmail drafts, tracks state</td>
             </tr>
             <tr style="border-bottom:1px solid #F0F0F0">
               <td style="padding:10px 0"><code>meeting_followup/jack_style_profile.md</code></td>
-              <td style="padding:10px 12px; color:var(--mid)">Your writing style — edit this any time to adjust tone and format</td>
+              <td style="padding:10px 12px; color:var(--mid)">Your writing style — edit this any time to adjust tone or format</td>
             </tr>
             <tr style="border-bottom:1px solid #F0F0F0">
-              <td style="padding:10px 0"><code>meeting_followup/style_init.py</code></td>
-              <td style="padding:10px 12px; color:var(--mid)">One-time style scanner — already run during setup, re-run if you want a fresh style read</td>
+              <td style="padding:10px 0"><code>gmail_send.py / gmail_search.py</code></td>
+              <td style="padding:10px 12px; color:var(--mid)">Gmail utilities used by the agent</td>
             </tr>
             <tr style="border-bottom:1px solid #F0F0F0">
-              <td style="padding:10px 0"><code>meeting_followup/calendar_utils.py</code></td>
-              <td style="padding:10px 12px; color:var(--mid)">Looks up meeting attendees from Google Calendar automatically</td>
+              <td style="padding:10px 0"><code>google_auth.py / run_auth.py</code></td>
+              <td style="padding:10px 12px; color:var(--mid)">Google authentication — run once during setup</td>
             </tr>
             <tr>
               <td style="padding:10px 0"><code>meeting_followup/state.json</code></td>
@@ -428,7 +493,7 @@ Follow the steps in meeting_followup\scheduled_prompt.md to process any new meet
       </div>
     </div>
     <div class="btn-row">
-      <a class="btn btn-ghost" href="https://github.com/arikellman/claude_101/tree/main/meeting_followup" target="_blank">View files on GitHub</a>
+      <a class="btn-ghost" href="https://github.com/arikellman/claude_101/tree/main/meeting_followup" target="_blank">View files on GitHub</a>
     </div>
   </div>
 
@@ -437,11 +502,12 @@ Follow the steps in meeting_followup\scheduled_prompt.md to process any new meet
 <script>
 function copy(btn, text) {
   navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.textContent;
     btn.textContent = 'Copied!';
     btn.style.background = '#2D7D46';
     btn.style.color = 'white';
     setTimeout(() => {
-      btn.textContent = 'Copy';
+      btn.textContent = orig;
       btn.style.background = '#333';
       btn.style.color = '#AAA';
     }, 1500);

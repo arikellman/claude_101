@@ -1,0 +1,28 @@
+# Google OAuth credentials & tokens — never commit these
+client_secret_*.json
+google_token.json
+gmail_token.json
+auth_url.txt
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.env
+
+# Node
+node_modules/
+
+# Binary / generated files
+*.xlsx
+*.pptx
+*.pdf
+*.b64
+*.txt.bak
+
+# Temp files written by agents
+briefing_temp.html
+jack_email_temp.html
+query_response_temp.html
+meeting_followup/draft_temp.html
+meeting_followup/review_temp.html

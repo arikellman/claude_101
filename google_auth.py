@@ -10,7 +10,6 @@ SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive.readonly",
     "https://www.googleapis.com/auth/presentations",
-    "https://www.googleapis.com/auth/calendar.readonly",
 ]
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
