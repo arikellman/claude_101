@@ -3,9 +3,8 @@
 Flow:
   1. Detect new "MTG: <name>" emails from Jack to himself
   2. Look up calendar attendees, skip excluded meetings
-  3. Draft follow-up in Jack's style, email him the draft
-  4. On Jack's reply: SEND → sends to attendees, CANCEL → drops,
-     anything else → apply edits and send
+  3. Draft follow-up in Jack's style
+  4. Save as a Gmail Draft addressed to attendees — Jack reviews and sends
 """
 import base64
 import json
@@ -13,13 +12,14 @@ import os
 import re
 import sys
 from datetime import datetime, timezone
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import anthropic
 from googleapiclient.discovery import build
 from google_auth import get_credentials
-from gmail_send import send_email
 from meeting_followup.calendar_utils import find_meeting_attendees, should_skip_meeting
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -40,7 +40,7 @@ def _load_state() -> dict:
     if os.path.exists(STATE_FILE):
         with open(STATE_FILE, "r") as f:
             return json.load(f)
-    return {"processed_mtg_emails": [], "pending_approvals": {}}
+    return {"processed_mtg_emails": []}
 
 
 def _save_state(state: dict):
@@ -73,29 +73,6 @@ def _decode_body(payload: dict) -> str:
         if result:
             return result
     return ""
-
-
-def _strip_reply_chain(text: str) -> str:
-    """Keep only the top reply, drop quoted previous messages."""
-    # Split on common quoted-reply delimiters
-    parts = re.split(
-        r"\n[-]{3,}|\nOn .+wrote:|<blockquote|>.*wrote:", text, flags=re.DOTALL
-    )
-    return parts[0].strip()
-
-
-def _thread_id_for_message(service, message_id: str) -> str:
-    msg = service.users().messages().get(
-        userId="me", id=message_id, format="metadata"
-    ).execute()
-    return msg["threadId"]
-
-
-def _thread_messages(service, thread_id: str) -> list[dict]:
-    thread = service.users().threads().get(
-        userId="me", id=thread_id, format="full"
-    ).execute()
-    return thread.get("messages", [])
 
 
 # ---------------------------------------------------------------------------
@@ -168,94 +145,23 @@ Write in HTML suitable for email (no <html>/<body> tags, just the inner content)
     return resp.content[0].text
 
 
-def _apply_edits(original_html: str, instructions: str, style: str) -> str:
-    client = anthropic.Anthropic()
-    resp = client.messages.create(
-        model="claude-sonnet-4-6",
-        max_tokens=2000,
-        system=f"You edit meeting follow-up emails per instructions. Style guide:\n{style}",
-        messages=[{
-            "role": "user",
-            "content": (
-                f"Original draft:\n{original_html}\n\n"
-                f"Edit instructions from Jack:\n{instructions}\n\n"
-                "Return only the revised HTML email body."
-            ),
-        }],
-    )
-    return resp.content[0].text
-
-
 # ---------------------------------------------------------------------------
-# Step 3 — send review email to Jack
+# Step 3 — create Gmail draft
 # ---------------------------------------------------------------------------
 
-def _send_review_email(service, meeting_name: str, draft_html: str, attendees: list[str]) -> tuple[str, str]:
-    recipient_list = ", ".join(attendees)
-    body = f"""<p>Here is your draft follow-up for <strong>{meeting_name}</strong>.</p>
-<p><em>Recipients: {recipient_list}</em></p>
-<hr style="margin:16px 0">
-{draft_html}
-<hr style="margin:16px 0">
-<p><strong>Reply with one of:</strong></p>
-<ul>
-  <li><strong>SEND</strong> — sends to all attendees as-is</li>
-  <li><strong>CANCEL</strong> — no follow-up sent</li>
-  <li>Anything else — I'll apply your edits and send automatically</li>
-</ul>
-<p><em>To add a CC recipient, include a line like: CC: name@company.com</em></p>"""
+def _create_gmail_draft(service, to: list[str], subject: str, html_body: str) -> str:
+    """Create a draft in Jack's Gmail Drafts folder, pre-addressed and ready to send."""
+    msg = MIMEMultipart("alternative")
+    msg["To"] = ", ".join(to)
+    msg["Subject"] = subject
+    msg.attach(MIMEText(html_body, "html"))
 
-    subject = f"DRAFT READY: {meeting_name} follow-up"
-    msg_id = send_email(JACK_EMAIL, subject, body)
-    thread_id = _thread_id_for_message(service, msg_id)
-    return msg_id, thread_id
-
-
-# ---------------------------------------------------------------------------
-# Step 4 — check and process Jack's replies
-# ---------------------------------------------------------------------------
-
-def _check_replies(service, state: dict) -> list[tuple[str, dict, str]]:
-    pending = []
-    for thread_id, approval in state["pending_approvals"].items():
-        if approval["status"] != "pending":
-            continue
-        messages = _thread_messages(service, thread_id)
-        review_id = approval["review_message_id"]
-        # Find the most recent message that isn't our review email
-        reply_msg = next(
-            (m for m in reversed(messages) if m["id"] != review_id),
-            None,
-        )
-        if reply_msg:
-            raw = _decode_body(reply_msg["payload"]) or reply_msg.get("snippet", "")
-            # Strip HTML tags for plain-text comparison
-            plain = re.sub(r"<[^>]+>", " ", raw)
-            clean = _strip_reply_chain(plain).strip()
-            if clean:
-                pending.append((thread_id, approval, clean))
-    return pending
-
-
-def _process_reply(thread_id: str, approval: dict, reply_text: str, state: dict, style: str):
-    command = reply_text.strip().upper()
-    extra_cc = _parse_extra_cc(reply_text)
-    all_recipients = approval["attendees"] + extra_cc
-
-    if command == "SEND":
-        send_email(", ".join(all_recipients), approval["follow_up_subject"], approval["follow_up_html"])
-        state["pending_approvals"][thread_id]["status"] = "sent"
-        print(f"  Sent follow-up: {approval['meeting_name']}")
-
-    elif command == "CANCEL":
-        state["pending_approvals"][thread_id]["status"] = "cancelled"
-        print(f"  Cancelled: {approval['meeting_name']}")
-
-    else:
-        revised = _apply_edits(approval["follow_up_html"], reply_text, style)
-        send_email(", ".join(all_recipients), approval["follow_up_subject"], revised)
-        state["pending_approvals"][thread_id]["status"] = "sent_with_edits"
-        print(f"  Sent edited follow-up: {approval['meeting_name']}")
+    raw = base64.urlsafe_b64encode(msg.as_bytes()).decode()
+    draft = service.users().drafts().create(
+        userId="me",
+        body={"message": {"raw": raw}}
+    ).execute()
+    return draft["id"]
 
 
 # ---------------------------------------------------------------------------
@@ -268,7 +174,6 @@ def main():
     style = _load_style()
     service = _gmail()
 
-    # --- Process new MTG trigger emails ---
     processed_ids = set(state["processed_mtg_emails"])
     new_emails = _fetch_new_mtg_emails(service, processed_ids)
     print(f"New MTG emails: {len(new_emails)}")
@@ -287,30 +192,19 @@ def main():
             continue
 
         extra_cc = _parse_extra_cc(email["body"])
+        all_recipients = attendees + extra_cc
 
-        draft_html = _draft_follow_up(meeting_name, email["body"], attendees, style)
-        msg_id, thread_id = _send_review_email(service, meeting_name, draft_html, attendees)
+        draft_html = _draft_follow_up(meeting_name, email["body"], all_recipients, style)
+        draft_id = _create_gmail_draft(
+            service,
+            to=all_recipients,
+            subject=f"Follow-up: {meeting_name}",
+            html_body=draft_html,
+        )
 
         state["processed_mtg_emails"].append(email["id"])
-        state["pending_approvals"][thread_id] = {
-            "meeting_name": meeting_name,
-            "attendees": attendees + extra_cc,
-            "follow_up_subject": f"Follow-up: {meeting_name}",
-            "follow_up_html": draft_html,
-            "review_message_id": msg_id,
-            "status": "pending",
-            "created_at": datetime.now(timezone.utc).isoformat(),
-        }
         _save_state(state)
-        print(f"  Draft review sent for: {meeting_name}")
-
-    # --- Process Jack's replies to pending drafts ---
-    replies = _check_replies(service, state)
-    print(f"Pending replies to process: {len(replies)}")
-
-    for thread_id, approval, reply_text in replies:
-        _process_reply(thread_id, approval, reply_text, state, style)
-        _save_state(state)
+        print(f"  Gmail draft created (id: {draft_id}): {meeting_name}")
 
     print("Done.")
 
