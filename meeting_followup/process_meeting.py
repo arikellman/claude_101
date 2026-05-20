@@ -1,21 +1,19 @@
-"""Meeting follow-up mechanics — Gmail, Calendar, state management.
+"""Meeting follow-up mechanics — Gmail and state management.
 
-No AI here. Claude (the scheduled agent) handles drafting.
-This script is called as a CLI tool by the scheduled agent prompt.
+No AI, no Calendar API. Claude (the scheduled agent) handles
+drafting and uses the Calendar MCP for attendee lookups.
 
 Commands:
-  fetch                         Print JSON list of new unprocessed MTG: emails
-  get-attendees <meeting_name>  Print JSON attendee list from Google Calendar
+  fetch                                        Print JSON list of new unprocessed MTG: emails
   create-draft <meeting_name> <attendees_csv> <subject> <html_file>
-                                Save a Gmail Draft and mark the email processed
-  mark-processed <email_id>     Mark an MTG trigger email as processed
+                                               Create a Gmail Draft and mark the email processed
+  mark-processed <email_id>                    Mark an MTG trigger email as processed
 """
 import base64
 import json
 import os
 import re
 import sys
-from datetime import datetime, timezone
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
@@ -23,7 +21,6 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from googleapiclient.discovery import build
 from google_auth import get_credentials
-from meeting_followup.calendar_utils import find_meeting_attendees, should_skip_meeting
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATE_FILE = os.path.join(BASE_DIR, "state.json")
@@ -105,15 +102,8 @@ def cmd_fetch():
     print(json.dumps(results, indent=2))
 
 
-def cmd_get_attendees(meeting_name: str):
-    """Print JSON with attendees and skip flag for a given meeting name."""
-    attendees = find_meeting_attendees(meeting_name)
-    skip, reason = should_skip_meeting(meeting_name, attendees)
-    print(json.dumps({"attendees": attendees, "skip": skip, "reason": reason}, indent=2))
-
-
 def cmd_create_draft(meeting_name: str, attendees_csv: str, subject: str, html_file: str):
-    """Create a Gmail Draft pre-addressed to attendees."""
+    """Create a Gmail Draft pre-addressed to attendees and mark the trigger email processed."""
     with open(html_file, "r", encoding="utf-8") as f:
         html_body = f.read()
 
@@ -134,7 +124,7 @@ def cmd_create_draft(meeting_name: str, attendees_csv: str, subject: str, html_f
 
 
 def cmd_mark_processed(email_id: str):
-    """Mark an MTG trigger email as processed so it isn't picked up again."""
+    """Mark an MTG trigger email as processed."""
     state = _load_state()
     if email_id not in state["processed_mtg_emails"]:
         state["processed_mtg_emails"].append(email_id)
@@ -156,9 +146,6 @@ def main():
 
     if cmd == "fetch":
         cmd_fetch()
-
-    elif cmd == "get-attendees" and len(args) >= 2:
-        cmd_get_attendees(args[1])
 
     elif cmd == "create-draft" and len(args) >= 5:
         cmd_create_draft(args[1], args[2], args[3], args[4])
