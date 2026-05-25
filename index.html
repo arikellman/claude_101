@@ -388,6 +388,7 @@
   <a href="#step2"><span class="num">2</span> Connect Apps</a>
   <a href="#step3"><span class="num">3</span> Skills</a>
   <a href="#step4"><span class="num">4</span> Project Ideas</a>
+  <a href="#step5"><span class="num">5</span> Cowork Folders</a>
 </nav>
 
 <main>
@@ -712,6 +713,169 @@
         </div>
       </div>
     </div>
+  </section>
+
+  <!-- STEP 5 -->
+  <section class="step-section" id="step5">
+    <div class="step-header">
+      <div class="step-number">5</div>
+      <div class="step-title">
+        <h2>Set up your Cowork folder</h2>
+        <p>Create the folder structure Claude reads automatically — so you never have to re-explain who you are</p>
+        <div class="step-time">⏱ ~15 min</div>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <span class="icon">ℹ️</span>
+      <p><strong>Your first 15 minutes with Claude Cowork.</strong> These three folders become Claude's persistent memory for your work. Set them up once and Claude reads them at the start of every session.</p>
+    </div>
+
+    <!-- Overview -->
+    <div class="instruction-card">
+      <div class="card-header">
+        <div class="card-num" style="background:#555;">⏱</div>
+        <span>What you'll do — minute by minute</span>
+      </div>
+      <div class="card-body">
+        <ul style="padding-left: 20px;">
+          <li style="font-size: 14px; color: var(--mid); margin-bottom: 10px;"><strong>Minutes 0–5:</strong> Create the folder structure on your computer — <code>Claude Cowork/</code> with three subfolders: <strong>About Me</strong>, <strong>Outputs</strong>, and <strong>Templates</strong>. Then build your two core files inside <strong>About Me</strong>.</li>
+          <li style="font-size: 14px; color: var(--mid); margin-bottom: 10px;"><strong>Minutes 5–7:</strong> Paste the global instructions into Settings → Cowork → Edit Global Instructions.</li>
+          <li style="font-size: 14px; color: var(--mid); margin-bottom: 0;"><strong>Minutes 8–15:</strong> Ask Cowork to create a template and explore your folder structure so you feel comfortable with it.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- A: Folder structure -->
+    <div class="instruction-card">
+      <div class="card-header">
+        <div class="card-num">A</div>
+        <span>Create the folder structure</span>
+      </div>
+      <div class="card-body">
+        <p>Create a new folder on your computer named <strong>Claude Cowork</strong>. Inside it, create three subfolders:</p>
+        <div class="code-block">
+          <span class="comment">Claude Cowork/</span><br>
+          &nbsp;&nbsp;<span class="cmd">About Me/</span>&nbsp;&nbsp;&nbsp;<span class="comment">← Claude reads this automatically</span><br>
+          &nbsp;&nbsp;<span class="cmd">Outputs/</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">← Claude saves deliverables here</span><br>
+          &nbsp;&nbsp;<span class="cmd">Templates/</span>&nbsp;&nbsp;<span class="comment">← Reusable structures</span>
+        </div>
+        <div class="callout tip">
+          <span class="icon">💡</span>
+          <p><strong>About Me</strong> is the only folder Claude reads automatically. Outputs and Templates are only accessed when you point Claude to a specific file — so they never eat your token budget unless you ask.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- B: about-me file -->
+    <div class="instruction-card">
+      <div class="card-header">
+        <div class="card-num">B</div>
+        <span>File #1 — about-me</span>
+      </div>
+      <div class="card-body">
+        <p>This file tells Claude who you are, how you think, and how you want it to write for you. Claude reads it before every single task.</p>
+        <p><strong>If you already have an about-me file</strong> from a prior training, upload it to a Cowork session and prompt:</p>
+        <div class="prompt-box">
+          <div class="label">Prompt</div>
+          <p>This is my about-me file and I need to save tokens. Ask me questions on how to trim effectively until we have the perfect document.</p>
+        </div>
+        <p style="margin-top: 14px;"><strong>If you're starting from scratch,</strong> open a new Cowork session and paste this prompt:</p>
+        <div class="prompt-box">
+          <div class="label">Prompt — paste this into Cowork</div>
+          <p>You are building my about-me.md file for my Cowork folder. This file will be read by Claude at the start of every session to help you do my job with me. It needs to be concise and high-signal.<br><br>
+          Your job: interview me using AskUserQuestion (20 questions), then compile the answers into a condensed about-me.md under 2,000 tokens.<br><br>
+          ## How to interview me<br>
+          Use AskUserQuestion for every question. One question at a time. If I give a vague answer, push back — ask for a specific example. Follow interesting threads.<br><br>
+          ## What to cover<br>
+          WHO I AM (3 q): My role, company, industry. Who I work with. What a good week looks like.<br>
+          HOW I WORK (4 q): Daily tools. How I start a task. My review process. What "done" looks like.<br>
+          WHAT GOOD LOOKS LIKE (4 q): Best output I've produced recently. What separates great from average. What I react to in others' work.<br>
+          WHAT I HATE (4 q): Bad work examples. Industry patterns that make me cringe. What's usually off when Claude gets it wrong.<br>
+          MY RULES (3 q): Hard lines I won't cross. Non-negotiables every piece of work must have.<br>
+          MY OPINIONS (3 q): Beliefs my peers would push back on. Overrated vs. underrated tools/methods.<br><br>
+          ## Output format<br>
+          After the interview, compile into a single markdown file — condensed prose and bullet points, no raw Q&amp;A transcripts. Target: under 2,000 tokens. Save as about-me.md in my About Me/ folder.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- C: my-company file -->
+    <div class="instruction-card">
+      <div class="card-header">
+        <div class="card-num">C</div>
+        <span>File #2 — my-company</span>
+      </div>
+      <div class="card-body">
+        <p>Your targets, your strategy, what you're focused on, what you're saying no to. Update it when priorities change — maybe once a quarter.</p>
+        <p>In the <em>same Cowork session</em> you used for about-me (just keep prompting after), paste this:</p>
+        <div class="prompt-box">
+          <div class="label">Prompt — paste this into Cowork</div>
+          <p>You are building my my-company.md file for my Cowork folder. This file tells Claude what I'm working toward right now. My about-me.md already covers who I am — this file is ONLY about goals, strategy, and decisions. No overlap.<br><br>
+          Your job: interview me using AskUserQuestion (6–8 questions), then compile the answers into a condensed my-company.md under 1,000 tokens.<br><br>
+          ## What to cover<br>
+          GOALS (3–4 q): Top 2–3 goals for this year. Which platforms/channels/markets matter most. The one metric that would make this year a success. Revenue, audience, or product milestones.<br>
+          DECISIONS (3–4 q): What I'm actively saying no to. What I recently stopped doing and why. Where most of my time and energy goes this quarter. Any bets I'm making that others aren't.<br><br>
+          ## Output format<br>
+          Short sections, bullet points, no filler. Target: under 1,000 tokens. Save as my-company.md in my About Me/ folder.</p>
+        </div>
+        <div class="callout tip">
+          <span class="icon">💡</span>
+          <p>Cowork doesn't need to know your Tuesday deadline. It needs to know your north star. Keep this file short and update it when something actually changes.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- D: Global instructions -->
+    <div class="instruction-card">
+      <div class="card-header">
+        <div class="card-num">D</div>
+        <span>Set up Global Instructions</span>
+      </div>
+      <div class="card-body">
+        <p>Global Instructions is a prompt Claude Cowork reads before any task. It tells Claude what your folders mean and when to read them.</p>
+        <p>Go to <strong>Settings → Cowork → Edit Global Instructions</strong>. Delete whatever's there and paste this (adjust the file names if yours are different):</p>
+        <div class="prompt-box">
+          <div class="label">Global Instructions — paste this</div>
+          <p>I usually start my Cowork session by pointing you to my Cowork folder.<br><br>
+          Before any and every single task, you must read every file in About Me/:<br>
+          - about-me: it's me, who I am, what I love and hate<br>
+          - my-company: where I work, my role, my goals<br><br>
+          Never read the folders Outputs/ or Templates/ unless I specifically point you to a file.<br><br>
+          Save all deliverables in Outputs/ under a subfolder named after the project.<br><br>
+          If the brief is unclear, use AskUserQuestion. Don't fill gaps with filler. Don't over-explain. Deliver the work.</p>
+        </div>
+        <div class="callout tip">
+          <span class="icon">💡</span>
+          <p><strong>Why this matters:</strong> If your About Me files are under 6,000 tokens total, Claude reads all of them completely — every session. You never re-explain who you are or what you're working on.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- E: Templates -->
+    <div class="instruction-card">
+      <div class="card-header">
+        <div class="card-num">E</div>
+        <span>How templates work</span>
+      </div>
+      <div class="card-body">
+        <p>The Templates folder fills itself. When Cowork builds something you like — a report, an email, a brief — say one sentence at the end of your session:</p>
+        <div class="prompt-box">
+          <div class="label">Prompt</div>
+          <p>Save this as a template in Templates/.</p>
+        </div>
+        <p style="margin-top: 12px;">Claude strips the content, keeps the skeleton (sections, order, format, length), and saves it. Next time you need something similar:</p>
+        <div class="prompt-box">
+          <div class="label">Prompt</div>
+          <p>Use the template in Templates/[name of the file].</p>
+        </div>
+        <div class="callout tip">
+          <span class="icon">💡</span>
+          <p>To feel comfortable with your folder, ask Cowork to create a template from the about-me interview session, then go open the Templates folder on your computer and check it.</p>
+        </div>
+      </div>
+    </div>
+
   </section>
 
   <!-- DONE -->
