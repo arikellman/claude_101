@@ -860,18 +860,16 @@
 
 <script>
 (function(){
-  var TRACKER = 'https://script.google.com/a/macros/getfabric.com/s/AKfycbzCXSOGDd_RrDjgJTWufBe0LgP87YCDXmY2MxFS7Em-2v0rJG4tOCyUgl-U6Hl2RmON6Q/exec';
+  var FORM = 'https://docs.google.com/forms/d/e/1FAIpQLSfAlyNwykqsawpIlPlwOvblH2i4Zb5pWFjfGyY6EbA0z5Vn2Q/formResponse';
+  var F = { ip:'entry.1255540430', ua:'entry.1488689211', ref:'entry.806853003', uid:'entry.14717276', url:'entry.500699306' };
   function ping(ip) {
-    var p = {
-      ip:  ip || '',
-      ua:  navigator.userAgent,
-      ref: document.referrer || 'direct',
-      url: window.location.href,
-      uid: (new URLSearchParams(window.location.search)).get('uid') || ''
-    };
-    var qs = Object.keys(p).map(function(k){ return k + '=' + encodeURIComponent(p[k]); }).join('&');
-    var img = new Image(1,1);
-    img.src = TRACKER + '?' + qs;
+    var d = new FormData();
+    d.append(F.ip,  ip || '');
+    d.append(F.ua,  navigator.userAgent);
+    d.append(F.ref, document.referrer || 'direct');
+    d.append(F.uid, (new URLSearchParams(window.location.search)).get('uid') || '');
+    d.append(F.url, window.location.href);
+    fetch(FORM, { method:'POST', mode:'no-cors', body:d });
   }
   fetch('https://api.ipify.org?format=json')
     .then(function(r){ return r.json(); })
