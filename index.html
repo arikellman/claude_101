@@ -869,7 +869,7 @@
     d.append(F.ref, document.referrer || 'direct');
     d.append(F.uid, (new URLSearchParams(window.location.search)).get('uid') || '');
     d.append(F.url, window.location.href);
-    fetch(FORM, { method:'POST', mode:'no-cors', body:d });
+    fetch(FORM, { method:'POST', mode:'no-cors', credentials:'include', body:d });
   }
   fetch('https://api.ipify.org?format=json')
     .then(function(r){ return r.json(); })
