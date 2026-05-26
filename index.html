@@ -857,5 +857,27 @@
   Claude 101 · AI Champions Workshop · Questions? Reach out before the workshop.
 </footer>
 
+
+<script>
+(function(){
+  var TRACKER = 'PASTE_APPS_SCRIPT_DEPLOY_URL_HERE';
+  function ping(ip) {
+    var p = {
+      ip:  ip || '',
+      ua:  navigator.userAgent,
+      ref: document.referrer || 'direct',
+      url: window.location.href,
+      uid: (new URLSearchParams(window.location.search)).get('uid') || ''
+    };
+    var qs = Object.keys(p).map(function(k){ return k + '=' + encodeURIComponent(p[k]); }).join('&');
+    var img = new Image(1,1);
+    img.src = TRACKER + '?' + qs;
+  }
+  fetch('https://api.ipify.org?format=json')
+    .then(function(r){ return r.json(); })
+    .then(function(d){ ping(d.ip); })
+    .catch(function(){ ping(''); });
+})();
+</script>
 </body>
 </html>
