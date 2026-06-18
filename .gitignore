@@ -1,3 +1,6 @@
+# Claude Code worktrees & session data
+.claude/
+
 # Google OAuth credentials & tokens — never commit these
 client_secret_*.json
 google_token.json

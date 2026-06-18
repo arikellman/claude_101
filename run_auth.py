@@ -1,6 +1,7 @@
 """One-time OAuth setup — finds a free port, writes URL to file, handles callback."""
 import os
 import socket
+import webbrowser
 import wsgiref.simple_server
 from urllib.parse import parse_qs
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -23,8 +24,16 @@ url_file = os.path.join(BASE_DIR, "auth_url.txt")
 with open(url_file, "w") as f:
     f.write(auth_url)
 
-print(f"\nOpen this URL in your browser:\n\n{auth_url}\n", flush=True)
+print(f"\nOpen this URL in your browser (choose your getfabric.com account):\n\n{auth_url}\n", flush=True)
 print(f"(Also saved to auth_url.txt — port {PORT})\n", flush=True)
+
+# Auto-open the consent page so it's effectively one click
+try:
+    webbrowser.open(auth_url)
+    print("Attempted to open your default browser automatically...", flush=True)
+except Exception:
+    pass
+
 print("Waiting for authorization callback...", flush=True)
 
 # Minimal WSGI app to capture the OAuth callback
