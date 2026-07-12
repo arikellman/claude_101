@@ -12,7 +12,9 @@
   .topbar { background: #fff; border-bottom: 1px solid #e8e8e4; padding: 14px 28px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 100; }
   .logo { font-size: 18px; font-weight: 600; color: #1a1a1a; }
   .logo span { color: #1D9E75; }
-  .topbar-sub { font-size: 13px; color: #888; }
+  .topbar-sub { font-size: 13px; color: #888; flex: 1; }
+  .topbar-reset { font-size: 12px; color: #999; background: none; border: none; cursor: pointer; text-decoration: underline; }
+  .topbar-reset:hover { color: #c0392b; }
 
   .container { max-width: 880px; margin: 0 auto; padding: 28px 20px; }
 
@@ -62,6 +64,9 @@
   .btn-secondary { background: #f5f5f3; border: 1px solid #d8d8d4; color: #333; }
   .btn-secondary:hover { background: #efefed; }
   .btn-secondary:disabled { opacity: .4; cursor: not-allowed; }
+  .btn-sm { padding: 5px 11px; font-size: 12px; border-radius: 6px; }
+  .btn-danger-ghost { background: #fff; border: 1px solid #f0c4c4; color: #b23b3b; }
+  .btn-danger-ghost:hover { background: #fdf1f1; }
   .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
 
   .log-row { display: flex; gap: 10px; align-items: flex-start; padding: 9px 0; border-bottom: 1px solid #f0f0ee; }
@@ -101,11 +106,13 @@
   .ef-l { color: #888; min-width: 52px; }
   .email-body { padding: 14px 16px; font-size: 13px; line-height: 1.7; white-space: pre-line; color: #333; }
 
-  .letter-nav { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .letter-nav { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
   .letter-count { font-size: 13px; color: #888; }
   .letter-name { font-size: 14px; font-weight: 600; }
   .letter-raise { margin-left: auto; font-size: 12px; color: #888; }
-  .letter-body { background: #fafaf8; border: 1px solid #e8e8e4; border-radius: 10px; padding: 20px 24px; font-size: 13px; line-height: 1.9; white-space: pre-line; color: #333; margin-bottom: 10px; font-family: Georgia, serif; }
+  .letter-body { background: #fafaf8; border: 1px solid #e8e8e4; border-radius: 10px; padding: 24px 28px; font-size: 13px; line-height: 1.8; color: #333; margin-bottom: 10px; font-family: Georgia, 'Times New Roman', serif; }
+  .letter-body p { margin-bottom: 10px; }
+  .letter-body p:last-child { margin-bottom: 0; }
 
   .bamboo-row { display: flex; align-items: center; gap: 12px; padding: 11px 0; border-bottom: 1px solid #f0f0ee; }
   .bamboo-row:last-child { border-bottom: none; }
@@ -119,14 +126,18 @@
   .input-field { width: 100%; padding: 9px 12px; border-radius: 8px; border: 1px solid #ddd; font-size: 13px; background: #fff; margin-bottom: 8px; transition: border-color .15s; }
   .input-field:focus { outline: none; border-color: #1D9E75; }
   .field-label { font-size: 12px; color: #777; display: block; margin-bottom: 4px; font-weight: 500; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .hidden { display: none !important; }
 
   .site-tags { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-bottom: 4px; }
   .site-tag { background: #E1F5EE; color: #0F6E56; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 20px; display: flex; align-items: center; gap: 4px; }
   .site-tag button { background: none; border: none; color: #0F6E56; cursor: pointer; font-size: 14px; line-height: 1; padding: 0 2px; }
   .site-tag button:hover { color: #c0392b; }
+  .site-tag.title-tag { background: #fdf5e8; color: #8a5100; }
+  .site-tag.title-tag button { color: #8a5100; }
   .site-add-row { display: flex; gap: 6px; margin-top: 6px; }
-  .site-add-row input { padding: 5px 10px; border-radius: 6px; border: 1px solid #ddd; font-size: 12px; width: 100px; text-transform: uppercase; }
+  .site-add-row input { padding: 5px 10px; border-radius: 6px; border: 1px solid #ddd; font-size: 12px; width: 140px; }
+  .site-add-row input.upper { text-transform: uppercase; width: 100px; }
   .site-add-row button { padding: 5px 12px; border-radius: 6px; border: none; background: #1D9E75; color: #fff; font-size: 12px; cursor: pointer; }
 
   .upload-sm { border: 1.5px dashed #d0d0ca; border-radius: 10px; padding: 18px; text-align: center; cursor: pointer; transition: all .15s; background: #fafaf8; }
@@ -136,11 +147,20 @@
   .progress-bar-wrap { background: #f0f0ee; border-radius: 20px; height: 8px; margin-top: 6px; overflow: hidden; }
   .progress-bar { background: #1D9E75; height: 100%; border-radius: 20px; transition: width .3s; }
 
+  .emp-row-actions { text-align: right; }
+  .remove-btn { background: none; border: 1px solid #e8c4c4; color: #b23b3b; border-radius: 6px; font-size: 11px; padding: 3px 9px; cursor: pointer; }
+  .remove-btn:hover { background: #fdf1f1; }
+  .restore-btn { background: none; border: 1px solid #97C459; color: #3B6D11; border-radius: 6px; font-size: 11px; padding: 3px 9px; cursor: pointer; }
+  .restore-btn:hover { background: #f4faec; }
+  .excluded-card { background: #fafaf8; }
+  .excluded-card .card-title { font-size: 14px; }
+
   @media (max-width: 600px) {
     .phase-nav { flex-wrap: wrap; }
     .ph { min-width: 70px; }
     .stat-grid { grid-template-columns: 1fr 1fr; }
     .q-grid { grid-template-columns: 1fr; }
+    .field-row { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -149,6 +169,7 @@
 <div class="topbar">
   <div class="logo">וותק <span>Automation</span></div>
   <div class="topbar-sub">Seniority Raise Workflow</div>
+  <button class="topbar-reset" onclick="startOver()">Start over</button>
 </div>
 
 <div class="container">
@@ -189,11 +210,21 @@
       <div class="divider"></div>
 
       <div class="section-label">Israel site codes (the tool only keeps employees at these sites)</div>
-      <div style="font-size:12px;color:#888;margin-bottom:8px">Add or remove site codes to match your BambooHR location values. Changes are saved for this session.</div>
+      <div style="font-size:12px;color:#888;margin-bottom:8px">Add or remove site codes to match your BambooHR location values.</div>
       <div class="site-tags" id="siteTags"></div>
       <div class="site-add-row">
-        <input type="text" id="siteInput" placeholder="e.g. TLV01" maxlength="10" oninput="this.value=this.value.toUpperCase()">
+        <input type="text" class="upper" id="siteInput" placeholder="e.g. TLV01" maxlength="10" oninput="this.value=this.value.toUpperCase()">
         <button onclick="addSite()">+ Add site</button>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="section-label">Job titles to auto-exclude (site managers, deputies, FSEs)</div>
+      <div style="font-size:12px;color:#888;margin-bottom:8px">Employees whose job title contains any of these words are automatically pulled out of the eligible list — you can still restore anyone by mistake in the next screen. Edit this list to match your exact BambooHR job titles.</div>
+      <div class="site-tags" id="titleTags"></div>
+      <div class="site-add-row">
+        <input type="text" id="titleInput" placeholder="e.g. Site Manager">
+        <button onclick="addTitle()">+ Add title</button>
       </div>
 
       <div class="btn-row">
@@ -213,11 +244,27 @@
       <div class="card-title">Eligible employees this quarter</div>
       <div class="card-sub" id="p1sub"></div>
       <div class="stat-grid" id="p1stats"></div>
+
+      <div class="divider"></div>
+      <div class="section-label">Send one combined file to all managers</div>
+      <div style="font-size:12px;color:#888;margin-bottom:10px">Download a single file with every site's eligible employees, upload it once, and email all managers together.</div>
+      <label class="field-label">Manager email(s) — separate multiple with a comma</label>
+      <input class="input-field" id="combinedEmails" placeholder="manager1@company.com, manager2@company.com" oninput="updateCombinedEmailPreview()">
+      <label class="field-label">Shared file link (paste after uploading the downloaded file)</label>
+      <input class="input-field" id="combinedLink" placeholder="https://drive.google.com/..." oninput="updateCombinedEmailPreview()">
+      <div class="email-box" id="combinedEmailBox"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="downloadCombinedXLSX()">⬇ Download combined list (.xlsx)</button>
+        <button class="btn btn-secondary" onclick="copyCombinedEmail()">Copy email</button>
+      </div>
     </div>
+
+    <div id="p1excluded"></div>
     <div id="p1sites"></div>
+
     <div class="card">
       <div class="alert al-info" style="margin-bottom:0">
-        <strong>What to do:</strong> For each site above — download the Excel file, upload it to your shared drive, paste the link, and copy the email to send to the site manager. When all emails are sent, continue.
+        <strong>What to do:</strong> Either send the combined file above to all managers at once, or use the per-site files below — download, upload to your shared drive, paste the link, and copy the email. Remove anyone who shouldn't be on the list with the ✕ button; you can always restore them.
       </div>
       <div class="btn-row">
         <button class="btn btn-primary" onclick="gp(2)">All files sent to managers — continue →</button>
@@ -238,7 +285,7 @@
            ondrop="handleRaiseDrop(event)">
         <div style="font-size:22px;margin-bottom:6px">📋</div>
         <div style="font-size:13px;font-weight:600;margin-bottom:3px">Upload manager-filled Excel</div>
-        <div style="font-size:12px;color:#888">The file you sent managers — now filled in with raise amounts</div>
+        <div style="font-size:12px;color:#888">The file you sent managers — now filled in with raise amounts. Uploading again overwrites previous values for matched employees.</div>
       </div>
       <input type="file" id="rzFi" accept=".xlsx,.xls" style="display:none" onchange="handleRaiseFile(this.files[0])">
       <div id="rzMsg"></div>
@@ -265,10 +312,21 @@
   <div id="p3" class="hidden">
     <div class="card">
       <div class="card-title">Salary increase letters</div>
-      <div class="card-sub" id="p3sub"></div>
+      <div class="card-sub">Letters use the standard Salary Increase Letter template. Fill in who signs the letter, then review each one below.</div>
+      <div class="field-row">
+        <div>
+          <label class="field-label">Signer name</label>
+          <input class="input-field" id="signerName" oninput="onSignerChange()">
+        </div>
+        <div>
+          <label class="field-label">Signer role</label>
+          <input class="input-field" id="signerRole" oninput="onSignerChange()">
+        </div>
+      </div>
+      <div class="card-sub" id="p3sub" style="margin-top:8px"></div>
       <div id="letterContainer"></div>
       <div class="btn-row">
-        <button class="btn btn-primary" onclick="downloadAllLetters()">⬇ Download all letters (.txt)</button>
+        <button class="btn btn-primary" onclick="downloadAllLetters()">⬇ Download all letters (.doc)</button>
         <button class="btn btn-secondary" onclick="gp(4)">Continue to BambooHR update →</button>
       </div>
     </div>
@@ -302,17 +360,54 @@
 </div>
 
 <script>
+// ── Constants ────────────────────────────────────────────────────────────
 const Q = {
   1:{m:[1,2,3],l:"Q1 (Jan–Mar)"},
   2:{m:[4,5,6],l:"Q2 (Apr–Jun)"},
   3:{m:[7,8,9],l:"Q3 (Jul–Sep)"},
   4:{m:[10,11,12],l:"Q4 (Oct–Dec)"}
 };
+const STORAGE_KEY = 'vetekAutomationState_v1';
 
 let ISRAEL_SITES = ['EMK01','HLN01','BS01'];
-const S = { q:null, raw:[], hdrs:[], filtered:[], raises:{}, letters:[], li:0 };
+let EXCLUDE_TITLES = ['Site Manager','Deputy Site Manager','Assistant Site Manager','FSE','Field Service Engineer'];
+const S = {
+  q: null, year: new Date().getFullYear(), raw: [], hdrs: [], filtered: [],
+  raises: {}, excluded: {}, letters: [], li: 0,
+  signerName: 'Inbal Nimrodi', signerRole: 'HRBP',
+  currentPhase: 0, uploadedFileName: ''
+};
 let CM = {};
+let bambooState = {};
 
+// ── Persistence ─────────────────────────────────────────────────────────
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      S, ISRAEL_SITES, EXCLUDE_TITLES, bambooState
+    }));
+  } catch(e) { /* storage unavailable — non-fatal */ }
+}
+
+function loadState() {
+  let saved;
+  try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); }
+  catch(e) { saved = null; }
+  if (!saved) return false;
+  Object.assign(S, saved.S);
+  if (saved.ISRAEL_SITES && saved.ISRAEL_SITES.length) ISRAEL_SITES = saved.ISRAEL_SITES;
+  if (saved.EXCLUDE_TITLES) EXCLUDE_TITLES = saved.EXCLUDE_TITLES;
+  bambooState = saved.bambooState || {};
+  return !!(S.raw && S.raw.length);
+}
+
+function startOver() {
+  if (!confirm('This clears the current upload, raises, and progress on this device. Continue?')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  location.reload();
+}
+
+// ── Site code management ─────────────────────────────────────────────────
 function renderSiteTags() {
   document.getElementById('siteTags').innerHTML = ISRAEL_SITES.map(s =>
     `<span class="site-tag">${s}<button onclick="removeSite('${s}')" title="Remove">×</button></span>`
@@ -321,16 +416,34 @@ function renderSiteTags() {
 function addSite() {
   const v = document.getElementById('siteInput').value.trim().toUpperCase();
   if (!v) return;
-  if (!ISRAEL_SITES.includes(v)) { ISRAEL_SITES.push(v); renderSiteTags(); }
+  if (!ISRAEL_SITES.includes(v)) { ISRAEL_SITES.push(v); renderSiteTags(); saveState(); }
   document.getElementById('siteInput').value = '';
 }
 function removeSite(s) {
   ISRAEL_SITES = ISRAEL_SITES.filter(x => x !== s);
-  renderSiteTags();
+  renderSiteTags(); saveState();
+}
+
+// ── Job title exclusion management ───────────────────────────────────────
+function renderTitleTags() {
+  document.getElementById('titleTags').innerHTML = EXCLUDE_TITLES.map(t =>
+    `<span class="site-tag title-tag">${t}<button onclick="removeTitle('${t.replace(/'/g,"\\'")}')" title="Remove">×</button></span>`
+  ).join('');
+}
+function addTitle() {
+  const v = document.getElementById('titleInput').value.trim();
+  if (!v) return;
+  if (!EXCLUDE_TITLES.some(t => t.toLowerCase() === v.toLowerCase())) { EXCLUDE_TITLES.push(v); renderTitleTags(); saveState(); }
+  document.getElementById('titleInput').value = '';
+}
+function removeTitle(t) {
+  EXCLUDE_TITLES = EXCLUDE_TITLES.filter(x => x !== t);
+  renderTitleTags(); saveState();
 }
 document.getElementById('siteInput').addEventListener('keydown', e => { if (e.key==='Enter') addSite(); });
-renderSiteTags();
+document.getElementById('titleInput').addEventListener('keydown', e => { if (e.key==='Enter') addTitle(); });
 
+// ── Column detection ──────────────────────────────────────────────────────
 function findCol(headers, candidates) {
   const h = headers.map(x => (x||'').toString().toLowerCase().trim());
   for (const c of candidates) {
@@ -359,7 +472,22 @@ function fullName(row) {
   const a = gv(row,'fn'), b = gv(row,'ln');
   return a && b ? `${a} ${b}` : (a || `Employee ${gv(row,'id')}`);
 }
+function firstNameOf(row) {
+  const a = gv(row,'fn');
+  return a || fullName(row).split(' ')[0];
+}
 
+// ── Active (non-excluded) helpers ────────────────────────────────────────
+function activeEntries() {
+  return S.filtered.map((r, i) => ({ r, i })).filter(x => !S.excluded[x.i]);
+}
+function excludedEntries() {
+  return S.filtered.map((r, i) => ({ r, i })).filter(x => !!S.excluded[x.i]);
+}
+function excludeEmployee(i) { S.excluded[i] = true; saveState(); renderFiltered(); }
+function restoreEmployee(i) { delete S.excluded[i]; saveState(); renderFiltered(); }
+
+// ── Phase navigation ──────────────────────────────────────────────────────
 function gp(n) {
   for (let i = 0; i <= 4; i++) {
     document.getElementById('p'+i).classList.toggle('hidden', i !== n);
@@ -367,20 +495,25 @@ function gp(n) {
     b.classList.remove('active');
     if (i === n) b.classList.add('active');
   }
+  S.currentPhase = n;
+  saveState();
   if (n === 2) renderReview();
-  if (n === 3) renderLetters();
+  if (n === 3) renderLettersPhase();
   if (n === 4) renderBamboo();
 }
 
+// ── Quarter select ────────────────────────────────────────────────────────
 function sq(q) {
   S.q = q;
   [1,2,3,4].forEach(i => document.getElementById('qb'+i).classList.toggle('sel', i === q));
   checkReady();
+  saveState();
 }
 function checkReady() {
   document.getElementById('runBtn').disabled = !(S.q && S.raw.length);
 }
 
+// ── File handling ─────────────────────────────────────────────────────────
 function handleDrop(e) {
   e.preventDefault();
   document.getElementById('dz').classList.remove('drag');
@@ -397,11 +530,13 @@ function handleFile(file) {
       if (data.length < 2) { showMsg('File appears empty — please check the export.', 'warn'); return; }
       S.hdrs = data[0].map(h => (h||'').toString().trim());
       S.raw = data.slice(1).filter(r => r.some(c => c !== ''));
+      S.uploadedFileName = file.name;
       buildColMap(S.hdrs);
       document.getElementById('dz').classList.add('loaded');
       document.getElementById('uzTitle').textContent = `✓ ${file.name} — ${S.raw.length} employee records loaded`;
       showMsg(`Successfully loaded ${S.raw.length} records from "${file.name}".`, 'success');
       checkReady();
+      saveState();
     } catch(err) {
       showMsg('Could not read the file. Make sure it is an .xlsx export from BambooHR.', 'warn');
     }
@@ -412,28 +547,40 @@ function showMsg(msg, type) {
   document.getElementById('uploadMsg').innerHTML = `<div class="alert al-${type}">${msg}</div>`;
 }
 
+// ── Automation pipeline ───────────────────────────────────────────────────
 function runAutomation() {
+  // fresh run: reset everything keyed by row index so stale data can't leak in
+  S.raises = {};
+  S.excluded = {};
+  S.letters = [];
+  bambooState = {};
+  S.year = new Date().getFullYear();
+
   document.getElementById('logCard').classList.remove('hidden');
   document.getElementById('runBtn').disabled = true;
   const logEl = document.getElementById('logContainer');
   logEl.innerHTML = '';
+
   const steps = [
     { name: 'Reading employee records', fn: step_read },
     { name: 'Removing contractors and agency employees', fn: step_contractors },
     { name: `Filtering for Israel sites (${ISRAEL_SITES.join(', ')})`, fn: step_israel },
     { name: `Filtering hire date anniversaries in ${Q[S.q].l}`, fn: step_quarter },
+    { name: 'Excluding site managers, deputies & FSEs', fn: step_autoexclude },
     { name: 'Finalising eligible employee list', fn: step_finalise }
   ];
+
   let i = 0;
   function next() {
     if (i >= steps.length) {
-      addLog(logEl, 'done', '✓ Processing complete', `${S.filtered.length} eligible employees found for ${Q[S.q].l}`);
+      addLog(logEl, 'done', '✓ Processing complete', `${activeEntries().length} eligible employees found for ${Q[S.q].l}`);
       setTimeout(() => {
         ['ph1','ph2','ph3','ph4'].forEach(id => {
           const b = document.getElementById(id);
           b.disabled = false;
           b.classList.add('done');
         });
+        saveState();
         gp(1);
         renderFiltered();
       }, 700);
@@ -465,6 +612,7 @@ function logHTML(cls, name, detail) {
     <div><div class="log-name">${name}</div>${detail ? `<div class="log-detail">${detail}</div>` : ''}</div>`;
 }
 
+// ── Processing steps ──────────────────────────────────────────────────────
 function step_read() {
   if (!S.raw.length) throw new Error('No data found in file');
   return `${S.raw.length} records read`;
@@ -521,9 +669,19 @@ function step_quarter() {
   return `${before - S.filtered.length} outside quarter removed — ${S.filtered.length} eligible`;
 }
 
+function step_autoexclude() {
+  if (!EXCLUDE_TITLES.length) return 'No exclusion titles configured — nothing auto-excluded';
+  let count = 0;
+  S.filtered.forEach((r, i) => {
+    const jt = (gv(r,'jt') || '').toLowerCase();
+    if (EXCLUDE_TITLES.some(t => jt.includes(t.toLowerCase()))) { S.excluded[i] = true; count++; }
+  });
+  return `${count} employee${count!==1?'s':''} auto-excluded by job title — restorable in the next screen`;
+}
+
 function step_finalise() {
   S.filtered.forEach((_, i) => { if (S.raises[i] === undefined) S.raises[i] = ''; });
-  return `${S.filtered.length} employee${S.filtered.length!==1?'s':''} ready for review`;
+  return `${activeEntries().length} employee${activeEntries().length!==1?'s':''} ready for review`;
 }
 
 function getYears(hd) {
@@ -535,28 +693,55 @@ function getYears(hd) {
 function parsePay(r) {
   return parseFloat((gv(r,'pr')||'0').toString().replace(/[^\d.]/g,'')) || 0;
 }
+// This quarter's anniversary date, month/day from hire date, year = current cycle year
+function effectiveAnniversary(hd) {
+  const d = parseHireDate(hd);
+  if (!d) return null;
+  return new Date(S.year, d.getMonth(), d.getDate());
+}
 
+// ── Phase 1: Send to Managers ─────────────────────────────────────────────
 function renderFiltered() {
-  const n = S.filtered.length;
-  const yr = new Date().getFullYear();
+  const active = activeEntries();
+  const n = active.length;
   document.getElementById('p1sub').textContent =
-    `${n} employee${n!==1?'s':''} are eligible for a seniority raise in ${Q[S.q].l} ${yr}. Download each site's file, send it to the relevant manager for approval, then come back to enter the raises.`;
-  const siteSet = new Set(S.filtered.map(r => (gv(r,'loc')||'').toString().trim().toUpperCase()));
+    `${n} employee${n!==1?'s':''} are eligible for a seniority raise in ${Q[S.q].l} ${S.year}. Download the file(s), send to managers for approval, then come back to enter the raises.`;
+  const siteSet = new Set(active.map(x => (gv(x.r,'loc')||'').toString().trim().toUpperCase()));
   document.getElementById('p1stats').innerHTML = `
     <div class="stat"><div class="stat-val">${n}</div><div class="stat-label">Total eligible</div></div>
     <div class="stat"><div class="stat-val">Q${S.q}</div><div class="stat-label">Quarter</div></div>
     <div class="stat"><div class="stat-val">${siteSet.size}</div><div class="stat-label">Sites</div></div>`;
 
+  // Excluded card
+  const excluded = excludedEntries();
+  const excCard = document.getElementById('p1excluded');
+  if (excluded.length) {
+    excCard.innerHTML = `<div class="card excluded-card">
+      <div class="card-title">Excluded (${excluded.length})</div>
+      <div class="card-sub">Removed automatically (job title) or manually. Restore anyone who shouldn't be here.</div>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Name</th><th>Employee ID</th><th>Site</th><th>Job title</th><th></th></tr></thead>
+        <tbody>${excluded.map(({r,i}) => `<tr>
+          <td>${fullName(r)}</td><td>${gv(r,'id')||'—'}</td><td>${(gv(r,'loc')||'').toString().trim().toUpperCase()}</td><td>${gv(r,'jt')||'—'}</td>
+          <td class="emp-row-actions"><button class="restore-btn" onclick="restoreEmployee(${i})">Restore</button></td>
+        </tr>`).join('')}</tbody>
+      </table></div>
+    </div>`;
+  } else {
+    excCard.innerHTML = '';
+  }
+
+  // Group active by site
   const bysite = {};
   ISRAEL_SITES.forEach(loc => { bysite[loc] = []; });
-  S.filtered.forEach((r, i) => {
+  active.forEach(({r, i}) => {
     const loc = (gv(r,'loc')||'').toString().trim().toUpperCase();
     if (bysite[loc]) bysite[loc].push({r, i});
   });
 
   document.getElementById('p1sites').innerHTML = ISRAEL_SITES.map(loc => {
     const rows = bysite[loc];
-    const tableRows = rows.map(({r}) => {
+    const tableRows = rows.map(({r,i}) => {
       const hd = gv(r,'hd'); const d = parseHireDate(hd);
       const hdStr = d ? d.toLocaleDateString('en-GB',{day:'2-digit',month:'2-digit',year:'numeric'}) : (hd||'—');
       return `<tr>
@@ -565,6 +750,7 @@ function renderFiltered() {
         <td>${hdStr}</td>
         <td><span class="tag tag-new">${getYears(hd)}</span></td>
         <td>${gv(r,'jt')||'—'}</td>
+        <td class="emp-row-actions"><button class="remove-btn" onclick="excludeEmployee(${i})" title="Remove from eligible list">✕ Remove</button></td>
       </tr>`;
     }).join('');
     return `<div class="card">
@@ -574,7 +760,7 @@ function renderFiltered() {
       </div>
       ${rows.length
         ? `<div class="tbl-wrap" style="margin-bottom:16px"><table>
-            <thead><tr><th>Name</th><th>Employee ID</th><th>Hire date</th><th>Years</th><th>Job title</th></tr></thead>
+            <thead><tr><th>Name</th><th>Employee ID</th><th>Hire date</th><th>Years</th><th>Job title</th><th></th></tr></thead>
             <tbody>${tableRows}</tbody>
           </table></div>`
         : '<div class="alert al-info" style="margin-bottom:14px">No eligible employees at this site this quarter.</div>'}
@@ -590,6 +776,7 @@ function renderFiltered() {
     </div>`;
   }).join('');
   ISRAEL_SITES.forEach(loc => updateSiteEmailPreview(loc));
+  updateCombinedEmailPreview();
 }
 
 function updateSiteEmailPreview(loc) {
@@ -601,7 +788,7 @@ function updateSiteEmailPreview(loc) {
   if (!box) return;
   box.innerHTML = `<div class="email-head">
     <div class="email-field"><span class="ef-l">To:</span>${mgr}</div>
-    <div class="email-field"><span class="ef-l">Subject:</span>[Action required] ${loc} — ${q} ${new Date().getFullYear()} seniority raise review</div>
+    <div class="email-field"><span class="ef-l">Subject:</span>[Action required] ${loc} — ${q} ${S.year} seniority raise review</div>
   </div><div class="email-body">${body.replace(/\n/g,'<br>')}</div>`;
 }
 
@@ -614,25 +801,66 @@ function copySiteEmail(loc) {
 }
 
 function downloadSiteXLSX(loc) {
-  const rows = S.filtered.filter(r => (gv(r,'loc')||'').toString().trim().toUpperCase() === loc);
+  const rows = activeEntries().filter(({r}) => (gv(r,'loc')||'').toString().trim().toUpperCase() === loc);
   const wb = XLSX.utils.book_new();
   const h = ['#','Name','Employee ID','Location','Hire Date','Years of Service','Job Title','Current Pay Rate (₪/hr)','Approved Raise (₪/hr)'];
-  const data = rows.map((r, i) => {
+  const data = rows.map(({r}, idx) => {
     const d = parseHireDate(gv(r,'hd'));
     const hs = d ? d.toLocaleDateString('en-GB') : (gv(r,'hd')||'');
-    return [i+1, fullName(r), gv(r,'id'), loc, hs, getYears(gv(r,'hd')), gv(r,'jt'), parsePay(r), ''];
+    return [idx+1, fullName(r), gv(r,'id'), loc, hs, getYears(gv(r,'hd')), gv(r,'jt'), parsePay(r), ''];
   });
   const ws = XLSX.utils.aoa_to_sheet([h, ...data]);
   ws['!cols'] = [{wch:4},{wch:26},{wch:14},{wch:8},{wch:14},{wch:16},{wch:26},{wch:18},{wch:18}];
   XLSX.utils.book_append_sheet(wb, ws, loc);
-  XLSX.writeFile(wb, `vatik_${loc}_Q${S.q}_${new Date().getFullYear()}.xlsx`);
+  XLSX.writeFile(wb, `vetek_${loc}_Q${S.q}_${S.year}.xlsx`);
 }
 
+function updateCombinedEmailPreview() {
+  const mgr = (document.getElementById('combinedEmails')||{}).value || '[manager emails]';
+  const lnk = (document.getElementById('combinedLink')||{}).value || '[file link]';
+  const q = Q[S.q].l;
+  const body = `Hi,\n\nThe eligible employee list for the ${q} seniority raise cycle is ready for your review — this file covers all sites.\n\nPlease open the file here:\n${lnk}\n\nFor each employee, enter your approved raise amount in the "Approved Raise (₪/hr)" column. The raise can be between 0 and 3 ₪/hr.\n\nPlease complete your review by end of week and send the file back.\n\nThank you,\nHR Team`;
+  const box = document.getElementById('combinedEmailBox');
+  if (!box) return;
+  box.innerHTML = `<div class="email-head">
+    <div class="email-field"><span class="ef-l">To:</span>${mgr}</div>
+    <div class="email-field"><span class="ef-l">Subject:</span>[Action required] ${q} ${S.year} seniority raise review — all sites</div>
+  </div><div class="email-body">${body.replace(/\n/g,'<br>')}</div>`;
+}
+
+function copyCombinedEmail() {
+  const lnk = (document.getElementById('combinedLink')||{}).value||'';
+  const q = Q[S.q].l;
+  navigator.clipboard.writeText(
+    `Hi,\n\nThe eligible employee list for the ${q} seniority raise cycle is ready for your review — this file covers all sites.\n\nPlease open the file here:\n${lnk}\n\nFor each employee, enter your approved raise amount in the "Approved Raise (₪/hr)" column. The raise can be between 0 and 3 ₪/hr.\n\nPlease complete your review by end of week and send the file back.\n\nThank you,\nHR Team`
+  ).catch(()=>{});
+}
+
+function downloadCombinedXLSX() {
+  const rows = activeEntries();
+  const wb = XLSX.utils.book_new();
+  const h = ['#','Name','Employee ID','Site','Hire Date','Years of Service','Job Title','Current Pay Rate (₪/hr)','Approved Raise (₪/hr)'];
+  const data = rows.map(({r}, idx) => {
+    const d = parseHireDate(gv(r,'hd'));
+    const hs = d ? d.toLocaleDateString('en-GB') : (gv(r,'hd')||'');
+    const loc = (gv(r,'loc')||'').toString().trim().toUpperCase();
+    return [idx+1, fullName(r), gv(r,'id'), loc, hs, getYears(gv(r,'hd')), gv(r,'jt'), parsePay(r), ''];
+  });
+  const ws = XLSX.utils.aoa_to_sheet([h, ...data]);
+  ws['!cols'] = [{wch:4},{wch:26},{wch:14},{wch:8},{wch:14},{wch:16},{wch:26},{wch:18},{wch:18}];
+  XLSX.utils.book_append_sheet(wb, ws, `All sites Q${S.q}`);
+  XLSX.writeFile(wb, `vetek_combined_Q${S.q}_${S.year}.xlsx`);
+}
+
+// ── Phase 2: Enter Raises — Upload manager file ──────────────────────────
 function handleRaiseDrop(e) {
   e.preventDefault();
   document.getElementById('rzDz').classList.remove('drag');
   if (e.dataTransfer.files[0]) handleRaiseFile(e.dataTransfer.files[0]);
 }
+
+function normId(v) { return (v||'').toString().trim().replace(/\s+/g,''); }
+function normName(v) { return (v||'').toString().trim().toLowerCase().replace(/\s+/g,' '); }
 
 function handleRaiseFile(file) {
   if (!file) return;
@@ -640,7 +868,9 @@ function handleRaiseFile(file) {
   reader.onload = e => {
     try {
       const wb = XLSX.read(e.target.result, {type:'binary', cellDates:true});
-      let filled = 0;
+      let matched = 0, outOfRange = 0, unmatchedNames = [];
+      const active = activeEntries();
+
       wb.SheetNames.forEach(sheetName => {
         const ws = wb.Sheets[sheetName];
         const data = XLSX.utils.sheet_to_json(ws, {header:1, defval:''});
@@ -649,29 +879,43 @@ function handleRaiseFile(file) {
         const raiseCol = hdrs2.findIndex(h => h.includes('approved raise') || h.includes('raise'));
         const nameCol  = hdrs2.findIndex(h => h.includes('name'));
         const idCol    = hdrs2.findIndex(h => h.includes('id') && !h.includes('job'));
-        if (raiseCol < 0) return;
+        if (raiseCol < 0) return; // this sheet has no raise column — skip it
+
         data.slice(1).forEach(row => {
           const rv = row[raiseCol];
-          const raiseVal = rv !== null && rv !== '' ? rv.toString().trim() : '';
-          if (raiseVal === '' || isNaN(parseFloat(raiseVal))) return;
-          const rowId   = idCol >= 0 ? (row[idCol]||'').toString().trim() : '';
-          const rowName = nameCol >= 0 ? (row[nameCol]||'').toString().trim().toLowerCase() : '';
-          S.filtered.forEach((r, i) => {
-            if (S.raises[i] !== '' && S.raises[i] !== undefined) return;
-            const empId   = (gv(r,'id')||'').toString().trim();
-            const empName = fullName(r).toLowerCase();
-            if ((rowId && empId && rowId === empId) || (rowName && empName && empName === rowName)) {
-              const v = parseFloat(raiseVal);
-              if (!isNaN(v) && v >= 0 && v <= 3) { S.raises[i] = v.toString(); filled++; }
-            }
+          const raiseStr = (rv !== null && rv !== undefined) ? rv.toString().trim() : '';
+          if (raiseStr === '') return; // manager hasn't filled this one in yet
+          const v = parseFloat(raiseStr);
+          if (isNaN(v)) return;
+
+          const rowId   = idCol >= 0 ? normId(row[idCol]) : '';
+          const rowName = nameCol >= 0 ? normName(row[nameCol]) : '';
+          if (!rowId && !rowName) return;
+
+          const hit = active.find(({r}) => {
+            const empId = normId(gv(r,'id'));
+            const empName = normName(fullName(r));
+            if (rowId && empId) return rowId === empId;
+            return rowName && empName === rowName;
           });
+
+          if (!hit) {
+            if (rowName) unmatchedNames.push(rowName);
+            return;
+          }
+          if (v < 0 || v > 3) { outOfRange++; return; }
+          S.raises[hit.i] = v.toString(); // uploaded file always wins — it's the latest source of truth
+          matched++;
         });
       });
+
       document.getElementById('rzDz').classList.add('loaded');
+      const parts = [`✓ ${matched} raise amount${matched!==1?'s':''} imported`];
+      if (outOfRange) parts.push(`${outOfRange} value${outOfRange!==1?'s':''} outside 0–3 ₪/hr were skipped`);
+      if (unmatchedNames.length) parts.push(`${unmatchedNames.length} row${unmatchedNames.length!==1?'s':''} could not be matched to an eligible employee (check spelling or if they were excluded)`);
       document.getElementById('rzMsg').innerHTML =
-        `<div class="alert al-${filled>0?'success':'warn'}">${filled > 0
-          ? `✓ ${filled} raise amount${filled!==1?'s':''} imported. Review below and adjust if needed.`
-          : 'Could not match any employees. Check the file or enter raises manually below.'}</div>`;
+        `<div class="alert al-${matched>0?'success':'warn'}">${parts.join(' · ')}. Review below and adjust if needed.</div>`;
+      saveState();
       renderReview();
     } catch(err) {
       document.getElementById('rzMsg').innerHTML =
@@ -681,16 +925,18 @@ function handleRaiseFile(file) {
   reader.readAsBinaryString(file);
 }
 
+// ── Phase 2: Review table ────────────────────────────────────────────────
 function renderReview() {
+  const active = activeEntries();
   document.getElementById('p2table').innerHTML = `
     <thead><tr><th>#</th><th>Name</th><th>Site</th><th>Current rate (₪/hr)</th><th>Approved raise</th><th>New rate</th></tr></thead>
-    <tbody>${S.filtered.map((r, i) => {
+    <tbody>${active.map(({r, i}, idx) => {
       const pay = parsePay(r);
       const cur = S.raises[i] || '';
       const nr = cur && !isNaN(parseFloat(cur)) ? '₪'+(pay+parseFloat(cur)).toFixed(2) : '—';
       const loc = (gv(r,'loc')||'').toString().trim().toUpperCase();
       return `<tr>
-        <td>${i+1}</td><td><strong>${fullName(r)}</strong></td>
+        <td>${idx+1}</td><td><strong>${fullName(r)}</strong></td>
         <td><span class="tag tag-il">${loc}</span></td>
         <td>₪${pay.toFixed(2)}</td>
         <td><div class="raise-wrap">
@@ -707,6 +953,7 @@ function updateRaise(i, pay) {
   S.raises[i] = v;
   document.getElementById('nr'+i).textContent =
     (v && !isNaN(parseFloat(v))) ? '₪'+(pay+parseFloat(v)).toFixed(2) : '—';
+  saveState();
 }
 
 function renderEmailPreview() {
@@ -729,50 +976,73 @@ function copyEmail1() {
   ).catch(()=>{});
 }
 
+// ── Phase 3: Letters (matches the official Salary Increase Letter template) ─
+function onSignerChange() {
+  S.signerName = document.getElementById('signerName').value;
+  S.signerRole = document.getElementById('signerRole').value;
+  saveState();
+  renderLetters();
+}
+
+function renderLettersPhase() {
+  document.getElementById('signerName').value = S.signerName || '';
+  document.getElementById('signerRole').value = S.signerRole || '';
+  renderLetters();
+}
+
+function buildLetter(r) {
+  const pay = parsePay(r);
+  const raise = parseFloat(S.raises[S.filtered.indexOf(r)]) || 0;
+  const name = fullName(r);
+  const first = firstNameOf(r);
+  const newRate = (pay + raise).toFixed(2);
+  const issueDate = new Date().toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'});
+  const effDate = effectiveAnniversary(gv(r,'hd'));
+  const effDateStr = effDate ? effDate.toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'}) : issueDate;
+  const signer = S.signerName || 'HR Team';
+  const role = S.signerRole || '';
+  const signerLine = role ? `${signer}, ${role}` : signer;
+
+  const legalPara = 'The foregoing terms shall form an integral part of your Employment Agreement, shall supersede and replace any previous incentive compensation arrangement between you and the Company, and shall be deemed due notification regarding amendment of your employment terms in accordance with the provisions of the Notice of Employment Terms Law (Employment Terms), 2002 and the regulations thereunder. Unless expressly specified herein, all other terms and conditions specified in your Employment Agreement shall apply and shall remain in full force and effect.';
+  const noteLine = `${first}, It is a pleasure having you on our team, and we look forward to continuing to work together to achieve great success for Fabric!`;
+
+  const paras = [
+    `Date: ${issueDate}`,
+    `To: ${name}`,
+    `<b>Re: Salary Increase Letter</b>`,
+    `Dear ${first},`,
+    `We are pleased to inform you that, effective ${effDateStr}, your salary Hourly Rate will be increased to ${newRate} NIS per hour.`,
+    legalPara,
+    noteLine,
+    `Sincerely,`,
+    signerLine
+  ];
+
+  const previewHtml = paras.map(p => `<p>${p}</p>`).join('');
+  const docHtml = paras.map(p => `<p style="margin:0 0 14px 0;">${p}</p>`).join('');
+  const plainText = paras.map(p => p.replace(/<\/?b>/g,'')).join('\n\n');
+
+  return { name, raise: raise.toFixed(2), newRate, previewHtml, docHtml, plainText };
+}
+
 function renderLetters() {
-  const today = new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
   S.letters = [];
-  S.filtered.forEach((r, i) => {
+  activeEntries().forEach(({r, i}) => {
     const raise = parseFloat(S.raises[i]) || 0;
     if (raise > 0) {
-      const pay = parsePay(r);
-      const name = fullName(r);
-      const hd = gv(r,'hd');
-      const d = parseHireDate(hd);
-      const hdStr = d ? d.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}) : '';
-      const newRate = (pay + raise).toFixed(2);
-      const yrs = getYears(hd);
-      S.letters.push({
-        name, raise: raise.toFixed(2), newRate, empIdx: i,
-        letter: buildLetter(today, name, newRate, raise.toFixed(2), hdStr, yrs)
-      });
+      const l = buildLetter(r);
+      l.empIdx = i;
+      S.letters.push(l);
     }
   });
-  const noRaise = S.filtered.length - S.letters.length;
+  const activeCount = activeEntries().length;
+  const noRaise = activeCount - S.letters.length;
   document.getElementById('p3sub').textContent =
     `${S.letters.length} letter${S.letters.length!==1?'s':''} generated` +
     (noRaise > 0 ? ` · ${noRaise} employee${noRaise!==1?'s':''} with 0 ₪ raise — no letter generated` : '');
   S.li = 0;
   renderLetterView();
   renderEmail2();
-}
-
-function buildLetter(today, name, newRate, raise, hdStr, yrs) {
-  return `${today}
-
-Dear ${name},
-
-We are pleased to inform you that, in recognition of your continued contribution and dedication, and in accordance with the company's seniority policy, your compensation has been reviewed and updated.
-
-Effective ${hdStr ? `your ${yrs} employment anniversary (${hdStr})` : 'this quarter'}, your new hourly pay rate is ₪${newRate} per hour — an increase of ₪${raise} per hour.
-
-This update reflects our appreciation for your ${yrs} of service and your ongoing commitment to the company.
-
-We look forward to your continued success with us.
-
-Sincerely,
-
-Human Resources Department`;
 }
 
 function renderLetterView() {
@@ -790,36 +1060,65 @@ function renderLetterView() {
       <span class="letter-name">${l.name}</span>
       <span class="letter-raise">+₪${l.raise}/hr → ₪${l.newRate}/hr</span>
     </div>
-    <div class="letter-body">${l.letter.replace(/\n/g,'<br>')}</div>
-    <button class="btn btn-secondary" onclick="copyLetter()">Copy this letter</button>`;
+    <div class="letter-body">${l.previewHtml}</div>
+    <div class="btn-row" style="margin-top:0">
+      <button class="btn btn-secondary" onclick="downloadOneLetter()">⬇ Download this letter (.doc)</button>
+      <button class="btn btn-secondary" onclick="copyLetter()">Copy as text</button>
+    </div>`;
 }
 function prevL() { if (S.li > 0) { S.li--; renderLetterView(); } }
 function nextL() { if (S.li < S.letters.length-1) { S.li++; renderLetterView(); } }
-function copyLetter() { navigator.clipboard.writeText(S.letters[S.li].letter).catch(()=>{}); }
+function copyLetter() { navigator.clipboard.writeText(S.letters[S.li].plainText).catch(()=>{}); }
+
+function docWrapper(bodyHtml) {
+  return `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+  <head><meta charset="utf-8"><title>Salary Increase Letter</title></head>
+  <body style="font-family:'Times New Roman',serif;font-size:12pt;color:#000;">${bodyHtml}</body></html>`;
+}
+function slug(name) { return name.replace(/[^a-zA-Z0-9]+/g,'_').replace(/^_+|_+$/g,'') || 'employee'; }
+
+function downloadOneLetter() {
+  const l = S.letters[S.li];
+  const html = docWrapper(l.docHtml);
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob(['﻿'+html], {type:'application/msword'}));
+  a.download = `salary_increase_letter_${slug(l.name)}.doc`;
+  a.click();
+}
+
+function downloadAllLetters() {
+  if (!S.letters.length) { alert('No letters generated yet — go back to "Enter Raises" and fill in the approved amounts.'); return; }
+  const body = S.letters.map((l, idx) =>
+    `<div style="${idx>0?'page-break-before:always;':''}">${l.docHtml}</div>`
+  ).join('');
+  const html = docWrapper(body);
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob(['﻿'+html], {type:'application/msword'}));
+  a.download = `salary_increase_letters_Q${S.q}_${S.year}.doc`;
+  a.click();
+}
 
 function renderEmail2() {
   const q = Q[S.q].l;
-  const yr = new Date().getFullYear();
   const mgr = document.getElementById('letterMgrEmails') ? document.getElementById('letterMgrEmails').value : '';
-  const body = `Hi,\n\nPlease find attached the salary increase letters for your team members for the ${q} ${yr} seniority raise cycle.\n\nPlease use these letters when conducting the individual feedback meetings with each eligible employee.\n\nLet me know if any corrections are needed.\n\nThank you,\nHR Team`;
+  const body = `Hi,\n\nPlease find attached the salary increase letters for your team members for the ${q} ${S.year} seniority raise cycle.\n\nPlease use these letters when conducting the individual feedback meetings with each eligible employee.\n\nLet me know if any corrections are needed.\n\nThank you,\nHR Team`;
   document.getElementById('email2Preview').innerHTML = `
     <div class="email-head">
       <div class="email-field"><span class="ef-l">To:</span>${mgr || 'Relevant managers'}</div>
-      <div class="email-field"><span class="ef-l">Subject:</span>Salary increase letters — ${q} ${yr}</div>
+      <div class="email-field"><span class="ef-l">Subject:</span>Salary increase letters — ${q} ${S.year}</div>
     </div><div class="email-body">${body.replace(/\n/g,'<br>')}</div>`;
 }
 
 function copyEmail2() {
   const q = Q[S.q].l;
-  const yr = new Date().getFullYear();
   navigator.clipboard.writeText(
-    `Hi,\n\nPlease find attached the salary increase letters for your team members for the ${q} ${yr} seniority raise cycle.\n\nPlease use these letters when conducting the individual feedback meetings with each eligible employee.\n\nLet me know if any corrections are needed.\n\nThank you,\nHR Team`
+    `Hi,\n\nPlease find attached the salary increase letters for your team members for the ${q} ${S.year} seniority raise cycle.\n\nPlease use these letters when conducting the individual feedback meetings with each eligible employee.\n\nLet me know if any corrections are needed.\n\nThank you,\nHR Team`
   ).catch(()=>{});
 }
 
-let bambooState = {};
+// ── Phase 4: BambooHR ─────────────────────────────────────────────────────
 function renderBamboo() {
-  const eligible = S.filtered.map((r, i) => ({r, i, raise: parseFloat(S.raises[i])||0})).filter(x => x.raise > 0);
+  const eligible = activeEntries().map(({r,i}) => ({r, i, raise: parseFloat(S.raises[i])||0})).filter(x => x.raise > 0);
   const container = document.getElementById('bambooList');
   if (!eligible.length) {
     container.innerHTML = '<div class="alert al-warn">No raises were entered — nothing to update in BambooHR.</div>';
@@ -846,7 +1145,8 @@ function toggleBamboo(i) {
   el.classList.toggle('bs-p', !bambooState[i]);
   el.classList.toggle('bs-d', bambooState[i]);
   el.textContent = bambooState[i] ? '✓ Done' : 'Pending';
-  const eligible = S.filtered.map((r, j) => ({r, i:j, raise: parseFloat(S.raises[j])||0})).filter(x => x.raise > 0);
+  saveState();
+  const eligible = activeEntries().map(({r,i:j}) => ({r, i:j, raise: parseFloat(S.raises[j])||0})).filter(x => x.raise > 0);
   updateBambooProgress(eligible);
 }
 
@@ -861,24 +1161,12 @@ function updateBambooProgress(eligible) {
     <div class="progress-bar-wrap"><div class="progress-bar" style="width:${pct}%"></div></div>`;
 }
 
-function downloadAllLetters() {
-  if (!S.letters.length) { alert('No letters generated yet — go back to "Enter Raises" and fill in the approved amounts.'); return; }
-  const yr = new Date().getFullYear();
-  const txt = S.letters.map((l, i) =>
-    `${'═'.repeat(60)}\nLETTER ${i+1}: ${l.name}  |  +₪${l.raise}/hr  →  ₪${l.newRate}/hr\n${'═'.repeat(60)}\n\n${l.letter}\n\n`
-  ).join('\n');
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob(['﻿'+txt],{type:'text/plain;charset=utf-8'}));
-  a.download = `salary_letters_Q${S.q}_${yr}.txt`;
-  a.click();
-}
-
 function downloadBambooGuide() {
-  const eligible = S.filtered.map((r, i) => ({r, i, raise: parseFloat(S.raises[i])||0})).filter(x => x.raise > 0);
+  const eligible = activeEntries().map(({r,i}) => ({r, i, raise: parseFloat(S.raises[i])||0})).filter(x => x.raise > 0);
   const wb = XLSX.utils.book_new();
   const h = ['Employee Name','Employee ID','Site','Current Rate (₪/hr)','Approved Raise (₪/hr)','New Rate (₪/hr)','Effective Date','Reason','Updated in BambooHR?'];
   const month = S.q===1?'01':S.q===2?'04':S.q===3?'07':'10';
-  const eff = `01/${month}/${new Date().getFullYear()}`;
+  const eff = `01/${month}/${S.year}`;
   const rows = eligible.map(({r, raise}) => {
     const pay = parsePay(r);
     return [fullName(r), gv(r,'id'), (gv(r,'loc')||'').toString().trim().toUpperCase(),
@@ -887,8 +1175,38 @@ function downloadBambooGuide() {
   const ws = XLSX.utils.aoa_to_sheet([h, ...rows]);
   ws['!cols'] = [{wch:26},{wch:14},{wch:8},{wch:16},{wch:16},{wch:14},{wch:14},{wch:14},{wch:20}];
   XLSX.utils.book_append_sheet(wb, ws, 'BambooHR Updates');
-  XLSX.writeFile(wb, `bamboohr_update_Q${S.q}_${new Date().getFullYear()}.xlsx`);
+  XLSX.writeFile(wb, `bamboohr_update_Q${S.q}_${S.year}.xlsx`);
 }
+
+// ── Init ──────────────────────────────────────────────────────────────────
+(function init() {
+  renderSiteTags();
+  renderTitleTags();
+  document.getElementById('signerName').value = S.signerName;
+  document.getElementById('signerRole').value = S.signerRole;
+
+  const restored = loadState();
+  renderSiteTags();
+  renderTitleTags();
+  if (restored) {
+    if (S.q) [1,2,3,4].forEach(i => document.getElementById('qb'+i).classList.toggle('sel', i === S.q));
+    if (S.uploadedFileName) {
+      document.getElementById('dz').classList.add('loaded');
+      document.getElementById('uzTitle').textContent = `✓ ${S.uploadedFileName} — ${S.raw.length} employee records loaded`;
+    }
+    buildColMap(S.hdrs);
+    checkReady();
+    if (S.filtered && S.filtered.length) {
+      ['ph1','ph2','ph3','ph4'].forEach(id => {
+        const b = document.getElementById(id);
+        b.disabled = false;
+        b.classList.add('done');
+      });
+      renderFiltered();
+    }
+    gp(S.currentPhase || 0);
+  }
+})();
 </script>
 </body>
 </html>
