@@ -316,11 +316,11 @@
       <div class="field-row">
         <div>
           <label class="field-label">Signer name</label>
-          <input class="input-field" id="signerName" oninput="onSignerChange()">
+          <input class="input-field" id="signerName" placeholder="e.g. Jane Doe" oninput="onSignerChange()">
         </div>
         <div>
           <label class="field-label">Signer role</label>
-          <input class="input-field" id="signerRole" oninput="onSignerChange()">
+          <input class="input-field" id="signerRole" placeholder="e.g. HR Business Partner" oninput="onSignerChange()">
         </div>
       </div>
       <div class="card-sub" id="p3sub" style="margin-top:8px"></div>
@@ -374,7 +374,7 @@ let EXCLUDE_TITLES = ['Site Manager','Deputy Site Manager','Assistant Site Manag
 const S = {
   q: null, year: new Date().getFullYear(), raw: [], hdrs: [], filtered: [],
   raises: {}, excluded: {}, letters: [], li: 0,
-  signerName: 'Inbal Nimrodi', signerRole: 'HRBP',
+  signerName: '', signerRole: '',
   currentPhase: 0, uploadedFileName: ''
 };
 let CM = {};
@@ -999,8 +999,8 @@ function buildLetter(r) {
   const issueDate = new Date().toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'});
   const effDate = effectiveAnniversary(gv(r,'hd'));
   const effDateStr = effDate ? effDate.toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'}) : issueDate;
-  const signer = S.signerName || 'HR Team';
-  const role = S.signerRole || '';
+  const signer = S.signerName || '[signer name]';
+  const role = S.signerRole || '[role]';
   const signerLine = role ? `${signer}, ${role}` : signer;
 
   const legalPara = 'The foregoing terms shall form an integral part of your Employment Agreement, shall supersede and replace any previous incentive compensation arrangement between you and the Company, and shall be deemed due notification regarding amendment of your employment terms in accordance with the provisions of the Notice of Employment Terms Law (Employment Terms), 2002 and the regulations thereunder. Unless expressly specified herein, all other terms and conditions specified in your Employment Agreement shall apply and shall remain in full force and effect.';
