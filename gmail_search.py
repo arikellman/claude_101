@@ -1,18 +1,11 @@
 #!/usr/bin/env python3
-"""Search Gmail and return relevant messages."""
+"""Search Gmail and return relevant messages (via the gws CLI)."""
 
 import argparse
 import base64
 import json
-import os
-import sys
 
-from googleapiclient.discovery import build
-from google_auth import get_credentials
-
-
-def get_service():
-    return build("gmail", "v1", credentials=get_credentials())
+from gws_client import gws_json
 
 
 def decode_body(payload):
@@ -36,24 +29,27 @@ def get_header(headers, name):
 
 
 def search_gmail(query: str, max_results: int = 10, include_body: bool = False):
-    service = get_service()
-    response = service.users().messages().list(
-        userId="me", q=query, maxResults=max_results
-    ).execute()
+    response = gws_json(
+        "gmail", "users", "messages", "list",
+        "--params", json.dumps({"userId": "me", "q": query, "maxResults": max_results}),
+    )
 
-    messages = response.get("messages", [])
+    messages = (response or {}).get("messages", [])
     if not messages:
         print("No messages found.")
         return []
 
     results = []
     for msg_ref in messages:
-        msg = service.users().messages().get(
-            userId="me",
-            id=msg_ref["id"],
-            format="full" if include_body else "metadata",
-            metadataHeaders=["From", "To", "Subject", "Date"],
-        ).execute()
+        msg = gws_json(
+            "gmail", "users", "messages", "get",
+            "--params", json.dumps({
+                "userId": "me",
+                "id": msg_ref["id"],
+                "format": "full" if include_body else "metadata",
+                "metadataHeaders": ["From", "To", "Subject", "Date"],
+            }),
+        )
 
         headers = msg.get("payload", {}).get("headers", [])
         entry = {

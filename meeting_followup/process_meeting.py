@@ -1,4 +1,4 @@
-"""Meeting follow-up mechanics — Gmail and state management.
+"""Meeting follow-up mechanics — Gmail (via the gws CLI) and state management.
 
 No AI, no Calendar API. Claude (the scheduled agent) handles
 drafting and uses the Calendar MCP for attendee lookups.
@@ -14,13 +14,10 @@ import json
 import os
 import re
 import sys
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from googleapiclient.discovery import build
-from google_auth import get_credentials
+from gws_client import gws_json
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATE_FILE = os.path.join(BASE_DIR, "state.json")
@@ -46,10 +43,6 @@ def _save_state(state: dict):
 # ---------------------------------------------------------------------------
 # Gmail helpers
 # ---------------------------------------------------------------------------
-
-def _gmail():
-    return build("gmail", "v1", credentials=get_credentials())
-
 
 def _get_header(headers: list, name: str) -> str:
     for h in headers:
@@ -77,18 +70,23 @@ def _decode_body(payload: dict) -> str:
 
 def cmd_fetch():
     """Print JSON list of new unprocessed MTG: emails."""
-    service = _gmail()
     state = _load_state()
     processed_ids = set(state["processed_mtg_emails"])
 
     query = f'from:{JACK_EMAIL} to:{JACK_EMAIL} subject:"MTG:" newer_than:3d'
-    resp = service.users().messages().list(userId="me", q=query, maxResults=20).execute()
+    resp = gws_json(
+        "gmail", "users", "messages", "list",
+        "--params", json.dumps({"userId": "me", "q": query, "maxResults": 20}),
+    )
 
     results = []
-    for ref in resp.get("messages", []):
+    for ref in (resp or {}).get("messages", []):
         if ref["id"] in processed_ids:
             continue
-        msg = service.users().messages().get(userId="me", id=ref["id"], format="full").execute()
+        msg = gws_json(
+            "gmail", "users", "messages", "get",
+            "--params", json.dumps({"userId": "me", "id": ref["id"], "format": "full"}),
+        )
         headers = msg["payload"]["headers"]
         subject = _get_header(headers, "Subject")
         name_match = re.match(r"MTG:\s*(.+)", subject, re.IGNORECASE)
@@ -109,18 +107,16 @@ def cmd_create_draft(meeting_name: str, attendees_csv: str, subject: str, html_f
 
     recipients = [e.strip() for e in attendees_csv.split(",") if e.strip()]
 
-    msg = MIMEMultipart("alternative")
-    msg["To"] = ", ".join(recipients)
-    msg["Subject"] = subject
-    msg.attach(MIMEText(html_body, "html"))
+    draft = gws_json(
+        "gmail", "+send",
+        "--to", ",".join(recipients),
+        "--subject", subject,
+        "--body", html_body,
+        "--html",
+        "--draft",
+    ) or {}
 
-    raw = base64.urlsafe_b64encode(msg.as_bytes()).decode()
-    service = _gmail()
-    draft = service.users().drafts().create(
-        userId="me", body={"message": {"raw": raw}}
-    ).execute()
-
-    print(f"Draft created (id: {draft['id']}) for: {meeting_name}")
+    print(f"Draft created (id: {draft.get('id')}) for: {meeting_name}")
 
 
 def cmd_mark_processed(email_id: str):
