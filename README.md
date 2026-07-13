@@ -22,6 +22,11 @@ this repo.
    (Homebrew: `brew install googleworkspace-cli`, or download a binary from the
    [releases page](https://github.com/googleworkspace/cli/releases).)
 
+   **Windows/PowerShell note:** if you get a "running scripts is disabled" error,
+   either run `npm.cmd install -g @googleworkspace/cli` instead, run it from
+   cmd.exe, or allow local scripts once with
+   `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`.
+
 2. Authenticate:
 
    ```
