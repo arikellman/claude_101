@@ -1,44 +1,18 @@
-"""Send email via Gmail API. Usage: python gmail_send.py --to X --subject Y --body-file Z [--attachment PATH]"""
+"""Send email via the gws CLI. Usage: python gmail_send.py --to X --subject Y --body-file Z [--attachment PATH]"""
 import argparse
-import base64
-import mimetypes
-import os
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-from email.mime.base import MIMEBase
-from email import encoders
 
-from googleapiclient.discovery import build
-from google_auth import get_credentials
+from gws_client import gws_json
 
 
 def send_email(to: str, subject: str, html_body: str, attachments: list[str] | None = None) -> str:
-    service = build("gmail", "v1", credentials=get_credentials())
+    args = ["gmail", "+send", "--to", to, "--subject", subject, "--body", html_body, "--html"]
+    for path in attachments or []:
+        args += ["--attach", path]
 
-    if attachments:
-        msg = MIMEMultipart("mixed")
-        msg.attach(MIMEText(html_body, "html"))
-        for path in attachments:
-            mime_type, _ = mimetypes.guess_type(path)
-            main_type, sub_type = (mime_type or "application/octet-stream").split("/", 1)
-            with open(path, "rb") as f:
-                part = MIMEBase(main_type, sub_type)
-                part.set_payload(f.read())
-            encoders.encode_base64(part)
-            part.add_header("Content-Disposition", "attachment", filename=os.path.basename(path))
-            msg.attach(part)
-    else:
-        msg = MIMEMultipart("alternative")
-        msg.attach(MIMEText(html_body, "html"))
-
-    msg["To"] = to
-    msg["From"] = "me"
-    msg["Subject"] = subject
-
-    raw = base64.urlsafe_b64encode(msg.as_bytes()).decode()
-    result = service.users().messages().send(userId="me", body={"raw": raw}).execute()
-    print(f"Sent message ID: {result['id']}")
-    return result["id"]
+    result = gws_json(*args) or {}
+    msg_id = result.get("id", "")
+    print(f"Sent message ID: {msg_id}")
+    return msg_id
 
 
 def main():
