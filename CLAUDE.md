@@ -123,12 +123,16 @@ Backed by Google Sheets (sheet ID in `config.json`).
 ```bash
 python sheets_utils.py create                                          # create sheet, saves ID to config.json
 python sheets_utils.py list [--status Open|Complete]                   # list items
-python sheets_utils.py append --item "TEXT" --owner "Name" --due-date YYYY-MM-DD --source "Meeting"
+python sheets_utils.py append --item "TEXT" --owner "Name" --due-date YYYY-MM-DD --source "Meeting" [--auto-added]
 python sheets_utils.py append-batch --data-file items.json             # bulk insert
 python sheets_utils.py update --id N [--status S] [--owner O] [--due-date D] [--notes N] [--item T]
+python sheets_utils.py flag --id N [--reset]                           # increment/reset Times Flagged (chronic staleness)
+python sheets_utils.py resolve-auto --id N --confirmation Confirmed|Rejected   # close the loop on an auto-added item
+python sheets_utils.py extraction-stats                                # rejection rate over trailing 20 resolved auto-added items
 ```
-`append-batch` expects a JSON array of objects with keys: `action_item`, `owner`, `due_date`, `source_meeting`, `status`, `notes`, `last_activity`, `project`.
+`append-batch` expects a JSON array of objects with keys: `action_item`, `owner`, `due_date`, `source_meeting`, `status`, `notes`, `last_activity`, `project`, `auto_added`.
 `append` and `update` also accept `--project <slug>` linking the item to a knowledge page.
+Sheet columns: ID, Action Item, Owner, Due Date, Status, Source Meeting, Created, Notes, Last Activity, Project, Times Flagged, Auto-Added, Confirmation. Run `migrate-headers` after a schema change to sync the live sheet and backfill defaults for new columns.
 
 ### Knowledge Wiki (`knowledge/`)
 Ari's "knowledge brain" — distilled project/topic state, richer than the action item list. Structure:
@@ -150,18 +154,19 @@ This is a personal AI agent hub. Core system: a morning briefing that runs daily
 
 **Briefing pipeline (SKILL.md):**
 - Step -1: Token preflight — run `token_check.py`; on failure, write `token_alert.txt`, send alert email, and stop
-- Step 0: Determine mode — Sunday=`WEEK_PLAN`, Thursday=`WEEK_WRAP`, Mon–Wed=`STANDARD`; set REPLY_WINDOW
-- Step 1: Process email replies from last REPLY_WINDOW days — action item commands (`Complete #N`, `Reassign`, `Push`, `Add:`), `Query:` (answered from wiki then sheet), `Revert`, `Apply change` (applies pending SKILL.md change + commits + syncs this CLAUDE.md), `Train:` (auto-apply preference changes; stage core-logic changes as Pending Changes), `Wiki:` (correct a knowledge page)
-- Step 2: Read all open items **once** from the sheet (single in-memory list used by all steps). Score each item (HIGH ≥6 / MED 3–5 / LOW 0–2: past due +5, due today +4, due within 3d +3, within 7d +2, owner=Ari +2, Jack-assigned +2, deal keyword +2, external party +1). Mark items with Last Activity blank or >21 days old as "Chronic" (surfaced in WEEK_WRAP)
-- Step 3: Fetch calendar events via Calendar MCP. Flag `[Needs RSVP]`, `[Conflict]`, drop declined events
-- Step 4: Gather context **in parallel** for each accepted meeting — Gmail threads + Slack DMs + Drive docs + Granola notes. All-internal skip: if all participants are @getfabric.com and no linked open items, skip lookups and use a one-line calendar summary. Auto-detect resolved items and write Last Activity; update knowledge wiki pages with new facts (distilled, with provenance)
-- Step 4b: Extract new action items from emails/Granola since the `step4b_watermark.txt` date (14d fallback if missing). Dedupe against sheet, batch-append, update watermark. Thursday: assess extraction quality; if >30% of auto-added items were quickly closed/abandoned, tighten extraction threshold next week
-- Step 5: Compose HTML briefing. Open-items list: route items with "waiting on [name]" text to a "Waiting on others" subsection; remaining items sorted HIGH→MED→LOW. Send via `gmail_send.py`, archive to `briefings/[DATE].html`, delete temp. WEEK_WRAP (Thursday): also compact knowledge wiki pages updated this week
+- Step 0: Determine mode — Sunday=`WEEK_PLAN`, Thursday=`WEEK_WRAP`, Mon–Wed=`STANDARD`; set REPLY_WINDOW. **Same-day re-run guard:** if a `[Morning Briefing]` email already went out today, check today's replies for `full rerun` (forces the normal mode anyway) or `light run`/no override (switches MODE to `REPLY_ONLY`)
+- Step 1: Process email replies from last REPLY_WINDOW days — action item commands (`Complete #N`, `Reassign`, `Push`, `Add:`; any of these referencing an Auto-Added item also confirms it via `resolve-auto --confirmation Confirmed`), `Query:` (answered from wiki then sheet), `Revert`, `Apply change` (applies pending SKILL.md change + commits + syncs this CLAUDE.md), `Train:` (auto-apply preference changes; stage core-logic changes as Pending Changes), `Wiki:` (correct a knowledge page)
+- Step 2 (skipped in `REPLY_ONLY` mode): Read all open items **once** from the sheet (single in-memory list used by all steps). Score each item (HIGH ≥6 / MED 3–5 / LOW 0–2: past due +5, due today +4, due within 3d +3, within 7d +2, owner=Ari +2, Jack-assigned +2, deal keyword +2, external party +1). **Chronic staleness escalation:** items with no real owner action this run get `sheets_utils.py flag --id N` (increments Times Flagged); real action resets it via `flag --reset`. At Times Flagged ≥3, escalate (draft a nudge for externally-owned items via Gmail `create_draft`, suggest a delegate, or ask Ari directly); at ≥6, surface in a standalone WEEK_WRAP section. Auto-added items untouched by Ari at Times Flagged ≥3 get `resolve-auto --confirmation Rejected` and drop out of future Open reads
+- Step 3 (skipped in `REPLY_ONLY`): Fetch calendar events via Calendar MCP. Flag `[Needs RSVP]`, `[Conflict]`, drop declined events
+- Step 4 (skipped in `REPLY_ONLY`): Gather context **in parallel** for each accepted meeting — Gmail threads + Slack DMs + Drive docs + Granola notes. All-internal skip: if all participants are @getfabric.com and no linked open items, skip lookups and use a one-line calendar summary. Auto-detect resolved items and write Last Activity; update knowledge wiki pages with new facts (distilled, with provenance)
+- Step 4b (skipped in `REPLY_ONLY`): Extract new action items from emails/Granola since the `step4b_watermark.txt` date (14d fallback if missing), tagged `auto_added: true`. Dedupe against sheet, batch-append, update watermark. Thursday: run `sheets_utils.py extraction-stats` — if the rejection rate over the trailing 20 resolved auto-added items exceeds 30%, tighten the extraction threshold next week
+- Step 5: `REPLY_ONLY` mode sends a short "Reply processed" confirmation email summarizing Step 1 only — no archiving, no watermark write. Otherwise compose the full HTML briefing: open-items list routes "waiting on [name]" text to a "Waiting on others" subsection; remaining items sorted HIGH→MED→LOW; WEEK_WRAP leads with a "Chronic — 3+ weeks no movement" section for Times Flagged ≥6 items. Send via `gmail_send.py`, archive to `briefings/[DATE].html`, delete temp. WEEK_WRAP (Thursday): also compact knowledge wiki pages updated this week
 
 **Day-aware modes:**
 - Sunday (`WEEK_PLAN`): full-week preview, top 5 HIGH items, decisions needed
 - Thursday (`WEEK_WRAP`): completed/slipped/carrying-forward summary + today's meetings
 - Mon–Wed (`STANDARD`): standard daily briefing
+- `REPLY_ONLY` (any day, triggered by the same-day re-run guard): reply processing only, no meeting prep, short confirmation email instead of a full briefing
 
 **Self-editing via email:** Replies with `Train: [instruction]` auto-edit the `## Ari's Preferences` section of SKILL.md and commit. Changes to core logic are staged as Pending Changes requiring `Apply change` confirmation. Revert with `Revert last change` or `Revert to N changes ago`.
 
