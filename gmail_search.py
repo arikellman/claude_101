@@ -3,8 +3,10 @@
 
 import argparse
 import base64
+import html
 import json
 import os
+import re
 import sys
 
 from googleapiclient.discovery import build
@@ -15,16 +17,46 @@ def get_service():
     return build("gmail", "v1", credentials=get_credentials())
 
 
-def decode_body(payload):
-    """Extract plain text body from message payload."""
-    if payload.get("mimeType") == "text/plain":
-        data = payload.get("body", {}).get("data", "")
-        if data:
-            return base64.urlsafe_b64decode(data).decode("utf-8", errors="replace")
+def _iter_parts(payload):
+    """Yield (mimeType, base64 data) for every leaf part with body data."""
+    data = payload.get("body", {}).get("data", "")
+    if data:
+        yield payload.get("mimeType", ""), data
     for part in payload.get("parts", []):
-        result = decode_body(part)
-        if result:
-            return result
+        yield from _iter_parts(part)
+
+
+def _html_to_text(html_content: str) -> str:
+    """Strip an HTML email body down to readable text."""
+    text = re.sub(r"(?is)<(script|style)\b.*?</\1>", "", html_content)
+    text = re.sub(r"(?i)<br\s*/?>", "\n", text)
+    text = re.sub(r"(?i)</(p|div|tr|li|h[1-6])>", "\n", text)
+    text = re.sub(r"<[^>]+>", "", text)
+    text = html.unescape(text)
+    text = re.sub(r"[ \t]+", " ", text)
+    text = re.sub(r"\n\s*\n+", "\n\n", text)
+    return text.strip()
+
+
+def decode_body(payload):
+    """Extract a readable text body from message payload.
+
+    Prefers text/plain; falls back to a stripped text/html part when no
+    plain-text part exists (e.g. Zoom's HTML-only notification emails,
+    which would otherwise decode to an empty body despite matching a search).
+    """
+    plain = None
+    html_fallback = None
+    for mime, data in _iter_parts(payload):
+        decoded = base64.urlsafe_b64decode(data).decode("utf-8", errors="replace")
+        if mime == "text/plain" and not plain:
+            plain = decoded
+        elif mime == "text/html" and not html_fallback:
+            html_fallback = decoded
+    if plain:
+        return plain
+    if html_fallback:
+        return _html_to_text(html_fallback)
     return ""
 
 
