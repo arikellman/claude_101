@@ -1,0 +1,62 @@
+[
+  {
+    "source": "photos\\food\\Baked Schnitzel.jpg",
+    "mode": "food",
+    "model": "claude-opus-5",
+    "stop_reason": "end_turn",
+    "seconds": 20.55,
+    "image_px": [
+      619,
+      1100
+    ],
+    "usage": {
+      "input_tokens": 941,
+      "output_tokens": 417,
+      "cache_read_input_tokens": 0,
+      "cache_creation_input_tokens": 2253
+    },
+    "cost_usd": 0.02921,
+    "data": {
+      "items": [
+        {
+          "name": "Breaded chicken schnitzel, oven-baked",
+          "name_he": "שניצל עוף בתנור",
+          "portion_description": "1 large flat cutlet (visible in front)",
+          "portion_grams_est": 130,
+          "calories_est": 310,
+          "calories_low": 240,
+          "calories_high": 390,
+          "protein_g": 22,
+          "carbs_g": 19,
+          "fat_g": 16,
+          "fiber_g": 1.2,
+          "confidence": "medium",
+          "alternatives": [
+            "Frozen breaded turkey schnitzel",
+            "Breaded fish fillet"
+          ]
+        },
+        {
+          "name": "Breaded chicken schnitzel, oven-baked (second piece, partly out of frame)",
+          "name_he": "שניצל עוף בתנור",
+          "portion_description": "1 cutlet, partially visible",
+          "portion_grams_est": 120,
+          "calories_est": 285,
+          "calories_low": 210,
+          "calories_high": 370,
+          "protein_g": 20,
+          "carbs_g": 17,
+          "fat_g": 15,
+          "fiber_g": 1.1,
+          "confidence": "low",
+          "alternatives": [
+            "Same size as front piece",
+            "Smaller trimmed piece"
+          ]
+        }
+      ],
+      "overall_confidence": "medium",
+      "notes": "No clear scale reference and the second cutlet is cut off by the frame; baked-vs-fried preparation affects fat content."
+    }
+  }
+]

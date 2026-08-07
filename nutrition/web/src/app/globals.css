@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  @apply bg-ink text-neutral-100 antialiased;
+  /* The app is a single vertical column; horizontal scroll is always a bug. */
+  overflow-x: hidden;
+  overscroll-behavior-y: contain;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Tap targets: everything interactive is thumb-sized. This is a one-handed app used
+   while holding a plate. */
+button,
+[role="button"],
+label[for] {
+  min-height: 44px;
+  touch-action: manipulation;
+}
+
+@layer utilities {
+  .pb-safe {
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+  }
+}
