@@ -1,0 +1,34 @@
+# Fires the nutrition app's Shabbat notification check every 15 minutes.
+#
+# Vercel's free (Hobby) plan caps cron jobs at once/day, which can't catch the Friday
+# prep reminder or the havdalah+30min reconciliation nudge - both depend on checking
+# close to the actual moment, which moves every week with the season. This workflow is
+# the real 15-minute trigger; the once-daily cron still configured in
+# nutrition/web/vercel.json is only a backstop for the Sunday-8am fallback.
+#
+# Requires a repository secret named CRON_SECRET, matching the value already set on the
+# Vercel project (Settings -> Environment Variables there, Settings -> Secrets and
+# variables -> Actions here). The endpoint itself only checks that header; it doesn't
+# care who's calling it.
+name: Shabbat notification check
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch: {} # lets you trigger a manual test run from the Actions tab
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call /api/cron/shabbat
+        run: |
+          status=$(curl -s -o /tmp/body -w "%{http_code}" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "https://web-three-ashy-38.vercel.app/api/cron/shabbat")
+          cat /tmp/body
+          echo "HTTP $status"
+          if [ "$status" -ge 400 ]; then
+            echo "::error::cron endpoint returned $status"
+            exit 1
+          fi
