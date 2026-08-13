@@ -27,12 +27,18 @@ create table if not exists products (
   serving_label     text,
   source            text not null
                       check (source in ('openfoodfacts','label_ocr','recipe_ocr',
-                                        'recipe_manual','manual')),
+                                        'recipe_manual','manual','food_repeat')),
   recipe_raw        jsonb,            -- ingredient table + yield, for later correction
   recipe_photo_path text,
   times_logged      integer not null default 0,
   last_logged_at    timestamptz,
-  created_at        timestamptz not null default now()
+  created_at        timestamptz not null default now(),
+  -- Soft delete, not a hard one: removes it from Again, but keeps the row so a
+  -- food_repeat dish (promoted from repeat food/voice logs with no product of their
+  -- own) can't silently reappear. A hard delete would set those entries' product_id
+  -- back to null via the FK below, and the next Again load would just re-detect the
+  -- same recurring dish and recreate it - deleting it would have undone itself.
+  hidden            boolean not null default false
 );
 
 -- One product per barcode per user. Partial index so rows without a barcode
@@ -43,6 +49,24 @@ create unique index if not exists products_barcode_uniq
 
 create index if not exists products_frequent
   on products (user_id, times_logged desc nulls last);
+
+-- 'food_repeat' added so a home-cooked dish logged repeatedly by photo/voice (which
+-- never gets a product_id on its own - see api/estimate/route.ts) can be promoted into
+-- a real reusable product once it recurs enough (lib/again.ts,
+-- detectFrequentUnlinkedDishes). `create table if not exists` above is a no-op against
+-- an already-existing table, so the check constraint needs its own explicit update to
+-- actually reach a database that was set up before this value existed.
+alter table products drop constraint if exists products_source_check;
+alter table products add constraint products_source_check
+  check (source in ('openfoodfacts','label_ocr','recipe_ocr',
+                     'recipe_manual','manual','food_repeat'));
+
+-- Same reasoning as above: `add column if not exists` reaches an existing table fine
+-- on its own (unlike a check constraint), but the column still needs to exist here for
+-- a fresh install and there for one that predates it. "Delete" on the product edit
+-- screen sets this rather than removing the row - see the migration comment on the
+-- column definition above for why.
+alter table products add column if not exists hidden boolean not null default false;
 
 -- ---------------------------------------------------------------------------
 -- entries: every logged eating event.
@@ -108,6 +132,30 @@ create table if not exists weights (
 );
 
 -- ---------------------------------------------------------------------------
+-- weight_log: a separate, deliberately unconstrained personal weight diary.
+--
+-- Not the same table as `weights` above: that one is a single Friday-anchored daily
+-- reading that drives the adaptive-TDEE engine, so it enforces one row per day. This one
+-- exists purely so the user has somewhere to jot down a weight with a date and a rough
+-- time of day - morning / afternoon / evening, not a timestamp - and get it back out
+-- again. Multiple entries per day, no upsert, no computation, no bias correction. The
+-- entire feature request was "just want a place to store it"; adding logic here that
+-- wasn't asked for is exactly the over-engineering the app's own design principles warn
+-- against elsewhere in this schema.
+-- ---------------------------------------------------------------------------
+create table if not exists weight_log (
+  id          uuid primary key default gen_random_uuid(),
+  user_id     uuid not null references auth.users on delete cascade,
+  measured_on date not null,
+  time_of_day text not null check (time_of_day in ('morning', 'afternoon', 'evening')),
+  weight_kg   numeric not null check (weight_kg > 20 and weight_kg < 400),
+  created_at  timestamptz not null default now()
+);
+
+create index if not exists weight_log_user_date
+  on weight_log (user_id, measured_on desc, created_at desc);
+
+-- ---------------------------------------------------------------------------
 -- tdee_snapshots: weekly adaptive-TDEE audit trail (plan 3.1).
 -- week_ending is a FRIDAY, not a Sunday - Sunday readings run 1-3 lbs high on
 -- Shabbat water and sodium and would pollute the calculation (plan 3.2).
@@ -140,18 +188,84 @@ create table if not exists combos (
 );
 
 -- ---------------------------------------------------------------------------
+-- settings: one row per user for knobs that don't belong hardcoded in nutrition.ts.
+-- geonameid drives the Hebcal lookup (plan 10.2) - it defaults to Tel Aviv (293397)
+-- and MUST be corrected if the user is not there, or every zmanim time is wrong.
+-- ---------------------------------------------------------------------------
+create table if not exists settings (
+  user_id     uuid primary key references auth.users on delete cascade,
+  geonameid   integer not null default 293397,
+  timezone    text not null default 'Asia/Jerusalem',
+  updated_at  timestamptz not null default now()
+);
+
+-- ---------------------------------------------------------------------------
+-- shabbat_plans: one row per Friday-to-Saturday window (plan 10.2). Cached zmanim
+-- live here so the cron job (server-side, no browser) can read them without hitting
+-- Hebcal on every tick, and so the notification columns can record what has already
+-- fired - the re-fire/fallback schedule needs to know what it already sent.
+-- ---------------------------------------------------------------------------
+create table if not exists shabbat_plans (
+  id                    uuid primary key default gen_random_uuid(),
+  user_id               uuid not null references auth.users on delete cascade,
+  week_start            date not null,             -- the Friday
+  candle_lighting       timestamptz,
+  havdalah              timestamptz,
+  is_yomtov             boolean not null default false,
+  reconciled_at         timestamptz,
+  notified_prep_at      timestamptz,                -- ~3h before candle lighting
+  notified_recon_1_at   timestamptz,                -- havdalah + 30 min
+  notified_recon_2_at   timestamptz,                -- +2h re-fire
+  notified_recon_3_at   timestamptz,                -- Sunday 8am hard fallback
+  created_at            timestamptz not null default now(),
+  unique (user_id, week_start)
+);
+
+-- entries.shabbat_plan_id has existed since Phase 1 as a bare uuid (the table it
+-- points to didn't exist yet). Give it a real foreign key now that shabbat_plans does.
+do $$
+begin
+  alter table entries
+    add constraint entries_shabbat_plan_fk
+    foreign key (shabbat_plan_id) references shabbat_plans (id) on delete set null;
+exception
+  when duplicate_object then null;
+end $$;
+
+-- ---------------------------------------------------------------------------
+-- push_subscriptions: Web Push endpoints. Havdalah reconciliation and the Friday
+-- prep nudge must reach you even if the app isn't open - that requires a real
+-- push subscription, not a client-side setTimeout, since Shabbat is exactly when
+-- the phone may not have the app running.
+-- ---------------------------------------------------------------------------
+create table if not exists push_subscriptions (
+  id          uuid primary key default gen_random_uuid(),
+  user_id     uuid not null references auth.users on delete cascade,
+  endpoint    text not null,
+  p256dh      text not null,
+  auth        text not null,
+  created_at  timestamptz not null default now(),
+  unique (user_id, endpoint)
+);
+
+-- ---------------------------------------------------------------------------
 -- Row Level Security
 -- ---------------------------------------------------------------------------
-alter table entries        enable row level security;
-alter table products       enable row level security;
-alter table weights        enable row level security;
-alter table tdee_snapshots enable row level security;
-alter table combos         enable row level security;
+alter table entries           enable row level security;
+alter table products          enable row level security;
+alter table weights           enable row level security;
+alter table weight_log        enable row level security;
+alter table tdee_snapshots    enable row level security;
+alter table combos            enable row level security;
+alter table settings          enable row level security;
+alter table shabbat_plans     enable row level security;
+alter table push_subscriptions enable row level security;
 
 do $$
 declare t text;
 begin
-  for t in select unnest(array['entries','weights','tdee_snapshots','combos'])
+  for t in select unnest(array['entries','weights','weight_log','tdee_snapshots','combos',
+                               'settings','shabbat_plans','push_subscriptions'])
   loop
     execute format('drop policy if exists own_rows on %I', t);
     execute format($f$

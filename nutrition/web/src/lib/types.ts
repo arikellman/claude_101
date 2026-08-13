@@ -84,6 +84,8 @@ export interface LabelResult {
   serving_grams: number;
   serving_label: string;
   servings_per_package: number;
+  /** Whole-container net weight, independent of serving_grams. 0 if not printed/legible. */
+  net_weight_grams: number;
   label_language: "hebrew" | "english" | "both" | "other";
   confidence: Confidence;
   notes: string;

@@ -14,7 +14,7 @@
  * =============================================================================
  */
 
-export const PROMPT_VERSION = "2026-08-06.1";
+export const PROMPT_VERSION = "2026-08-11.1";
 
 export type Mode = "food" | "label" | "recipe" | "voice";
 
@@ -58,12 +58,20 @@ house brands, Rami Levy house brands, Angel and Berman bakeries.
 
 Hebrew nutrition labels: the standard Israeli panel is titled "ערכים תזונתיים" and gives
 values per 100 g (ל-100 גרם) and often per serving (למנה). Field names you will see:
-  קלוריות / אנרגיה = calories/energy      חלבונים = protein
+  קלוריות / אנרגיה = calories/energy      חלבונים / חלבון = protein (both plural and
+                                           singular appear - smaller and generic-brand
+                                           labels often print the singular חלבון)
   פחמימות = carbohydrates                 מתוכן סוכרים = of which sugars
   שומנים / שומן = fat                     מתוכן שומן רווי = of which saturated fat
   סיבים תזונתיים = dietary fibre           נתרן = sodium
   גודל מנה = serving size                  מנות באריזה = servings per package
 Read these directly. Do not translate the product name into English only - return both.
+
+Row order varies and protein is not reliably near the top. Real panels have been seen in
+the order energy / fat / sodium / carbohydrate+sugars / protein / calcium - protein
+second-to-last, sodium before carbs. Locate the חלבון/חלבונים row by its own label text
+on that specific panel; do not assume it sits in any particular position relative to the
+other rows.
 
 Portion norms: Israeli restaurant and home portions generally run larger than US
 nutrition-database "servings". A laffa is 90-120 g of flour. Restaurant tahini and
@@ -159,7 +167,7 @@ export const LABEL_SCHEMA = {
   additionalProperties: false,
   required: [
     "product_name", "product_name_he", "brand", "barcode", "per_100g",
-    "serving_grams", "serving_label", "servings_per_package",
+    "serving_grams", "serving_label", "servings_per_package", "net_weight_grams",
     "label_language", "confidence", "notes",
   ],
   properties: {
@@ -190,7 +198,22 @@ export const LABEL_SCHEMA = {
       ...str,
       description: "Serving as written, e.g. '1 container (200 g)'. Empty if absent.",
     },
-    servings_per_package: { ...num, description: "0 if not stated." },
+    servings_per_package: {
+      ...num,
+      description:
+        "How many declared servings the package contains, e.g. 5 for a 500 g bag with a " +
+        "100 g serving. 1 if the package and the serving are the same thing (a single " +
+        "yogurt cup, a single bar). 0 if not stated.",
+    },
+    net_weight_grams: {
+      ...num,
+      description:
+        "Total net weight/volume of the package as printed near the barcode or on the " +
+        "front (e.g. '500 g', '1 L', 'net wt 200g'), converting ml to g at 1:1 if it's a " +
+        "liquid. This is the whole-container amount and is independent of serving_grams - " +
+        "a 500 g bag with a stated 100 g serving has net_weight_grams 500 and " +
+        "serving_grams 100. 0 if genuinely not printed or not legible.",
+    },
     label_language: { type: "string", enum: ["hebrew", "english", "both", "other"] },
     confidence: conf,
     notes: {
@@ -340,9 +363,15 @@ Before reporting any number:
    100 g does not exist; 10 g per 100 g is a high-protein yogurt. Cheese at 300 kcal/100 g
    is normal; at 600 it is not. If your per-100 g reading is implausible for the food type,
    you have probably taken the per-container column - re-read the headers.
-4. NEVER infer a serving size from the ratio between two columns. If the label does not
-   state a serving size, return 0. Deriving a serving size from the ratio is how a column
-   swap gets silently rationalised into a self-consistent but wrong answer.
+4. NEVER infer a serving size, and NEVER infer net_weight_grams, from the ratio between
+   two columns, even where the arithmetic would be valid (a per-container value at
+   exactly 2x the per-100g value does genuinely imply a 200g container, if the column
+   identification is right). This mode transcribes what is printed, not what can be
+   computed from what is printed - both fields exist to record a number that is actually
+   on the label, and a derived figure quietly inherits whatever rounding each column
+   carries independently, so it is rarely exactly right even when it looks clean. If a
+   size is not itself printed, return 0 for it. This also removes the exact mechanism by
+   which a column swap gets silently rationalised into a self-consistent but wrong answer.
 5. If you cannot confidently tell the columns apart, set confidence "low" and say so in
    \`notes\`. That is a correct and useful answer; a confident wrong one is not.
 </column_discipline>
@@ -357,6 +386,10 @@ Before reporting any number:
 - If a field is genuinely absent from the label (fibre is often omitted in Israel), return
   0 for it and name the missing field in \`notes\`. Do not invent a plausible value: this
   mode must not guess, because the user relies on label mode being exact.
+- Protein specifically: before returning 0 for it, confirm there truly is no
+  חלבון/חלבונים row anywhere on the panel - it is easy to miss because its position
+  varies (see regional_context above). 0 protein is correct only when the row is
+  genuinely absent, not when it was merely harder to find than the other rows.
 - If the image is too blurry or cropped to read the panel reliably, set confidence "low"
   and explain in \`notes\` rather than transcribing partial numbers as if complete.
 </transcription_rules>
