@@ -1,36 +1,64 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import Link from "next/link";
 import { browserClient } from "@/lib/supabase/client";
+import { useSession } from "@/lib/useSession";
+import NavPill from "@/components/NavPill";
+import SignIn from "@/components/SignIn";
 import {
   GOAL_DATE, GOAL_WEIGHT_KG, PROTEIN_FLOOR_G, START_WEIGHT_KG,
-  currentTrend, effectiveTdee, exceedsCeiling, isoDate, kgToLb, lbToKg,
-  project, weeklyTrendChange, weightTrend, type Weighin,
+  currentTrend, effectiveTdee, exceedsCeiling, isoDate,
+  kgToLb, project, weeklyTrendChange, weightTrend, type Weighin,
 } from "@/lib/nutrition";
 
+interface WeightLogRow {
+  measured_on: string;
+  time_of_day: "morning" | "afternoon" | "evening";
+  weight_kg: number;
+  created_at: string;
+}
+
+/**
+ * One weigh-in per day, for the trend math below (which expects at most one weight per
+ * date). Prefers the morning entry - the plan's TDEE design assumes a pre-day reading
+ * (§3.2) - and otherwise falls back to whichever was logged earliest that day. This is
+ * a display-layer data shape, not the app's nutrition math itself: lib/nutrition.ts's
+ * functions are untouched, this only changes what feeds them.
+ */
+function collapseToOnePerDay(rows: WeightLogRow[]): Weighin[] {
+  const byDay = new Map<string, WeightLogRow[]>();
+  for (const r of rows) byDay.set(r.measured_on, [...(byDay.get(r.measured_on) ?? []), r]);
+
+  const out: Weighin[] = [];
+  for (const [day, entries] of byDay) {
+    const morning = entries.find((r) => r.time_of_day === "morning");
+    const chosen = morning ?? [...entries].sort((a, b) => a.created_at.localeCompare(b.created_at))[0];
+    out.push({ measured_on: day, weight_kg: chosen.weight_kg });
+  }
+  return out;
+}
+
 export default function TrendPage() {
-  const [userId, setUserId] = useState<string | null>(null);
+  const { userId, loading } = useSession();
   const [weighins, setWeighins] = useState<Weighin[]>([]);
   const [intakes, setIntakes] = useState<number[]>([]);
-  const [input, setInput] = useState("");
-  const [saving, setSaving] = useState(false);
 
   const load = useCallback(async () => {
-    const db = browserClient();
-    const { data: session } = await db.auth.getSession();
-    const uid = session.session?.user.id ?? null;
-    setUserId(uid);
-    if (!uid) return;
+    if (!userId) return;
 
+    const db = browserClient();
     const [{ data: w }, { data: e }] = await Promise.all([
-      db.from("weights").select("measured_on, weight_kg").eq("user_id", uid)
-        .order("measured_on", { ascending: true }),
-      db.from("entries").select("logged_at, calories").eq("user_id", uid)
+      // The weight diary at /weight is now the only place weight gets logged (plan
+      // review, 2026-08-09) - this used to read a separate `weights` table fed by an
+      // inline field on this page, so logging faithfully through /weight never moved
+      // this number at all. One input, one table, everywhere.
+      db.from("weight_log").select("measured_on, time_of_day, weight_kg, created_at")
+        .eq("user_id", userId).order("measured_on", { ascending: true }),
+      db.from("entries").select("logged_at, calories").eq("user_id", userId)
         .gte("logged_at", new Date(Date.now() - 21 * 86_400_000).toISOString()),
     ]);
 
-    setWeighins((w ?? []) as Weighin[]);
+    setWeighins(collapseToOnePerDay((w ?? []) as WeightLogRow[]));
 
     // Daily totals, most recent 14 complete days. Days with no log are excluded rather
     // than counted as zero - a missing day is missing data, not a fast.
@@ -40,22 +68,9 @@ export default function TrendPage() {
       byDay.set(k, (byDay.get(k) ?? 0) + ((row.calories as number) ?? 0));
     }
     setIntakes([...byDay.entries()].sort().slice(-14).map(([, v]) => v));
-  }, []);
+  }, [userId]);
 
   useEffect(() => { void load(); }, [load]);
-
-  async function saveWeight() {
-    const lb = parseFloat(input);
-    if (!userId || !Number.isFinite(lb)) return;
-    setSaving(true);
-    await browserClient().from("weights").upsert(
-      { user_id: userId, measured_on: isoDate(new Date()), weight_kg: lbToKg(lb) },
-      { onConflict: "user_id,measured_on" }
-    );
-    setInput("");
-    setSaving(false);
-    void load();
-  }
 
   const trendKg = currentTrend(weighins);
   const weeklyKg = weeklyTrendChange(weighins);
@@ -63,48 +78,23 @@ export default function TrendPage() {
   const projection = trendKg !== null && weeklyKg !== null ? project(trendKg, weeklyKg) : null;
   const points = weightTrend(weighins);
 
+  if (loading) return <div className="p-6 text-sm text-neutral-500">Loading…</div>;
+  if (!userId) return <SignIn />;
+
   return (
     <div className="flex flex-1 flex-col gap-6 p-4 pb-safe">
       <header className="flex items-center justify-between">
         <h1 className="text-lg font-semibold">Trend</h1>
-        <Link href="/" className="rounded-full bg-ink-soft px-3 py-2 text-xs text-neutral-300">
-          Back
-        </Link>
+        <NavPill href="/" />
       </header>
-
-      {/* Weigh-in. The only manual data entry in the app. */}
-      <section className="space-y-2">
-        <div className="flex gap-2">
-          <input
-            type="number"
-            inputMode="decimal"
-            step="0.1"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Weight in lb"
-            className="flex-1 rounded-2xl border border-ink-line bg-ink-soft p-4
-                       focus:border-neutral-500 focus:outline-none"
-          />
-          <button
-            onClick={saveWeight}
-            disabled={saving || !input}
-            className="rounded-2xl bg-neutral-100 px-6 font-semibold text-ink disabled:opacity-40"
-          >
-            Save
-          </button>
-        </div>
-        <p className="text-xs text-neutral-500">
-          Weigh in daily when you can, but compare <strong>Friday to Friday</strong>. Sunday
-          runs 1–3 lb high on Shabbat water and sodium.
-        </p>
-      </section>
 
       {/* Headline: projected finish date, not a progress bar. A percentage-complete bar
           looks healthiest exactly when the trend has gone flat. */}
       <section className="rounded-3xl bg-ink-soft p-4">
         {trendKg === null ? (
           <p className="text-sm text-neutral-500">
-            Log a few weigh-ins and the trend appears here.
+            No weigh-ins yet.{" "}
+            <NavPill href="/weight" label="Log one" className="mt-2 inline-flex" />
           </p>
         ) : (
           <>
