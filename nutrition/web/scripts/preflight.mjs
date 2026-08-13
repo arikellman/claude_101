@@ -143,9 +143,19 @@ console.log("\nSupabase\n--------");
 
 const db = createClient(url, service, { auth: { persistSession: false } });
 
-const TABLES = ["products", "entries", "weights", "tdee_snapshots", "combos"];
+const TABLES = [
+  "products", "entries", "weights", "tdee_snapshots", "combos",
+  "settings", "shabbat_plans", "push_subscriptions", // Phase 2.5
+  "weight_log", // standalone weight diary
+];
 for (const t of TABLES) {
-  const { error } = await db.from(t).select("*", { count: "exact", head: true });
+  // NOT { head: true }: PostgREST returns HTTP 204 with no error at all for a HEAD
+  // request against a table that doesn't exist - confirmed by hand while building the
+  // Phase 2.5 tables, which this exact check had been silently failing to catch since
+  // Phase 1. A real GET reliably surfaces PGRST205 ("could not find the table") instead.
+  // select("*") rather than a named column: `settings` has no `id` column (its primary
+  // key is user_id), and this loop must not assume a schema it's the one thing verifying.
+  const { error } = await db.from(t).select("*").limit(0);
   if (error) {
     bad(
       `table '${t}' unreachable: ${error.message}`,
@@ -196,6 +206,22 @@ if (res.ok) {
   );
 } else {
   bad(`API returned ${res.status}`);
+}
+
+console.log("\nWeb Push (Shabbat notifications)\n---------------------------------");
+
+// Informational only, not a hard failure: the app is fully usable without push - the
+// Shabbat Prep and reconciliation screens still work by visiting them directly, they
+// just can't nudge you proactively while closed. Worth flagging, not worth blocking on.
+const vapidPublic = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+const vapidPrivate = process.env.VAPID_PRIVATE_KEY;
+const vapidSubject = process.env.VAPID_SUBJECT;
+if (vapidPublic && vapidPrivate && vapidSubject) {
+  ok("VAPID keys present");
+} else {
+  console.log(
+    "  (not configured - Shabbat notifications won't be sent; see .env.local.example)"
+  );
 }
 
 console.log(
