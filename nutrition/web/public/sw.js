@@ -1,11 +1,15 @@
 /*
- * Minimal service worker. Two jobs only:
+ * Service worker. Four jobs:
  *   1. Make the app shell available offline so the camera opens with no signal.
  *   2. Never cache API or Supabase calls.
- *
- * The offline capture QUEUE is deliberately not here - it lives in IndexedDB via
- * src/lib/queue.ts, because the queue needs to survive a worker restart and be
- * readable from the UI to show pending state. Phase 2 wires background sync to it.
+ *   3. Best-effort background sync: wake up on reconnect and ask any open tab to
+ *      flush the offline queue (src/lib/queue.ts). A service worker has no Supabase
+ *      session of its own, so it cannot complete the upload itself - it can only ask.
+ *      If no tab is open, nothing happens here; the queue still flushes the moment the
+ *      app is next opened, via the foreground triggers in Capture.tsx.
+ *   4. Web Push: the Shabbat prep and havdalah-reconciliation nudges (plan 10.2) have to
+ *      reach the phone even with the app fully closed, which background sync cannot do -
+ *      that is exactly what push exists for.
  */
 
 const CACHE = "shell-v1";
@@ -47,5 +51,54 @@ self.addEventListener("fetch", (event) => {
         return res;
       })
       .catch(() => caches.match(event.request).then((hit) => hit || caches.match("/")))
+  );
+});
+
+// ---------------------------------------------------------------------------
+// Background sync (job 3 above)
+// ---------------------------------------------------------------------------
+self.addEventListener("sync", (event) => {
+  if (event.tag !== "flush-queue") return;
+  event.waitUntil(
+    self.clients.matchAll({ type: "window" }).then((clients) => {
+      for (const client of clients) client.postMessage({ type: "flush-queue" });
+    })
+  );
+});
+
+// ---------------------------------------------------------------------------
+// Web Push (job 4 above). Sent by /api/cron/shabbat - see that route for the schedule
+// (Friday prep ~3h before candles, havdalah+30min, +2h re-fire, Sunday 8am fallback).
+// ---------------------------------------------------------------------------
+self.addEventListener("push", (event) => {
+  let payload = { title: "Nutrition Log", body: "", url: "/" };
+  try {
+    if (event.data) payload = { ...payload, ...event.data.json() };
+  } catch {
+    // Malformed payload - still show a generic notification rather than silently drop it.
+  }
+
+  event.waitUntil(
+    self.registration.showNotification(payload.title, {
+      body: payload.body,
+      icon: "/icon-192.png",
+      badge: "/icon-192.png",
+      data: { url: payload.url },
+      // Shabbat notifications must not nag: one alert per event, no vibration buzzing.
+      silent: false,
+      tag: payload.tag || undefined,
+    })
+  );
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const url = event.notification.data?.url || "/";
+  event.waitUntil(
+    self.clients.matchAll({ type: "window" }).then((clients) => {
+      const existing = clients.find((c) => new URL(c.url).pathname === new URL(url, self.location.origin).pathname);
+      if (existing) return existing.focus();
+      return self.clients.openWindow(url);
+    })
   );
 });

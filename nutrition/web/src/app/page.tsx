@@ -1,17 +1,18 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import Link from "next/link";
 import Capture from "@/components/Capture";
 import MacroBars from "@/components/MacroBars";
+import NavPill from "@/components/NavPill";
+import SignIn from "@/components/SignIn";
 import TodayList from "@/components/TodayList";
 import { browserClient } from "@/lib/supabase/client";
+import { useSession } from "@/lib/useSession";
 import { dailyBudget, isoDate, weeklyRemaining } from "@/lib/nutrition";
 import type { Entry } from "@/lib/types";
 
 export default function Home() {
-  const [userId, setUserId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { userId, loading } = useSession();
   const [entries, setEntries] = useState<Entry[]>([]);
   const [weekIntake, setWeekIntake] = useState<Map<string, number>>(new Map());
 
@@ -19,21 +20,6 @@ export default function Home() {
   // during render, so the server prerender pass never touches it.
   const today = useMemo(() => new Date(), []);
   const budget = dailyBudget(today);
-
-  // ---------------------------------------------------------------------
-  // Auth
-  // ---------------------------------------------------------------------
-  useEffect(() => {
-    const db = browserClient();
-    db.auth.getSession().then(({ data }) => {
-      setUserId(data.session?.user.id ?? null);
-      setLoading(false);
-    });
-    const { data: sub } = db.auth.onAuthStateChange((_e, session) => {
-      setUserId(session?.user.id ?? null);
-    });
-    return () => sub.subscription.unsubscribe();
-  }, []);
 
   // ---------------------------------------------------------------------
   // Data
@@ -53,15 +39,24 @@ export default function Home() {
       // Trailing 10 days covers the current Friday-to-Friday week from any starting day.
       db
         .from("entries")
-        .select("logged_at, calories")
+        .select("logged_at, calories, shabbat_plan_id, reconciled_at")
         .eq("user_id", userId)
         .gte("logged_at", new Date(Date.now() - 10 * 86_400_000).toISOString()),
     ]);
 
-    setEntries((todays ?? []) as Entry[]);
+    // A Friday-afternoon pre-log lands with logged_at inside the Shabbat window (plan
+    // 10.2), which can be "today" the moment it's saved. It must not count toward the
+    // budget until reconciled - counting a plan as if it were eaten defeats the entire
+    // point of pre-logging, which is to record intent, not consumption.
+    const notYetReconciled = (e: { shabbat_plan_id: string | null; reconciled_at: string | null }) =>
+      e.shabbat_plan_id !== null && e.reconciled_at === null;
+
+    setEntries((todays ?? []).filter((e) => !notYetReconciled(e as Entry)) as Entry[]);
 
     const byDay = new Map<string, number>();
     for (const row of week ?? []) {
+      if (notYetReconciled(row as { shabbat_plan_id: string | null; reconciled_at: string | null }))
+        continue;
       const key = isoDate(new Date(row.logged_at as string));
       byDay.set(key, (byDay.get(key) ?? 0) + ((row.calories as number) ?? 0));
     }
@@ -129,10 +124,18 @@ export default function Home() {
             {today.toLocaleDateString([], { weekday: "long" })} budget {budget}
           </div>
         </div>
-        <Link href="/trend" className="rounded-full bg-ink-soft px-3 py-2 text-xs text-neutral-300">
-          Trend
-        </Link>
+        <div className="flex gap-2">
+          <NavPill href="/settings" label="⚙" />
+          <NavPill href="/weight" label="⚖" />
+          <NavPill href="/trend" label="Trend" />
+        </div>
       </header>
+
+      <nav className="flex gap-2 text-xs">
+        <NavPill href="/again" label="Again" className="flex-1" />
+        <NavPill href="/shabbat/prep" label="Shabbat Prep" className="flex-1" />
+        <NavPill href="/shabbat/reconcile" label="Wrap-up" className="flex-1" />
+      </nav>
 
       <Capture userId={userId} onLogged={load} />
 
@@ -148,55 +151,6 @@ export default function Home() {
         <h2 className="mb-1 text-xs uppercase tracking-wide text-neutral-500">Today</h2>
         <TodayList entries={entries} onChange={load} />
       </section>
-    </div>
-  );
-}
-
-/** Magic-link sign-in. Single user, so there is no sign-up flow to build. */
-function SignIn() {
-  const [email, setEmail] = useState("");
-  const [sent, setSent] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  async function send() {
-    setError(null);
-    const { error } = await browserClient().auth.signInWithOtp({
-      email,
-      options: { emailRedirectTo: window.location.origin },
-    });
-    if (error) setError(error.message);
-    else setSent(true);
-  }
-
-  return (
-    <div className="flex flex-1 flex-col justify-center gap-4 p-6">
-      <h1 className="text-2xl font-semibold">Nutrition Log</h1>
-      {sent ? (
-        <p className="text-sm text-neutral-400">
-          Check {email} for a sign-in link.
-        </p>
-      ) : (
-        <>
-          <input
-            type="email"
-            inputMode="email"
-            autoComplete="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@example.com"
-            className="rounded-2xl border border-ink-line bg-ink-soft p-4
-                       focus:border-neutral-500 focus:outline-none"
-          />
-          <button
-            onClick={send}
-            disabled={!email.includes("@")}
-            className="rounded-2xl bg-neutral-100 py-4 font-semibold text-ink disabled:opacity-40"
-          >
-            Send sign-in link
-          </button>
-        </>
-      )}
-      {error && <p className="text-sm text-red-400">{error}</p>}
     </div>
   );
 }

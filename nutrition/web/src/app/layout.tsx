@@ -29,7 +29,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         children, so real hydration bugs in the tree still surface.
       */}
       <body suppressHydrationWarning>
-        <main className="mx-auto flex min-h-dvh max-w-md flex-col">{children}</main>
+        {/*
+          h-dvh + overflow-y-auto here, not min-h-dvh relying on document-level body
+          scroll: in an installed PWA's standalone display mode, the outer shell does not
+          reliably pass through native document scrolling the way an ordinary browser tab
+          does. Making <main> itself the bounded, explicitly scrollable region works
+          regardless of how the surrounding webview chrome behaves - confirmed necessary
+          after every screen in the installed app turned out to be stuck non-scrolling.
+        */}
+        <main className="mx-auto flex h-dvh max-w-md flex-col overflow-y-auto overscroll-contain">
+          {children}
+        </main>
         <Script id="sw" strategy="afterInteractive">
           {`if ('serviceWorker' in navigator) {
               window.addEventListener('load', function () {
