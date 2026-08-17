@@ -3,6 +3,10 @@
     {
       "path": "/api/cron/shabbat",
       "schedule": "0 6 * * *"
+    },
+    {
+      "path": "/api/cron/wearable-sync",
+      "schedule": "0 5 * * *"
     }
   ]
 }

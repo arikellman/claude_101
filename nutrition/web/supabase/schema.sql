@@ -156,6 +156,33 @@ create index if not exists weight_log_user_date
   on weight_log (user_id, measured_on desc, created_at desc);
 
 -- ---------------------------------------------------------------------------
+-- wearable_daily: one row per day pulled from a wearable (Zepp/Amazfit today).
+-- Deliberately NOT wired into effectiveTdee() in nutrition.ts - that engine already
+-- solves for expenditure empirically from logged intake + measured weight trend, and
+-- mixing in a device's own (also imprecise) activity-calorie estimate would reintroduce
+-- exactly the guessing that design avoids. This table is informational context only
+-- (steps/sleep/resting HR shown on Trend), not an input to the calorie target.
+-- `raw` keeps the decoded per-day summary so a future field doesn't require a migration.
+-- ---------------------------------------------------------------------------
+create table if not exists wearable_daily (
+  id                 uuid primary key default gen_random_uuid(),
+  user_id            uuid not null references auth.users on delete cascade,
+  date               date not null,
+  source             text not null default 'zepp',
+  steps              integer,
+  active_calories    numeric,
+  sleep_minutes      integer,
+  deep_sleep_minutes integer,
+  resting_hr         integer,          -- null, not 0, when nothing was recorded that day
+  raw                jsonb,
+  synced_at          timestamptz not null default now(),
+  unique (user_id, date, source)
+);
+
+create index if not exists wearable_daily_user_date
+  on wearable_daily (user_id, date desc);
+
+-- ---------------------------------------------------------------------------
 -- tdee_snapshots: weekly adaptive-TDEE audit trail (plan 3.1).
 -- week_ending is a FRIDAY, not a Sunday - Sunday readings run 1-3 lbs high on
 -- Shabbat water and sodium and would pollute the calculation (plan 3.2).
@@ -255,6 +282,7 @@ alter table entries           enable row level security;
 alter table products          enable row level security;
 alter table weights           enable row level security;
 alter table weight_log        enable row level security;
+alter table wearable_daily    enable row level security;
 alter table tdee_snapshots    enable row level security;
 alter table combos            enable row level security;
 alter table settings          enable row level security;
@@ -264,7 +292,7 @@ alter table push_subscriptions enable row level security;
 do $$
 declare t text;
 begin
-  for t in select unnest(array['entries','weights','weight_log','tdee_snapshots','combos',
+  for t in select unnest(array['entries','weights','weight_log','wearable_daily','tdee_snapshots','combos',
                                'settings','shabbat_plans','push_subscriptions'])
   loop
     execute format('drop policy if exists own_rows on %I', t);

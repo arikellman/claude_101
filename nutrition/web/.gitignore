@@ -11,3 +11,6 @@ next-env.d.ts
 .vercel
 
 .vercel
+
+# Prototype output containing real personal health data - never commit
+zepp-prototype-output*.json
