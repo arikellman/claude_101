@@ -1,0 +1,45 @@
+[
+  {
+    "source": "Photos\\food\\Baked Schnitzel.jpg",
+    "mode": "food",
+    "model": "claude-sonnet-5",
+    "stop_reason": "end_turn",
+    "seconds": 7.4,
+    "image_px": [
+      619,
+      1100
+    ],
+    "usage": {
+      "input_tokens": 941,
+      "output_tokens": 268,
+      "cache_read_input_tokens": 0,
+      "cache_creation_input_tokens": 2253
+    },
+    "cost_usd": 0.01529,
+    "data": {
+      "items": [
+        {
+          "name": "Breaded schnitzel (chicken, uncooked/raw breaded cutlet)",
+          "name_he": "שניצל פרגית",
+          "portion_description": "2 raw breaded cutlets, ~130g each",
+          "portion_grams_est": 260,
+          "calories_est": 460,
+          "calories_low": 380,
+          "calories_high": 560,
+          "protein_g": 34,
+          "carbs_g": 28,
+          "fat_g": 22,
+          "fiber_g": 1.5,
+          "confidence": "medium",
+          "alternatives": [
+            "Breaded turkey schnitzel",
+            "Breaded fish fillet",
+            "Frozen chicken breast fillet"
+          ]
+        }
+      ],
+      "overall_confidence": "medium",
+      "notes": "Cutlets appear raw/uncooked on foil with no scale reference besides foil, so portion size and eventual added oil from frying are estimated."
+    }
+  }
+]

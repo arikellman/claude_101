@@ -1,0 +1,68 @@
+[
+  {
+    "source": "(text)",
+    "mode": "voice",
+    "model": "claude-opus-5",
+    "stop_reason": "end_turn",
+    "seconds": 8.78,
+    "image_px": null,
+    "usage": {
+      "input_tokens": 48,
+      "output_tokens": 457,
+      "cache_read_input_tokens": 0,
+      "cache_creation_input_tokens": 2378
+    },
+    "cost_usd": 0.02653,
+    "data": {
+      "items": [
+        {
+          "name": "Hard-boiled egg whites",
+          "name_he": "חלבוני ביצה קשה",
+          "portion_description": "2 large egg whites",
+          "portion_grams_est": 66,
+          "calories_est": 34,
+          "calories_low": 30,
+          "calories_high": 40,
+          "protein_g": 7.2,
+          "carbs_g": 0.5,
+          "fat_g": 0.1,
+          "fiber_g": 0,
+          "confidence": "high",
+          "alternatives": []
+        },
+        {
+          "name": "Starbucks VIA instant coffee (black)",
+          "name_he": "קפה נמס סטארבקס ויה",
+          "portion_description": "1 sachet prepared",
+          "portion_grams_est": 240,
+          "calories_est": 5,
+          "calories_low": 0,
+          "calories_high": 10,
+          "protein_g": 0.3,
+          "carbs_g": 0.8,
+          "fat_g": 0,
+          "fiber_g": 0,
+          "confidence": "high",
+          "alternatives": []
+        },
+        {
+          "name": "2% lactose-free milk",
+          "name_he": "חלב 2% ללא לקטוז",
+          "portion_description": "2 tbsp (30 ml)",
+          "portion_grams_est": 31,
+          "calories_est": 16,
+          "calories_low": 13,
+          "calories_high": 20,
+          "protein_g": 1,
+          "carbs_g": 1.5,
+          "fat_g": 0.6,
+          "fiber_g": 0,
+          "confidence": "high",
+          "alternatives": []
+        }
+      ],
+      "overall_confidence": "high",
+      "notes": ""
+    }
+  }
+]

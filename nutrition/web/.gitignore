@@ -1,0 +1,16 @@
+node_modules/
+.next/
+out/
+build/
+.env
+.env.local
+.env*.local
+*.tsbuildinfo
+next-env.d.ts
+.DS_Store
+.vercel
+
+.vercel
+
+# Prototype output containing real personal health data - never commit
+zepp-prototype-output*.json

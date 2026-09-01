@@ -1,0 +1,122 @@
+[
+  {
+    "source": "photos\\labels\\PXL_20260806_094958774.jpg",
+    "mode": "label",
+    "model": "claude-opus-5",
+    "stop_reason": "end_turn",
+    "seconds": 12.7,
+    "image_px": [
+      619,
+      1100
+    ],
+    "usage": {
+      "input_tokens": 939,
+      "output_tokens": 410,
+      "cache_read_input_tokens": 0,
+      "cache_creation_input_tokens": 2025
+    },
+    "cost_usd": 0.0276,
+    "data": {
+      "product_name": "GO Airy Texture Yogurt with Mango",
+      "product_name_he": "GO מרקם אוורירי עם מנגו",
+      "brand": "Yoplait (Tnuva)",
+      "barcode": "",
+      "per_100g": {
+        "calories": 64,
+        "protein_g": 10,
+        "carbs_g": 3.7,
+        "sugars_g": 3.5,
+        "fat_g": 1,
+        "saturated_fat_g": 0,
+        "fiber_g": 0,
+        "sodium_mg": 30
+      },
+      "serving_grams": 200,
+      "serving_label": "גביע 200 גרם",
+      "servings_per_package": 1,
+      "label_language": "hebrew",
+      "confidence": "medium",
+      "notes": "Saturated fat and dietary fibre not listed on panel (returned 0). Serving column is 'גביע' (container) 200 g; per-container values: 128 kcal, 2 g fat, 60 mg sodium, 7.4 g carbs, 7 g sugars, 20 g protein. Calcium 103 mg/100 g."
+    }
+  },
+  {
+    "source": "photos\\labels\\PXL_20260806_095046285.jpg",
+    "mode": "label",
+    "model": "claude-opus-5",
+    "stop_reason": "end_turn",
+    "seconds": 7.18,
+    "image_px": [
+      619,
+      1100
+    ],
+    "usage": {
+      "input_tokens": 939,
+      "output_tokens": 276,
+      "cache_read_input_tokens": 2025,
+      "cache_creation_input_tokens": 0
+    },
+    "cost_usd": 0.01261,
+    "data": {
+      "product_name": "Coffee milk drink",
+      "product_name_he": "משקה חלב בטעם קפה",
+      "brand": "",
+      "barcode": "",
+      "per_100g": {
+        "calories": 63,
+        "protein_g": 7.2,
+        "carbs_g": 5.1,
+        "sugars_g": 5.0,
+        "fat_g": 1.5,
+        "saturated_fat_g": 0,
+        "fiber_g": 0,
+        "sodium_mg": 67
+      },
+      "serving_grams": 0,
+      "serving_label": "",
+      "servings_per_package": 0,
+      "label_language": "both",
+      "confidence": "medium",
+      "notes": "Panel is per 100 ml, treated as per 100 g. Saturated fat and fibre not listed. Also lists calcium 165 mg, caffeine 27 mg, vitamin D 2.0 mcg. Product name inferred from coffee/milk drink context; brand not visible."
+    }
+  },
+  {
+    "source": "photos\\labels\\Tehina Bars.jpg",
+    "mode": "label",
+    "model": "claude-opus-5",
+    "stop_reason": "end_turn",
+    "seconds": 8.1,
+    "image_px": [
+      619,
+      1100
+    ],
+    "usage": {
+      "input_tokens": 939,
+      "output_tokens": 452,
+      "cache_read_input_tokens": 2025,
+      "cache_creation_input_tokens": 0
+    },
+    "cost_usd": 0.01701,
+    "data": {
+      "product_name": "Snack spread/product (name not fully visible)",
+      "product_name_he": "מוצר עם טחינה וחיטה מלאה (שם חלקי: ...ינה)",
+      "brand": "",
+      "barcode": "",
+      "per_100g": {
+        "calories": 431,
+        "protein_g": 12.8,
+        "carbs_g": 36.4,
+        "sugars_g": 8.5,
+        "fat_g": 21,
+        "saturated_fat_g": 3,
+        "fiber_g": 22.8,
+        "sodium_mg": 12
+      },
+      "serving_grams": 30,
+      "serving_label": "לחטיף 30 גרם",
+      "servings_per_package": 0,
+      "label_language": "hebrew",
+      "confidence": "medium",
+      "notes": "Product name cropped; only part of Hebrew name visible. Panel also lists trans fat <0.5 g, cholesterol 0, sugar alcohols (כפיות סוכר) 2 g per 100 g. Per-serving (30 g) column: 129 kcal, 6.3 g fat, 10.9 g carbs, 2.7 g sugars, 6.8 g fiber, 3.85 g protein, 3.6 mg sodium."
+    }
+  }
+]

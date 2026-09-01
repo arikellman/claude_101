@@ -1,0 +1,52 @@
+name: Nutrition App CI
+
+on:
+  pull_request:
+    paths:
+      - "nutrition/web/**"
+  push:
+    branches: [main]
+    paths:
+      - "nutrition/web/**"
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: nutrition/web
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # Tests import .ts files straight into `node --test`, relying on
+          # Node's native TypeScript support (stable by default from Node 23.6+,
+          # matching the Node 26 the app is developed against). Node 20 lacks
+          # this and fails with ERR_UNKNOWN_FILE_EXTENSION.
+          node-version: "24"
+          cache: "npm"
+          cache-dependency-path: nutrition/web/package-lock.json
+
+      - run: npm ci
+      # `npm run lint` (next lint) is intentionally skipped: Next.js 16 removed
+      # the `next lint` subcommand, and this project has no ESLint config or
+      # eslint/eslint-config-next dependency, so the script has never actually
+      # run. Re-add once real ESLint setup lands.
+      - run: npm run typecheck
+      - run: npm test
+
+      # Build with placeholder env vars only. Real Supabase/Anthropic/Zepp
+      # credentials must never be added as repo/CI secrets for this app -
+      # see .env.local.example for why (personal API billing, real Zepp
+      # account password, service-role key).
+      - run: npm run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: placeholder-anon-key
+          SUPABASE_SERVICE_ROLE_KEY: placeholder-service-role-key
+          ANTHROPIC_API_KEY: sk-ant-placeholder
+          NEXT_PUBLIC_VAPID_PUBLIC_KEY: placeholder
+          VAPID_PRIVATE_KEY: placeholder
+          VAPID_SUBJECT: mailto:ci@example.com
+          CRON_SECRET: placeholder

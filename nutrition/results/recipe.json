@@ -1,0 +1,244 @@
+[
+  {
+    "source": "Photos\\recipes\\Mushroom Rice.jpg",
+    "mode": "recipe",
+    "model": "claude-sonnet-5",
+    "stop_reason": "end_turn",
+    "seconds": 26.46,
+    "image_px": [
+      962,
+      1100
+    ],
+    "usage": {
+      "input_tokens": 1427,
+      "output_tokens": 2649,
+      "cache_read_input_tokens": 0,
+      "cache_creation_input_tokens": 3056
+    },
+    "cost_usd": 0.05548,
+    "data": {
+      "dish_name": "Fabulous Rice (baked rice with peppers and mushrooms)",
+      "dish_name_he": "אורז נפלא",
+      "servings_stated": 7,
+      "servings_assumed": 7,
+      "ingredients": [
+        {
+          "name": "Rice (uncooked, long grain)",
+          "quantity_as_written": "2 cups",
+          "grams_est": 370,
+          "grams_confidence": "medium",
+          "calories": 1350,
+          "protein_g": 27.75,
+          "carbs_g": 296,
+          "fat_g": 2.6,
+          "fiber_g": 4.8
+        },
+        {
+          "name": "Red bell pepper, diced",
+          "quantity_as_written": "1 pepper",
+          "grams_est": 150,
+          "grams_confidence": "medium",
+          "calories": 30,
+          "protein_g": 1.5,
+          "carbs_g": 6.9,
+          "fat_g": 0.3,
+          "fiber_g": 2.55
+        },
+        {
+          "name": "Green bell pepper, diced",
+          "quantity_as_written": "1 pepper",
+          "grams_est": 150,
+          "grams_confidence": "medium",
+          "calories": 30,
+          "protein_g": 1.5,
+          "carbs_g": 6.9,
+          "fat_g": 0.3,
+          "fiber_g": 2.55
+        },
+        {
+          "name": "Baby bella mushrooms, sliced",
+          "quantity_as_written": "10 oz",
+          "grams_est": 283,
+          "grams_confidence": "high",
+          "calories": 62,
+          "protein_g": 8.8,
+          "carbs_g": 9.3,
+          "fat_g": 0.85,
+          "fiber_g": 2.83
+        },
+        {
+          "name": "Dried onion flakes",
+          "quantity_as_written": "2 Tbsp",
+          "grams_est": 12,
+          "grams_confidence": "medium",
+          "calories": 42,
+          "protein_g": 1,
+          "carbs_g": 9.6,
+          "fat_g": 0.12,
+          "fiber_g": 1
+        },
+        {
+          "name": "Soy sauce",
+          "quantity_as_written": "2 Tbsp",
+          "grams_est": 30,
+          "grams_confidence": "medium",
+          "calories": 18,
+          "protein_g": 2.4,
+          "carbs_g": 1.8,
+          "fat_g": 0,
+          "fiber_g": 0
+        },
+        {
+          "name": "Cooking oil",
+          "quantity_as_written": "1/4 cup",
+          "grams_est": 56,
+          "grams_confidence": "medium",
+          "calories": 495,
+          "protein_g": 0,
+          "carbs_g": 0,
+          "fat_g": 56,
+          "fiber_g": 0
+        },
+        {
+          "name": "Water",
+          "quantity_as_written": "3 3/4 cups",
+          "grams_est": 900,
+          "grams_confidence": "high",
+          "calories": 0,
+          "protein_g": 0,
+          "carbs_g": 0,
+          "fat_g": 0,
+          "fiber_g": 0
+        },
+        {
+          "name": "Kosher salt",
+          "quantity_as_written": "1 Tbsp",
+          "grams_est": 17,
+          "grams_confidence": "high",
+          "calories": 0,
+          "protein_g": 0,
+          "carbs_g": 0,
+          "fat_g": 0,
+          "fiber_g": 0
+        },
+        {
+          "name": "Black pepper, to taste",
+          "quantity_as_written": "to taste",
+          "grams_est": 1,
+          "grams_confidence": "low",
+          "calories": 0,
+          "protein_g": 0,
+          "carbs_g": 0,
+          "fat_g": 0,
+          "fiber_g": 0
+        }
+      ],
+      "totals": {
+        "grams": 1969,
+        "calories": 2027,
+        "protein_g": 42.95,
+        "carbs_g": 330.5,
+        "fat_g": 60.17,
+        "fiber_g": 13.73
+      },
+      "per_serving": {
+        "grams": 281.3,
+        "calories": 289.6,
+        "protein_g": 6.14,
+        "carbs_g": 47.21,
+        "fat_g": 8.6,
+        "fiber_g": 1.96
+      },
+      "confidence": "medium",
+      "notes": "Used the printed recipe (2 cups rice, 10 oz mushrooms, 1/4 cup oil, etc.) rather than the sticky-note scaled version, since the sticky note's '1 square Baby Bellas' and 'a little less than 6c water' are ambiguous/unreadable quantities; if you're actually using the sticky-note scale-up (3 cups rice etc.), roughly multiply all values by 1.5. Yield stated as 6-8 servings; assumed 7 for calculation — confirm actual number of servings you cut. Water is absorbed during baking so cooked weight will be less than raw ingredient total, but this doesn't change calories. The biggest calorie contributors are the oil (1/4 cup, ~495 kcal) and the rice (2 cups, ~1350 kcal) — weigh these two carefully rather than trusting cup measures, since oil especially is easy to over-pour. Soy sauce and salt add negligible calories but contribute sodium. Black pepper 'to taste' is negligible and not worth weighing."
+    }
+  },
+  {
+    "source": "Photos\\recipes\\Turkey London Broil.jpg",
+    "mode": "recipe",
+    "model": "claude-sonnet-5",
+    "stop_reason": "end_turn",
+    "seconds": 16.24,
+    "image_px": [
+      902,
+      1100
+    ],
+    "usage": {
+      "input_tokens": 1347,
+      "output_tokens": 1128,
+      "cache_read_input_tokens": 3056,
+      "cache_creation_input_tokens": 0
+    },
+    "cost_usd": 0.02188,
+    "data": {
+      "dish_name": "Pan-Grilled Turkey London Broil",
+      "dish_name_he": "חזה טורקיה בגריל מחבת",
+      "servings_stated": 7,
+      "servings_assumed": 7,
+      "ingredients": [
+        {
+          "name": "Turkey London broil (breast, boneless/skinless)",
+          "quantity_as_written": "1 (2-3 lb)",
+          "grams_est": 1020,
+          "grams_confidence": "medium",
+          "calories": 1122,
+          "protein_g": 245,
+          "carbs_g": 0,
+          "fat_g": 10,
+          "fiber_g": 0
+        },
+        {
+          "name": "Brown sugar",
+          "quantity_as_written": "1 Tbsp",
+          "grams_est": 13,
+          "grams_confidence": "medium",
+          "calories": 50,
+          "protein_g": 0,
+          "carbs_g": 13,
+          "fat_g": 0,
+          "fiber_g": 0
+        },
+        {
+          "name": "Kosher salt",
+          "quantity_as_written": "1/2 tsp",
+          "grams_est": 3,
+          "grams_confidence": "medium",
+          "calories": 0,
+          "protein_g": 0,
+          "carbs_g": 0,
+          "fat_g": 0,
+          "fiber_g": 0
+        },
+        {
+          "name": "Oil (grapeseed or avocado)",
+          "quantity_as_written": "1 Tbsp",
+          "grams_est": 14,
+          "grams_confidence": "medium",
+          "calories": 124,
+          "protein_g": 0,
+          "carbs_g": 0,
+          "fat_g": 14,
+          "fiber_g": 0
+        }
+      ],
+      "totals": {
+        "grams": 1050,
+        "calories": 1296,
+        "protein_g": 245,
+        "carbs_g": 13,
+        "fat_g": 24,
+        "fiber_g": 0
+      },
+      "per_serving": {
+        "grams": 150,
+        "calories": 185,
+        "protein_g": 35,
+        "carbs_g": 1.9,
+        "fat_g": 3.4,
+        "fiber_g": 0
+      },
+      "confidence": "medium",
+      "notes": "Yield stated as a range (6-8 servings); used midpoint of 7. Turkey breast weight was taken as the midpoint of the stated 2-3 lb range (~2.25 lb = 1020g raw) — actual weight should be confirmed by weighing the raw turkey London broil, as this dominates both grams and calories/protein totals. The turkey itself is by far the largest calorie and protein contributor; oil is the second most calorie-dense item and should be measured carefully since brushed/rubbed oil quantities are often underestimated. Cooking (searing + oven roasting) will cause moisture loss, reducing final cooked weight substantially versus the raw grams used here, though calories remain roughly the same. No fiber present in this dish."
+    }
+  }
+]

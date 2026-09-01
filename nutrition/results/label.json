@@ -1,0 +1,122 @@
+[
+  {
+    "source": "Photos\\labels\\PXL_20260806_094958774.jpg",
+    "mode": "label",
+    "model": "claude-sonnet-5",
+    "stop_reason": "end_turn",
+    "seconds": 13.95,
+    "image_px": [
+      619,
+      1100
+    ],
+    "usage": {
+      "input_tokens": 939,
+      "output_tokens": 552,
+      "cache_read_input_tokens": 0,
+      "cache_creation_input_tokens": 2025
+    },
+    "cost_usd": 0.01869,
+    "data": {
+      "product_name": "GO by Yoplait yogurt",
+      "product_name_he": "גו by יופלייט",
+      "brand": "Tnuva/Yoplait",
+      "barcode": "",
+      "per_100g": {
+        "calories": 128,
+        "protein_g": 20,
+        "carbs_g": 7.4,
+        "sugars_g": 7,
+        "fat_g": 2,
+        "saturated_fat_g": 0,
+        "fiber_g": 0,
+        "sodium_mg": 60
+      },
+      "serving_grams": 50,
+      "serving_label": "מנה (50 גרם)",
+      "servings_per_package": 0,
+      "label_language": "hebrew",
+      "confidence": "medium",
+      "notes": "Saturated fat and fiber not stated on label, reported as 0. Calcium value (206 mg/100g) also shown on label but not part of schema. Serving size inferred as 50g from per-serving column values being roughly half of per-100g values."
+    }
+  },
+  {
+    "source": "Photos\\labels\\PXL_20260806_095046285.jpg",
+    "mode": "label",
+    "model": "claude-sonnet-5",
+    "stop_reason": "end_turn",
+    "seconds": 6.14,
+    "image_px": [
+      619,
+      1100
+    ],
+    "usage": {
+      "input_tokens": 939,
+      "output_tokens": 255,
+      "cache_read_input_tokens": 2025,
+      "cache_creation_input_tokens": 0
+    },
+    "cost_usd": 0.00725,
+    "data": {
+      "product_name": "Iced Coffee Drink",
+      "product_name_he": "קפה קר",
+      "brand": "",
+      "barcode": "",
+      "per_100g": {
+        "calories": 63,
+        "protein_g": 7.2,
+        "carbs_g": 5.1,
+        "sugars_g": 5.0,
+        "fat_g": 1.5,
+        "saturated_fat_g": 0,
+        "fiber_g": 0,
+        "sodium_mg": 67
+      },
+      "serving_grams": 100,
+      "serving_label": "100 מ\"ל",
+      "servings_per_package": 0,
+      "label_language": "hebrew",
+      "confidence": "medium",
+      "notes": "Saturated fat and fibre not stated on label, returned as 0. Also listed: calcium 165mg, caffeine 27mg, vitamin D 2.0mcg per 100ml, not part of schema."
+    }
+  },
+  {
+    "source": "Photos\\labels\\Tehina Bars.jpg",
+    "mode": "label",
+    "model": "claude-sonnet-5",
+    "stop_reason": "end_turn",
+    "seconds": 6.52,
+    "image_px": [
+      619,
+      1100
+    ],
+    "usage": {
+      "input_tokens": 939,
+      "output_tokens": 276,
+      "cache_read_input_tokens": 2025,
+      "cache_creation_input_tokens": 0
+    },
+    "cost_usd": 0.00756,
+    "data": {
+      "product_name": "",
+      "product_name_he": "",
+      "brand": "",
+      "barcode": "",
+      "per_100g": {
+        "calories": 431,
+        "protein_g": 12.8,
+        "carbs_g": 36.4,
+        "sugars_g": 8.5,
+        "fat_g": 21,
+        "saturated_fat_g": 3,
+        "fiber_g": 22.8,
+        "sodium_mg": 12
+      },
+      "serving_grams": 30,
+      "serving_label": "לחטיף 30 גרם",
+      "servings_per_package": 0,
+      "label_language": "hebrew",
+      "confidence": "medium",
+      "notes": "Sodium row labeled נתרן (מ\"ג) shows 12 mg per 100g which seems low for a processed snack, but transcribed as printed. Cholesterol given as 0 mg (not part of schema, omitted). Product name not visible in cropped image, only nutrition panel and personal message shown."
+    }
+  }
+]
