@@ -20,7 +20,11 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          # Tests import .ts files straight into `node --test`, relying on
+          # Node's native TypeScript support (stable by default from Node 23.6+,
+          # matching the Node 26 the app is developed against). Node 20 lacks
+          # this and fails with ERR_UNKNOWN_FILE_EXTENSION.
+          node-version: "24"
           cache: "npm"
           cache-dependency-path: nutrition/web/package-lock.json
 
