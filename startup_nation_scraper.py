@@ -147,6 +147,24 @@ def enrich_with_context_text(page, startups):
     return startups
 
 
+def dump_diagnostics(page):
+    """
+    Save a screenshot + full HTML of the current page to help diagnose why no
+    startup links were found on the first page (e.g. wrong URL pattern, a
+    cookie/consent wall, or a bot-check interstitial).
+    """
+    try:
+        page.screenshot(path="debug_first_page.png", full_page=True)
+        with open("debug_first_page.html", "w", encoding="utf-8") as f:
+            f.write(page.content())
+        print(
+            "  Wrote debug_first_page.png and debug_first_page.html for inspection.",
+            file=sys.stderr,
+        )
+    except Exception as e:
+        print(f"  Could not write diagnostics: {e}", file=sys.stderr)
+
+
 def scrape(keywords: str, start_page: int, max_pages: int, delay: float, headless: bool):
     from playwright.sync_api import sync_playwright
 
@@ -163,7 +181,10 @@ def scrape(keywords: str, start_page: int, max_pages: int, delay: float, headles
             url = build_search_url(keywords, page_num)
             print(f"Fetching page {page_num}: {url}", file=sys.stderr)
             try:
-                browser_page.goto(url, wait_until="networkidle", timeout=30000)
+                # "networkidle" hangs forever on SPAs with background polling
+                # (analytics, chat widgets, etc.) -- wait for the DOM instead,
+                # then explicitly wait for startup links to actually render.
+                browser_page.goto(url, wait_until="domcontentloaded", timeout=45000)
             except Exception as e:
                 print(f"  Failed to load page {page_num}: {e}", file=sys.stderr)
                 break
@@ -171,11 +192,23 @@ def scrape(keywords: str, start_page: int, max_pages: int, delay: float, headles
             if page_num == start_page:
                 try_dismiss_cookie_banner(browser_page)
 
+            try:
+                browser_page.wait_for_selector('a[href^="/startups/"]', timeout=15000)
+            except Exception:
+                print(
+                    "  No startup links appeared within 15s (page may be empty, "
+                    "slow, or use a different URL pattern).",
+                    file=sys.stderr,
+                )
+
             # Give any client-side rendering a moment to settle.
             browser_page.wait_for_timeout(int(delay * 1000))
 
             page_startups = extract_startups_from_page(browser_page)
             page_startups = enrich_with_context_text(browser_page, page_startups)
+
+            if page_num == start_page and len(page_startups) == 0:
+                dump_diagnostics(browser_page)
 
             new_count = 0
             for s in page_startups:
