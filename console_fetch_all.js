@@ -4,40 +4,45 @@
  *
  * The search URL itself returns a raw JSON API response (not HTML), shaped
  * like: {"count": 14059, "results": [{...}], "limit": 50, "skip": 0, ...}.
- * This script pages through it using skip/limit until it has every result,
- * then downloads one combined JSON file: startups_all.json.
+ * Pagination is keyed off the "page" query param (skip/limit in the response
+ * are just an echo of what "page" resolved to server-side -- passing "skip"
+ * directly is ignored). This script pages through via page=1,2,3,... until
+ * it has every result, then downloads one combined JSON file:
+ * startups_all.json.
  *
  * This can take a while for a broad keyword (potentially thousands of
  * results, hundreds of requests) -- watch the console log for progress.
- * Edit KEYWORDS / LIMIT below if needed.
+ * Edit KEYWORDS below if needed.
  */
 (async function () {
   const KEYWORDS = new URLSearchParams(location.search).get("keywords") || "startup";
-  const LIMIT = 50; // matches what the API returned by default; raise if the API accepts more
   const DELAY_MS = 250; // politeness delay between requests
+  const MAX_PAGES = 1000; // safety cap
 
-  let skip = 0;
+  let page = 1;
   let total = Infinity;
+  let pageSize = null;
   const all = [];
   const seenIds = new Set();
 
-  while (skip < total) {
-    const url = `${location.pathname}?keywords=${encodeURIComponent(KEYWORDS)}&limit=${LIMIT}&skip=${skip}`;
+  while (all.length < total && page <= MAX_PAGES) {
+    const url = `${location.pathname}?keywords=${encodeURIComponent(KEYWORDS)}&page=${page}`;
     let res, data;
     try {
       res = await fetch(url, { credentials: "include", headers: { Accept: "application/json" } });
       data = await res.json();
     } catch (e) {
-      console.error(`Request failed at skip=${skip}:`, e);
+      console.error(`Request failed at page=${page}:`, e);
       break;
     }
 
     if (typeof data.count === "number") total = data.count;
     const batch = data.results || [];
     if (batch.length === 0) {
-      console.log(`No results at skip=${skip}, stopping.`);
+      console.log(`No results at page=${page}, stopping.`);
       break;
     }
+    if (pageSize === null) pageSize = batch.length;
 
     let newCount = 0;
     for (const item of batch) {
@@ -49,14 +54,14 @@
       }
     }
 
-    console.log(`skip=${skip}: got ${batch.length} (${newCount} new), total collected ${all.length}/${total}`);
+    console.log(`page=${page}: got ${batch.length} (${newCount} new), total collected ${all.length}/${total}`);
 
     if (newCount === 0) {
-      console.log("This batch added nothing new, stopping to avoid looping forever.");
+      console.log("This page added nothing new (pagination likely maxed out or looping), stopping.");
       break;
     }
 
-    skip += LIMIT;
+    page += 1;
     await new Promise((r) => setTimeout(r, DELAY_MS));
   }
 
