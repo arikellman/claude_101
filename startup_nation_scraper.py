@@ -22,10 +22,18 @@ stable pattern for this kind of directory site regardless of styling. If the
 real site uses a different URL shape for startup detail pages, adjust
 STARTUP_LINK_PATTERN below -- everything else should keep working.
 
+CLOUDFLARE CHALLENGE: the site is protected by Cloudflare Turnstile ("Performing
+security verification"), which blocks plain headless automation. Run with
+--headed the first time: a visible browser window opens, you solve the
+"Verify you are human" checkbox yourself, and the script then continues
+scraping automatically in that same browser session/cookies -- Cloudflare's
+clearance cookie carries over to every subsequent page, so this only needs to
+be solved once per run.
+
 Usage:
     pip install playwright
     playwright install chromium
-    python startup_nation_scraper.py --keywords startup --output startups
+    python startup_nation_scraper.py --keywords startup --output startups --headed
 
 Options:
     --keywords      Search keyword(s) to pass as the `keywords` query param (default: startup)
@@ -33,7 +41,8 @@ Options:
     --max-pages     Safety cap on number of pages to fetch (default: 500)
     --delay         Seconds to wait between page loads, be polite (default: 1.5)
     --output        Output file basename, without extension (default: startups_combined)
-    --headed        Run the browser with a visible window (default: headless)
+    --headed        Run the browser with a visible window (needed to solve the
+                     Cloudflare check the first time; default: headless)
 """
 
 import argparse
@@ -69,6 +78,61 @@ def try_dismiss_cookie_banner(page):
                 return
         except Exception:
             continue
+
+
+def is_cloudflare_challenge(page) -> bool:
+    try:
+        title = (page.title() or "").lower()
+    except Exception:
+        title = ""
+    if "just a moment" in title:
+        return True
+    try:
+        return page.locator("#challenge-error-text, .cf-turnstile, #cf-chl-widget-hrdnj_response").count() > 0
+    except Exception:
+        return False
+
+
+def wait_through_cloudflare_challenge(page, headless: bool, max_wait_seconds: int = 180):
+    """
+    If the current page is a Cloudflare "Performing security verification"
+    challenge, wait for it to clear. In headed mode this gives a human time to
+    click the Turnstile checkbox; in headless mode there is no one to solve it,
+    so just poll in case it's a fully automatic ("managed", non-interactive)
+    challenge, and warn if it never clears.
+    """
+    if not is_cloudflare_challenge(page):
+        return
+
+    if headless:
+        print(
+            "  Hit a Cloudflare 'Verify you are human' challenge, but running "
+            "headless -- there's no one to click it. Re-run with --headed, "
+            "solve the checkbox once in the window that opens, and the script "
+            "will continue automatically from there.",
+            file=sys.stderr,
+        )
+    else:
+        print(
+            "  Hit a Cloudflare 'Verify you are human' challenge. A browser "
+            "window is open -- please solve it there now (click the "
+            "checkbox / complete the puzzle). Waiting...",
+            file=sys.stderr,
+        )
+
+    waited = 0
+    poll_interval = 2
+    while waited < max_wait_seconds:
+        page.wait_for_timeout(poll_interval * 1000)
+        waited += poll_interval
+        if not is_cloudflare_challenge(page):
+            print("  Challenge cleared, continuing.", file=sys.stderr)
+            return
+
+    print(
+        f"  Still on the Cloudflare challenge after {max_wait_seconds}s, giving up on this page.",
+        file=sys.stderr,
+    )
 
 
 def extract_startups_from_page(page):
@@ -188,6 +252,8 @@ def scrape(keywords: str, start_page: int, max_pages: int, delay: float, headles
             except Exception as e:
                 print(f"  Failed to load page {page_num}: {e}", file=sys.stderr)
                 break
+
+            wait_through_cloudflare_challenge(browser_page, headless)
 
             if page_num == start_page:
                 try_dismiss_cookie_banner(browser_page)
