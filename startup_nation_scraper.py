@@ -2,6 +2,16 @@
 """
 Scraper for the Start-Up Nation Finder search results.
 
+STATUS: this fully-automated approach does NOT work against the live site --
+Cloudflare Turnstile detects Playwright's automation fingerprint and
+re-challenges even after a human manually solves it in headed mode, so it
+never gets past the checkpoint. The approach that actually works is the
+semi-manual one in console_fetch_all.js + format_api_results.py (solve
+Cloudflare once in your normal browser, then a pasted console script pages
+through the site's underlying JSON search API). This file is kept for
+reference / in case Cloudflare's behavior changes, but use the console
+scripts instead.
+
 Iterates https://finder.startupnationcentral.org/startups/search?keywords=<kw>&page=<n>
 starting at page 1, rendering each page with a headless browser (the site is a
 JS-driven SPA, so a plain HTTP GET will not return the startup cards), and stops
